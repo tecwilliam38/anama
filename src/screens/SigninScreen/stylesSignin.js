@@ -11,13 +11,15 @@ const StylesSignin = StyleSheet.create({
         width: windowWidth,
         height: windowHeight,
     },
-    container: {
-        justifyContent: "space-between",
-        alignItems: "flex-end",
+    container: {      
+        justifyContent: 'flex-end',
+        padding: 16,
+
     },
     inputstyle: {},
     buttonstyle: {},
-    buttontext: {}
+    buttontext: {},
+    keyboardStyle:{},
 })
 
 export default StylesSignin;
