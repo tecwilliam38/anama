@@ -7,7 +7,9 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import { COLORS } from "../context/constants.js";
 import Home from "../screens/Home/index.js";
 import icon from "./icon.js";
-// import AbaCalendar from "../screens/appointments/index.js";
+
+
+import { Ionicons, FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
 
 const TopTab = createMaterialTopTabNavigator();
 
@@ -16,119 +18,54 @@ function PrivateRoutes() {
     return <TopTab.Navigator screenOptions={{
         tabBarStyle: {
             backgroundColor: COLORS.white,
-            marginTop: 30,
-            height: 70,
+            paddingTop: 30,
+            marginBottom: 10,
+            paddingBottom: 5,
+            height: 100,
             alignItems: "center"
         },
-        // headerShown: false,
+        headerShown: false,
     }}>
         <TopTab.Screen name="Home" component={Home} options={{
             tabBarShowLabel: false,
             unmountOnBlur: true,
             tabBarIcon: ({ focused }) => {
-                return <Image source={icon.home} style={
-                    {
-                        width: focused ? 35 : 20,
-                        height: focused ? 35 : 20,
-                        textDecorationLine: focused ? "underline" : "none",
-                        borderColor: focused ? COLORS.white : "transparent",
-                        borderWidth: focused ? 2 : 0,
-                        borderRadius: focused ? 12.5 : 0,
-                        opacity: focused ? 1 : 0.8
-                    }
-                } />
+                let iconName;
+                return <Ionicons name="home" size={30} color={focused ? "green" : "#06bcee"} />
             }
         }} />
         <TopTab.Screen name="Calendar" component={Home} options={{
             tabBarShowLabel: false,
             unmountOnBlur: true,
             tabBarIcon: ({ focused }) => {
-                return <Image source={icon.home} style={
-                    {
-                        width: focused ? 35 : 20,
-                        height: focused ? 35 : 20,
-                        textDecorationLine: focused ? "underline" : "none",
-                        borderColor: focused ? COLORS.white : "transparent",
-                        borderWidth: focused ? 2 : 0,
-                        borderRadius: focused ? 12.5 : 0,
-                        opacity: focused ? 1 : 0.8
-                    }
-                } />
+                let iconName;
+                return <FontAwesome name="user-circle-o" size={30} color={focused ? "green" : "#06bcee"} />
             }
         }} />
         <TopTab.Screen name="Profile" component={Home} options={{
             tabBarShowLabel: false,
             unmountOnBlur: true,
             tabBarIcon: ({ focused }) => {
-                return <Image source={icon.home} style={
-                    {
-                        width: focused ? 35 : 20,
-                        height: focused ? 35 : 20,
-                        textDecorationLine: focused ? "underline" : "none",
-                        borderColor: focused ? COLORS.white : "transparent",
-                        borderWidth: focused ? 2 : 0,
-                        borderRadius: focused ? 12.5 : 0,
-                        opacity: focused ? 1 : 0.8
-                    }
-                } />
+                let iconName;
+                return <MaterialCommunityIcons name="movie-open-settings" size={30} color={focused ? "green" : "#06bcee"} />
             }
         }} />
         <TopTab.Screen name="Reels" component={Home} options={{
             tabBarShowLabel: false,
             unmountOnBlur: true,
             tabBarIcon: ({ focused }) => {
-                return <Image source={icon.home} style={
-                    {
-                        width: focused ? 35 : 20,
-                        height: focused ? 35 : 20,
-                        textDecorationLine: focused ? "underline" : "none",
-                        borderColor: focused ? COLORS.white : "transparent",
-                        borderWidth: focused ? 2 : 0,
-                        borderRadius: focused ? 12.5 : 0,
-                        opacity: focused ? 1 : 0.8
-                    }
-                } />
+                let iconName;
+                return <MaterialCommunityIcons name={focused ? "bell-outline" : "bell"} size={30} color={focused ? "green" : "#06bcee"} />
             }
         }} />
-
-        {/* <TopTab.Screen name="Agenda" component={AbaCalendar} options={{
-                headerTitleAlign: "center",
-                headerShown: false,
-                tabBarShowLabel: false,
-                tabBarIcon: ({ focused }) => {
-                    return <Image source={icon.calendar} style={
-                        {
-                            width: 25,
-                            height: 25,
-                            textDecorationLine: focused ? "underline" : "none",
-                            borderColor: focused ? COLORS.white : "transparent",
-                            borderWidth: focused ? 2 : 0,
-                            borderRadius: focused ? 12.5 : 0,
-                            opacity: focused ? 1 : 0.8,
-                            color: focused ? COLORS.red : COLORS.red,
-                        }
-                    } />
-                }
-            }} />
-            <TopTab.Screen name="Profile" component={Home} options={{
-                headerTitleAlign: "center",
-                headerShown: false,
-                tabBarShowLabel: false,
-                tabBarIcon: ({ focused }) => {
-                    return <Image source={icon.profile} style={
-                        {
-                            width: 25,
-                            height: 25,
-                            textDecorationLine: focused ? "underline" : "none",
-                            borderColor: focused ? COLORS.white : "transparent",
-                            borderWidth: focused ? 2 : 0,
-                            borderRadius: focused ? 12.5 : 0,
-                            opacity: focused ? 1 : 0.8,
-                            color: focused ? COLORS.red : COLORS.red,
-                        }
-                    } />
-                }
-            }} /> */}
+        <TopTab.Screen name="Perfil" component={Home} options={{
+            tabBarShowLabel: false,
+            unmountOnBlur: true,
+            tabBarIcon: ({ focused }) => {
+                let iconName;
+                return <FontAwesome name="user" size={30} color={focused ? "green" : "#06bcee"} />
+            }
+        }} />
     </TopTab.Navigator>
 }
 
