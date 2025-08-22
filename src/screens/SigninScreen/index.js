@@ -8,14 +8,14 @@ export default function SigninScreen() {
     return (
         <>
             <StatusBar hidden={true} />
-            {/* <ImageBackground source={require("../../assets/splash.png")} style={backgroundstyle}> */}
+            <ImageBackground source={require("../../assets/splash.png")} style={backgroundstyle}>
                 <View style={container}>
                     <KeyboardAvoidingView behavior='padding'
                         style={keyboardStyle}>
-                        <Text style={buttontext}>Anama</Text>
+                        <Text style={buttontext}>Bem vindos à Anama</Text>
                     </KeyboardAvoidingView>
                 </View>
-            {/* </ImageBackground> */}
+            </ImageBackground>
         </>
     )
 }
