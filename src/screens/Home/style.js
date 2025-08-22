@@ -28,7 +28,7 @@ export const HomeStyles = StyleSheet.create({
     },
     topSearchComponent: {
         height: 80,
-        borderRadius: 20,
+        borderRadius: 30,
         borderWidth: 1,
         borderColor: "#ccc",
         width: "70%",

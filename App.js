@@ -24,7 +24,7 @@ export default function App() {
   useEffect(() => {
     async function prepare() {
       // Simula carregamento de recursos
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 5000));
       setAppIsReady(true);
     }
 
