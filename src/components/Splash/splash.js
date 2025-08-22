@@ -1,6 +1,6 @@
 // SplashScreen.js
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, ImageBackground, Animated, View } from 'react-native';
 
 import {
@@ -17,14 +17,13 @@ import {
 import { ActivityIndicator } from 'react-native-paper';
 
 export default function SplashScreenPage() {
+  let [key] = useState("");
+
   return (
     <>
-      <StatusBar hidden={true} />
-      <Animated.View style={styles.container} animation="fadeIn" duration={1000}>
-        <ImageBackground source={require('../../assets/splash.png')} style={styles.content}>
-          <UIActivityIndicator color="rgba(255, 255, 255, 0.7)" style={styles.loadingActive} size={50} />
-        </ImageBackground>
-      </Animated.View>
+      <ImageBackground source={require('../../assets/splash.png')} style={styles.content}>
+        <PulseIndicator color="rgba(255, 255, 255, 0.7)" style={styles.loadingActive} size={50} />
+      </ImageBackground>
     </>
   );
 }

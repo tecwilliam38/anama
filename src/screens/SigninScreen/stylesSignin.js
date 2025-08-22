@@ -24,11 +24,16 @@ const StylesSignin = StyleSheet.create({
         justifyContent: 'space-around',
         width: "90%",
     },
-    inputstyle: {},
+    inputstyle: {
+        color: "#fff",
+        fontWeight: 'bold',
+        marginLeft: 10,
+        width: '100%'
+    },
     buttonstyle: {},
     buttontext: {},
     keyboardStyle: {
-        width: "100%",        
+        width: "100%",
         justifyContent: "center",
         marginBottom: 10,
         backgroundColor: "rgba(255,255,255,0.3)",

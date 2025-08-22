@@ -44,7 +44,7 @@ export default function SigninScreen() {
                         style={keyboardStyle}>
                         <Input
                             placeholderTextColor={"#fff"}
-                            inputStyle={{ color: "#fff", fontWeight: 'bold', marginLeft: 10, width: '100%' }}
+                            inputStyle={inputstyle}
                             placeholder='E-mail'
                             value={email}
                             onChangeText={setEmail}

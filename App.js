@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import * as SplashScreen from 'expo-splash-screen';
 import { StyleSheet, ImageBackground, View, Text } from 'react-native';
-import SplashScreenPage from './src/components/splash';
+import SplashScreenPage from './src/components/Splash/splash.js';
 import { AuthProvider } from './src/context/auth';
 import Routes from './src/context/routes';
 
@@ -46,7 +46,7 @@ export default function App() {
   return (
     <>
       <StatusBar hidden={true} />
-      <NavigationContainer>
+      <NavigationContainer  onLayout={onLayoutRootView}>
         <AuthProvider>
           <Routes/>
         </AuthProvider>
