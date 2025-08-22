@@ -8,10 +8,10 @@ import PublicRoutes from './publicRoutes.js';
 const Routes = (props) => {
     const { user } = useContext(AuthContext);
 
-    return <PublicRoutes/>
+    // return <PublicRoutes/>
 
-    // return user ? <PrivateRoutes />
-    //     : <PublicRoutes />;
+    return user ? <PrivateRoutes />
+        : <PublicRoutes />;
 }
 
 export default Routes;

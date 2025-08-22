@@ -1,9 +1,7 @@
-
-
 // Pages
 import { Image, StyleSheet } from "react-native";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 // Icons
 
 import { COLORS } from "../context/constants.js";
@@ -11,15 +9,15 @@ import Home from "../screens/Home/index.js";
 import icon from "./icon.js";
 // import AbaCalendar from "../screens/appointments/index.js";
 
-const Tab = createBottomTabNavigator();
+const TopTab = createMaterialTopTabNavigator();
 
 function PrivateRoutes() {
 
-      return <Tab.Navigator screenOptions={{
-            tabBarStyle: { backgroundColor: COLORS.green3 },
-            headerShown: false,
+      return <TopTab.Navigator screenOptions={{
+            tabBarStyle: { backgroundColor: COLORS.white },
+            // headerShown: false,
         }}>
-            <Tab.Screen name="Calendar" component={Home} options={{
+            <TopTab.Screen name="Calendar" component={Home} options={{
                 tabBarShowLabel: false,
                 unmountOnBlur: true,
                 tabBarIcon: ({ focused }) => {
@@ -37,7 +35,7 @@ function PrivateRoutes() {
                 }
             }} />
     
-            {/* <Tab.Screen name="Agenda" component={AbaCalendar} options={{
+            {/* <TopTab.Screen name="Agenda" component={AbaCalendar} options={{
                 headerTitleAlign: "center",
                 headerShown: false,
                 tabBarShowLabel: false,
@@ -56,7 +54,7 @@ function PrivateRoutes() {
                     } />
                 }
             }} />
-            <Tab.Screen name="Profile" component={Home} options={{
+            <TopTab.Screen name="Profile" component={Home} options={{
                 headerTitleAlign: "center",
                 headerShown: false,
                 tabBarShowLabel: false,
@@ -75,7 +73,7 @@ function PrivateRoutes() {
                     } />
                 }
             }} /> */}
-        </Tab.Navigator>
+        </TopTab.Navigator>
 }
 
 export default PrivateRoutes;

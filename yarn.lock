@@ -1388,14 +1388,6 @@
     invariant "^2.2.4"
     nullthrows "^1.1.1"
 
-"@react-navigation/bottom-tabs@^7.4.4":
-  version "7.4.6"
-  resolved "https://registry.yarnpkg.com/@react-navigation/bottom-tabs/-/bottom-tabs-7.4.6.tgz#a7c7b4347d9349babc1d481fc59f814dbe7d7222"
-  integrity sha512-f4khxwcL70O5aKfZFbxyBo5RnzPFnBNSXmrrT7q9CRmvN4mHov9KFKGQ3H4xD5sLonsTBtyjvyvPfyEC4G7f+g==
-  dependencies:
-    "@react-navigation/elements" "^2.6.3"
-    color "^4.2.3"
-
 "@react-navigation/core@^7.12.4":
   version "7.12.4"
   resolved "https://registry.yarnpkg.com/@react-navigation/core/-/core-7.12.4.tgz#73cc4c0989455c93bf21d7aeecc89d3a7006ccde"
@@ -1417,6 +1409,15 @@
     color "^4.2.3"
     use-latest-callback "^0.2.4"
     use-sync-external-store "^1.5.0"
+
+"@react-navigation/material-top-tabs@^7.3.6":
+  version "7.3.6"
+  resolved "https://registry.yarnpkg.com/@react-navigation/material-top-tabs/-/material-top-tabs-7.3.6.tgz#39f7b37c948c24a65b5a5229f8d65e86a65e0403"
+  integrity sha512-94r6euJ0VFnJ6Ixp4BWO9sTQjuh7dq6nEBirMRLqVZXMVZS6nsB2olw7cA8vWjQCXIM3nLNIa2t/hIzRH2yR6Q==
+  dependencies:
+    "@react-navigation/elements" "^2.6.3"
+    color "^4.2.3"
+    react-native-tab-view "^4.1.3"
 
 "@react-navigation/native-stack@^7.3.25":
   version "7.3.25"
@@ -4031,10 +4032,15 @@ react-native-indicators@^0.17.0:
   dependencies:
     prop-types "^15.5.10"
 
-react-native-is-edge-to-edge@^1.1.6, react-native-is-edge-to-edge@^1.1.7:
+react-native-is-edge-to-edge@^1.1.6, react-native-is-edge-to-edge@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/react-native-is-edge-to-edge/-/react-native-is-edge-to-edge-1.2.1.tgz#64e10851abd9d176cbf2b40562f751622bde3358"
   integrity sha512-FLbPWl/MyYQWz+KwqOZsSyj2JmLKglHatd3xLZWskXOpRaio4LfEDEz8E/A6uD8QoTHW6Aobw1jbEwK7KMgR7Q==
+
+react-native-pager-view@^6.9.1:
+  version "6.9.1"
+  resolved "https://registry.yarnpkg.com/react-native-pager-view/-/react-native-pager-view-6.9.1.tgz#a9e6d9323935cc2ae1d46d7816b66f76dc3eff8e"
+  integrity sha512-uUT0MMMbNtoSbxe9pRvdJJKEi9snjuJ3fXlZhG8F2vVMOBJVt/AFtqMPUHu9yMflmqOr08PewKzj9EPl/Yj+Gw==
 
 react-native-paper@^5.14.5:
   version "5.14.5"
@@ -4062,13 +4068,13 @@ react-native-safe-area-context@^5.6.1:
   resolved "https://registry.yarnpkg.com/react-native-safe-area-context/-/react-native-safe-area-context-5.6.1.tgz#cb4d249ef1a6f7e8fd0cfdfa9764838dffda26b6"
   integrity sha512-/wJE58HLEAkATzhhX1xSr+fostLsK8Q97EfpfMDKo8jlOc1QKESSX/FQrhk7HhQH/2uSaox4Y86sNaI02kteiA==
 
-react-native-screens@~4.11.1:
-  version "4.11.1"
-  resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-4.11.1.tgz#7d0f3d313d8ddc1e55437c5e038f15f8805dc991"
-  integrity sha512-F0zOzRVa3ptZfLpD0J8ROdo+y1fEPw+VBFq1MTY/iyDu08al7qFUO5hLMd+EYMda5VXGaTFCa8q7bOppUszhJw==
+react-native-screens@^4.15.2:
+  version "4.15.2"
+  resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-4.15.2.tgz#93ba015f5167a2fb5e2e2b71807f083ec8ed1ef2"
+  integrity sha512-RA9fUT/5OTPJ2ML3BNUbe8UtfcU7iufE+r9sLr/IesFdBDj38bZiqmH88iorI5Vfgp7O3zf2aK390Tbkfp9Xfw==
   dependencies:
     react-freeze "^1.0.0"
-    react-native-is-edge-to-edge "^1.1.7"
+    react-native-is-edge-to-edge "^1.2.1"
     warn-once "^0.1.0"
 
 react-native-size-matters@^0.3.1:
@@ -4080,6 +4086,13 @@ react-native-swipe-gestures@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/react-native-swipe-gestures/-/react-native-swipe-gestures-1.0.5.tgz#a172cb0f3e7478ccd681fd36b8bfbcdd098bde7c"
   integrity sha512-Ns7Bn9H/Tyw278+5SQx9oAblDZ7JixyzeOczcBK8dipQk2pD7Djkcfnf1nB/8RErAmMLL9iXgW0QHqiII8AhKw==
+
+react-native-tab-view@^4.1.3:
+  version "4.1.3"
+  resolved "https://registry.yarnpkg.com/react-native-tab-view/-/react-native-tab-view-4.1.3.tgz#d7b67a5ce09af2b7268395c978fc565561f8cf9f"
+  integrity sha512-COj2HBeM4IqKCAadUdZAUWrFyO8++wlgObsgOt6xrwqdEnu9HX/74uesC0MGlgwIalFffXqTh5F3CC3pUjFPug==
+  dependencies:
+    use-latest-callback "^0.2.4"
 
 react-native@0.79.5:
   version "0.79.5"
