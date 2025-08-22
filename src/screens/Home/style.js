@@ -7,7 +7,8 @@ export const HomeStyles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: "flex-start",
-        alignItems: "center"
+        alignItems: "center",
+        backgroundColor:"rgba(5,5,5,0.3)",
     },
     topSearch: {
         top: 5,
@@ -16,8 +17,8 @@ export const HomeStyles = StyleSheet.create({
         width: windowWidth,
         justifyContent: "space-around",
         alignItems: "center",
-        shadowColor: '#000',
         backgroundColor: '#fff',
+        shadowColor: '#000',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.25,
         shadowRadius: 3.84,

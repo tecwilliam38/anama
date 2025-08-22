@@ -1,4 +1,4 @@
-import { View, Text, TextInput } from 'react-native'
+import { View, Text, TextInput, ScrollView } from 'react-native'
 import React, { useContext } from 'react'
 import { HomeStyles } from './style'
 import { AuthContext } from '../../context/auth';
@@ -7,16 +7,20 @@ import { Image } from 'react-native-elements';
 import { IconButton } from 'react-native-paper';
 import { Icon, MD3Colors } from 'react-native-paper';
 import TopSearch from '../../components/topSearch';
+import ReelsList from '../../components/Reels';
+import FeedScreen from '../../components/Feed';
 
 
 export default function Home() {
   const { user } = useContext(AuthContext);
-  const { container, topSearch, topSearchText, topSearchComponent, userImage } = HomeStyles;
+  const { container } = HomeStyles;
   return (
     <View style={container}>
-      <TopSearch/>
-      <View>
-      </View>
+      <ScrollView>
+        <TopSearch />
+        <ReelsList />
+        <FeedScreen />
+      </ScrollView>
     </View>
   )
 }
