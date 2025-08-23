@@ -13,23 +13,15 @@ import ChatComponent from '../../components/ChatComponent'
 
 
 export default function ChatScreen({ navigation }) {
-    const { container, chatBody, scrollStyle, buttonStyle,
-        buttonText, chatList, input, inputArea, messageBubble, messageText, otherMessage } = ChatStyles;
+    const { container, chatBody, scrollStyle, buttonStyle, buttonText } = ChatStyles;
     const { user } = useContext(AuthContext);
 
     return (
         <View style={container}>
-            <TopSearch />
-            <ScrollView style={scrollStyle}>
+            <TopSearch />            
                 <View style={chatBody}>
-                    <View>
-                        <ChatComponent userId={user.id_user} otherUserId={user.id_user} />                        
-                    </View>
-                    <TouchableOpacity style={buttonStyle} onPress={() => navigation.goBack()}>
-                        <Text style={buttonText}>Voltar</Text>
-                    </TouchableOpacity>
-                </View>
-            </ScrollView>
+                    <ChatComponent userId={user.id_user} otherUserId={user.id_user} />
+                </View>            
         </View>
     )
 }

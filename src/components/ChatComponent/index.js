@@ -1,18 +1,20 @@
-import { View, Text, FlatList, TouchableOpacity, TextInput } from 'react-native'
+import { View, Text, FlatList, TouchableOpacity, TextInput, ScrollView } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { styles } from './styles';
 import { supabase } from '../../api/supabaseClient';
 import { ChatStyles } from '../../screens/Chat/styles';
 import api from '../../api';
 import { AuthContext } from '../../context/auth';
+import { Ionicons } from "@expo/vector-icons";
+import Button from '../button';
+import { LinearGradient } from 'expo-linear-gradient';
 
 
 const ChatComponent = (props) => {
     const [message, setMessage] = useState('');
     const [chatMessages, setChatMessages] = useState([]);
-    const { buttonStyle, buttonText } = ChatStyles;
+    const { container, buttonStyle, buttonText, chatList, inputArea, input, scrollStyle } = ChatStyles;
     const { user } = useContext(AuthContext);
-
 
     useEffect(() => {
         fetchMessages();
@@ -63,24 +65,34 @@ const ChatComponent = (props) => {
     );
 
     return (
-        <View style={styles.container}>
-            <FlatList
-                data={chatMessages}
-                renderItem={renderItem}
-                keyExtractor={(item) => item.id}
-                style={styles.chatList}
-            />
-            <View style={styles.inputArea}>
+        <View style={container}>
+            <ScrollView style={scrollStyle}>
+                <FlatList
+                    data={chatMessages}
+                    renderItem={renderItem}
+                    keyExtractor={(item) => item.id}
+                    style={chatList}
+                />
+            </ScrollView>
+            <View style={inputArea}>
                 <TextInput
-                    style={styles.input}
+                    style={input}
                     value={message}
                     onChangeText={setMessage}
                     placeholder="Digite sua mensagem..."
+                    placeholderTextColor="#000"
                 />
-                <TouchableOpacity style={buttonStyle} onPress={sendMessage}>
-                    <Text style={buttonText}>Enviar</Text>
-                </TouchableOpacity>
-
+                <LinearGradient
+                    colors={["rgba(27, 47, 90, 1)", "rgba(66, 101, 170, 1)", "rgba(51, 201, 113, 1)", "rgba(237, 247, 124, 1)"]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={buttonStyle}
+                >
+                    <TouchableOpacity
+                        onPress={sendMessage}>
+                        <Ionicons style={buttonText} name="send-sharp" size={24} color="white" />
+                    </TouchableOpacity>
+                </LinearGradient>
             </View>
         </View>
     );

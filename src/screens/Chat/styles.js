@@ -6,54 +6,70 @@ const windowHeight = Dimensions.get('window').height
 export const ChatStyles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "rgba(0,0,0,0.3)",
+        height: windowHeight,
+        width: windowWidth,
+        justifyContent: "space-around",
+        backgroundColor: "rgba(255,255,255, 0.3)",
     },
     chatBody: {
         flex: 1,
         marginTop: 10,
-        width: "98%",
+        width: "100%",
+        height: windowHeight,
         alignItems: "center",
         marginBottom: 30,
         backgroundColor: "rgba(255,255,255,1)",
     },
     chatList: {
-        flex: 1,
+        flex: 2,
         color: "#fff",
     },
-    scrollStyle: {
-        width: windowWidth,
+    scrollStyle: {       
+        marginBottom: 100,
+        width: "100%",
+        paddingHorizontal:10,
+        paddingBottom:30,
     },
     buttonStyle: {
-        width: "90%",
-        backgroundColor: "rgba(120,120,120,0.7)",
+        borderRadius: 50,
+        height: 60,
+        width: 60,
+        marginLeft: 12,
         alignItems: "center",
-        marginVertical: 10,
-        borderRadius: 12,
-        paddingVertical: 10,
+        justifyContent: "center",
+
     },
     buttonText: {
-        color: "#fff",
-        fontSize: 25,
-        fontWeight: "bold"
+        fontSize: 35,
+        paddingHorizontal: 5,
     },
     inputArea: {
+        flex: 1,
+        position: "absolute",
+        width: windowWidth,
         flexDirection: 'row',
+        bottom: 10,
         alignItems: 'center',
+        justifyContent: "space-between",
         marginTop: 10,
+        paddingHorizontal: 10,
+        backgroundColor: "#fff",
+        width: windowWidth,
+        height: 90,
     },
     input: {
         flex: 1,
         borderColor: '#ccc',
         borderWidth: 1,
-        borderRadius: 8,
-        padding: 8,
-        marginRight: 10,
+        borderRadius: 25,
+        height: 60,
+        padding: 12,
     },
     messageBubble: {
         padding: 10,
         marginVertical: 5,
-        borderRadius: 10,
-        maxWidth: '80%',
+        borderRadius: 15,
+        maxWidth: '100%',
     },
     myMessage: {
         backgroundColor: '#d1fcd3',
@@ -63,10 +79,10 @@ export const ChatStyles = StyleSheet.create({
         backgroundColor: '#f0f0f0',
         alignSelf: 'flex-start',
     },
-    messageText: { 
+    messageText: {
         fontSize: 16,
-        color:"#000",
-     },
+        color: "#000",
+    },
     timestamp: { fontSize: 10, color: '#666', marginTop: 4 },
 })
 
