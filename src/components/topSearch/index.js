@@ -7,10 +7,10 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 
 export default function TopSearch() {
     const { topSearch, userImage, topSearchComponent, topSearchText } = HomeStyles;
-    const { user } = useContext(AuthContext);
+    const { user, signOut } = useContext(AuthContext);
     return (
         <View style={topSearch}>
-            <Image source={require("../../assets/splash-icon.png")}
+            <Image onPress={signOut} source={require("../../assets/splash-icon.png")}
                 style={userImage}
             />
             <TextInput

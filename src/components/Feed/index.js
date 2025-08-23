@@ -1,12 +1,14 @@
 import { View, Text, StyleSheet, FlatList, Dimensions, Image } from 'react-native'
 import { feedStyle } from './styles.js';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
+import { AuthContext } from '../../context/auth.js';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 export default function FeedScreen() {
+    const { user } = useContext(AuthContext);
     const { itemBody, title, container, listContainer, itemImage, titleDescription, titleEpisodios, titleRank, itemDescription } = feedStyle;
 
     const [animes, setAnimes] = useState([]);
@@ -14,7 +16,7 @@ export default function FeedScreen() {
         axios.get('https://api.jikan.moe/v4/top/anime?page=1&limit=10')
             .then(response => setAnimes(response.data.data))
 
-            
+
             .catch(error => console.error());
     }, []);
     const renderItem = ({ item }) => (
@@ -32,6 +34,13 @@ export default function FeedScreen() {
 
     return (
         <View style={container}>
+            {/* <View style={{ marginTop: 30 }}>
+                <Text>
+                    {user.user_email}
+                </Text>
+
+            </View> */}
+
             <FlatList
                 data={animes}
                 renderItem={renderItem}

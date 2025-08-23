@@ -12,7 +12,7 @@ import FeedScreen from '../../components/Feed';
 
 
 export default function Home() {
-  const { user } = useContext(AuthContext);
+  const { user, signOut } = useContext(AuthContext);
   const { container } = HomeStyles;
   return (
     <View style={container}>

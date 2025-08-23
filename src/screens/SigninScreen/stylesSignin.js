@@ -14,6 +14,7 @@ const StylesSignin = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: "flex-end",
+        marginBottom:30,
         textAlign: "center",
         width: windowWidth - 10,
         padding: 16,
@@ -35,7 +36,7 @@ const StylesSignin = StyleSheet.create({
     keyboardStyle: {
         width: "100%",
         justifyContent: "center",
-        marginBottom: 10,
+        marginBottom: 40,
         backgroundColor: "rgba(255,255,255,0.3)",
         borderRadius: 15,
         paddingVertical: 15,
