@@ -13,8 +13,9 @@ export const styles = StyleSheet.create({
   input: {
     flex: 1,
     borderColor: '#ccc',
-    color:"#000",
+    color: "#000",
     borderWidth: 1,
+    fontSize: 20,
     borderRadius: 8,
     padding: 8,
     marginRight: 10,
@@ -33,7 +34,7 @@ export const styles = StyleSheet.create({
     backgroundColor: '#f0f0f0',
     alignSelf: 'flex-start',
   },
-  messageText: { fontSize: 16, color:"#000" },
+  messageText: { fontSize: 16, color: "#000" },
   timestamp: { fontSize: 10, color: '#666', marginTop: 4 },
 });
 

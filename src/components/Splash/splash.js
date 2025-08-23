@@ -1,7 +1,7 @@
 // SplashScreen.js
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
-import { StyleSheet, ImageBackground, Animated, View } from 'react-native';
+import { StyleSheet, ImageBackground, Animated, View, SafeAreaView } from 'react-native';
 
 import {
   BallIndicator,
@@ -17,14 +17,14 @@ import {
 import { ActivityIndicator } from 'react-native-paper';
 
 export default function SplashScreenPage() {
-  let [key] = useState("");
-
   return (
-    <>
+    <React.Fragment key={"spinner"}>
       <ImageBackground source={require('../../assets/splash.png')} style={styles.content}>
-        <PulseIndicator color="rgba(255, 255, 255, 0.7)" style={styles.loadingActive} size={50} />
+        <SafeAreaView style={styles.splashContainer}>
+          <PulseIndicator color="rgba(255, 255, 255, 0.7)" style={styles.loadingActive} size={50} />
+        </SafeAreaView>
       </ImageBackground>
-    </>
+    </React.Fragment>
   );
 }
 
@@ -32,8 +32,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1
   },
+  splashContainer: {
+    flex: 1,
+    justifyContent: "center",
+  },
   content: {
     flex: 1,
+    width: "100%",
+    height: "100%",
     justifyContent: 'center',
     alignItems: 'center'
   },
