@@ -1,62 +1,45 @@
-import { View, Text, StyleSheet, FlatList, Dimensions } from 'react-native'
-import React from 'react'
+import { View, Text, StyleSheet, FlatList, Dimensions, Image } from 'react-native'
+import { feedStyle } from './styles.js';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 export default function FeedScreen() {
-    const DATA = [
-        { id: '1', title: 'Item 1' },
-        { id: '2', title: 'Item 2' },
-        { id: '3', title: 'Item 3' },
-        { id: '4', title: 'Item 4' },
-    ];
+    const { itemBody, title, container, listContainer, itemImage, titleDescription, titleEpisodios, titleRank, itemDescription } = feedStyle;
 
+    const [animes, setAnimes] = useState([]);
+    useEffect(() => {
+        axios.get('https://api.jikan.moe/v4/top/anime?page=1&limit=10')
+            .then(response => setAnimes(response.data.data))
+
+            
+            .catch(error => console.error());
+    }, []);
     const renderItem = ({ item }) => (
-        <View style={styles.item}>
-            <Text style={styles.title}>{item.title}</Text>
+        <View style={itemBody}>
+            <Text style={title}>{item.title}</Text>
+            <Image source={{ uri: item.images.jpg.image_url }} style={itemImage} />
+            {/* <Text style={title}>{item.synopsis}</Text> */}
+            <View style={titleDescription}>
+                <Text style={titleEpisodios}>Episódios: {item.episodes}</Text>
+                <Text style={titleRank}>Ranking:{item.rank}</Text>
+            </View>
+            <Text numberOfLines={10} ellipsizeMode="tail" style={itemDescription}>Ranking:{item.synopsis}</Text>
         </View>
     );
 
     return (
-        <View style={styles.container}>
+        <View style={container}>
             <FlatList
-                data={DATA}
+                data={animes}
                 renderItem={renderItem}
-                keyExtractor={item => item.id}
+                keyExtractor={item => item.mal_id.toString()}
                 showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.listContainer}
+                contentContainerStyle={listContainer}
             />
         </View>
     )
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex:1,
-    },
-    listContainer: {
-        width: "100%",                
-    },
-    item: {        
-        alignItems: 'center',        
-        marginHorizontal:"1%",
-        backgroundColor: 'rgba(255, 255, 255, 1)',
-        padding: 10,        
-        marginVertical: 5,
-        borderRadius: 12,
-        width: "98%",
-        height: 500,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        // Android shadow
-        elevation: 1,
-    },
-    title: {
-        color: '#000',
-        fontSize:30,
-        fontWeight: 'bold',
-    },
-});
