@@ -8,6 +8,7 @@ import Icon from "react-native-vector-icons/FontAwesome"
 import IconEntypo from 'react-native-vector-icons/Entypo';
 import Button from '../../components/button';
 import api from '../../api';
+import { supabase } from '../../api/supabaseClient';
 
 export default function SigninScreen() {
     const { container, backgroundstyle, inputstyle, buttonstyle, buttontext, keyboardStyle } = StylesSignin;
@@ -16,6 +17,8 @@ export default function SigninScreen() {
     const [password, setPassword] = useState("");
     const [showPass, setShowPass] = useState(true);
     const { setUser, signIn } = useContext(AuthContext);
+    const [loading, setLoading] = useState(false);
+    
 
     async function HandleSignin(e) {
         e.preventDefault();
@@ -24,13 +27,23 @@ export default function SigninScreen() {
                 user_email: email,
                 password: password
             });
-            if (response.data) {
+            if (response.data?.token) {
                 api.defaults.headers.common['authorization'] = "Bearer " + response.data.token;
-                signIn(response.data)
+                const { data, error } = await supabase.auth                
+                    .signInWithPassword({ email, password });
+
+                if (error) {
+                    console.error('Erro no Supabase Auth:', error.message);
+                    alert('Erro ao autenticar no Supabase.');
+                    return;
+                }
+                await signIn(response.data); // sua função de persistência
+                console.log('Login bem-sucedido!');
+
             }
         } catch (error) {
             console.log(error);
-             alert("Login failed. Please check your credentials.");
+            alert("Login failed. Please check your credentials.");
         }
 
     }

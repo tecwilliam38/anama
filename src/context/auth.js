@@ -24,6 +24,7 @@ export const AuthProvider = ({ children }) => {
 
   const signIn = async (dados) => {    
       await AsyncStorage.setItem('@user_data', JSON.stringify(dados));
+      
       console.log('Login bem-sucedido e dados armazenados!');
       setUser(dados);
       return true;

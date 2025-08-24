@@ -16,6 +16,7 @@ import {
     AntDesign,
 } from "@expo/vector-icons";
 import ChatScreen from "../screens/Chat/index.js";
+import ProfileScreen from "../screens/Profile/index.js";
 
 const TopTab = createMaterialTopTabNavigator();
 
@@ -37,15 +38,17 @@ function PrivateRoutes() {
             unmountOnBlur: true,
             tabBarIcon: ({ focused }) => {
                 let iconName;
-                return <Ionicons name="home" size={30} color={focused ? "#29a139ff" : "#06bcee"} />
+                return <Ionicons name="home" size={30}
+                    color={focused ? "#29a139ff" : "#06bcee"} />
             }
         }} />
-        <TopTab.Screen name="Calendar" component={Home} options={{
+        <TopTab.Screen name="Calendar" component={ProfileScreen} options={{
             tabBarShowLabel: false,
             unmountOnBlur: true,
             tabBarIcon: ({ focused }) => {
                 let iconName;
-                return <FontAwesome name="user-circle-o" size={30} color={focused ? "#29a139ff" : "#06bcee"} />
+                return <FontAwesome name="user-circle-o" size={30}
+                    color={focused ? "#29a139ff" : "#06bcee"} />
             }
         }} />
         <TopTab.Screen name="Chat" component={ChatScreen} options={{
@@ -53,7 +56,8 @@ function PrivateRoutes() {
             unmountOnBlur: true,
             tabBarIcon: ({ focused }) => {
                 let iconName;
-                return <AntDesign name="wechat" size={30} color={focused ? "#29a139ff" : "#06bcee"} />
+                return <AntDesign name="wechat" size={30}
+                    color={focused ? "#29a139ff" : "#06bcee"} />
             }
         }} />
         <TopTab.Screen name="Reels" component={Home} options={{
@@ -61,7 +65,8 @@ function PrivateRoutes() {
             unmountOnBlur: true,
             tabBarIcon: ({ focused }) => {
                 let iconName;
-                return <MaterialCommunityIcons name={focused ? "bell-outline" : "bell"} size={30} color={focused ? "#29a139ff" : "#06bcee"} />
+                return <MaterialCommunityIcons name={focused ? "bell-outline" : "bell"} size={30}
+                    color={focused ? "#29a139ff" : "#06bcee"} />
             }
         }} />
         <TopTab.Screen name="Perfil" component={Home} options={{
@@ -69,7 +74,8 @@ function PrivateRoutes() {
             unmountOnBlur: true,
             tabBarIcon: ({ focused }) => {
                 let iconName;
-                return <FontAwesome name="user" size={30} color={focused ? "#29a139ff" : "#06bcee"} />
+                return <FontAwesome name="user" size={30}
+                    color={focused ? "#29a139ff" : "#06bcee"} />
             }
         }} />
     </TopTab.Navigator>
