@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "312097516241",
+    "project_id": "anama-73119",
+    "storage_bucket": "anama-73119.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:312097516241:android:a822bc3aa7850be82433f0",
+        "android_client_info": {
+          "package_name": "com.asponews.anama"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0vZiiC-5fQ04Q8s6eEBbTdeTqWGIuvKQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

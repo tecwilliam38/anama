@@ -2,12 +2,25 @@ import React, { useContext, useEffect, useState } from 'react';
 import { View, Button, Image, ActivityIndicator, Alert, TouchableOpacity, StyleSheet } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 
-import { supabase } from '../../api/supabaseClient';
 import { AuthContext } from '../../context/auth';
-import {  Ionicons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
+
+// Banco firebase
+import uuid from 'react-native-uuid';
+
+import { collection, addDoc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { db, storage } from '../../api/firebase';
+import { createClient } from '@supabase/supabase-js';
+import { NHOST_STORAGE_URL } from '../../api/nhostApi';
+import axios from 'axios';
+// import { supabase } from '../../api/supabaseClient';
 
 
-export default function ImageUploader() {
+
+
+
+export default function ImageUploader({ id_user, accessToken  }) {
     const [image, setImage] = useState(null);
     const [uploading, setUploading] = useState(false);
     const [imageUri, setImageUri] = useState(null);
@@ -22,6 +35,17 @@ export default function ImageUploader() {
     }, [user])
 
     const loadImages = async () => {
+        setLoadingImages(true);
+        try {
+            const q = query(collection(db, 'user_images'), where('id_user', '==', id_user));
+            const querySnapshot = await getDocs(q);
+            const images = querySnapshot.docs.map(doc => doc.data().image_url);
+            setUserImages(images);
+        } catch (error) {
+            console.error('Erro ao carregar imagens:', error);
+        } finally {
+            setLoadingImages(false);
+        }
 
     }
 
@@ -36,82 +60,40 @@ export default function ImageUploader() {
         }
     };
 
-    const uploadImageold = async () => {
-        const userId = user.id_user;
-
-        if (!image || !userId) return;
-
-        try {
-            setUploading(true);
-
-            const response = await fetch(image);
-            const blob = await response.blob();
-
-            const fileExt = image.split('.').pop();
-            const fileName = `${Date.now()}.${fileExt}`;
-            const filePath = `${userId}/${fileName}`;
-
-            const { data, error } = await supabase.storage
-                .from('anama')
-                .upload(filePath, blob, {
-                    contentType: blob.type || 'image/jpeg',
-                    upsert: true,
-                });
-
-            if (error) throw error;
-
-            Alert.alert('Sucesso', 'Imagem enviada com sucesso!');
-            setImage(null);
-        } catch (err) {
-            console.error('Erro ao enviar imagem:', err.message);
-            Alert.alert('Erro', err.message);
-        } finally {
-            setUploading(false);
-        }
-    };
-
-
-
-
     const uploadImage = async () => {
-        const idUser = user.id_user;
+        if (!imageUri || !accessToken) return;
+
+        setUploading(true);
         try {
-            setUploading(true);
-
-            const response = await fetch(image);
+            const response = await fetch(imageUri);
             const blob = await response.blob();
+            const fileName = `${id_user}_${Date.now()}.jpg`;
 
-            const fileName = `${idUser}-${Date.now()}.jpg`;
+            const formData = new FormData();
+            formData.append('file', blob, fileName);
 
-            const { data, error: uploadError } = await supabase.storage
-                .from('user_images')
-                .upload(fileName, blob, {
-                    contentType: 'image/jpeg',
-                });
+            const uploadRes = await axios.post(`${NHOST_STORAGE_URL}/files`, formData, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
 
-            if (uploadError) throw uploadError;
-
-            const { data: publicUrlData } = supabase.storage
-                .from('user_images')
-                .getPublicUrl(fileName);
-
-            const imageUrl = publicUrlData.publicUrl;
-
-            const { error: insertError } = await supabase
-                .from('anama_images')
-                .insert([{ id_user: idUser, image_url: imageUrl }]);
-
-            if (insertError) throw insertError;
+            const fileId = uploadRes.data.id;
+            const fileUrl = `${NHOST_STORAGE_URL}/files/${fileId}`;
 
             Alert.alert('Sucesso', 'Imagem enviada com sucesso!');
-            setImage(null);
+            console.log('URL da imagem:', fileUrl);
+            setImageUri(null);
         } catch (error) {
             console.error(error);
-            Alert.alert('Erro', 'Não foi possível enviar a imagem.');
+            Alert.alert('Erro', 'Falha ao enviar imagem.');
         } finally {
             setUploading(false);
         }
     };
+
+
 
     return (
         <View style={{ alignItems: 'center', marginVertical: 50 }}>

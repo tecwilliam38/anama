@@ -1,28 +1,24 @@
 import { View, Text, FlatList, TouchableOpacity, TextInput, ScrollView } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { styles } from './styles';
-import { supabase } from '../../api/supabaseClient';
-import { ChatStyles } from '../../screens/Chat/styles';
-import api from '../../api';
-import { AuthContext } from '../../context/auth';
-import { Ionicons } from "@expo/vector-icons";
-import Button from '../button';
 import { LinearGradient } from 'expo-linear-gradient';
+import { ChatStyles } from '../../screens/Chat/styles';
+import { Ionicons } from "@expo/vector-icons";
+import { AuthContext } from '../../context/auth';
+import api from '../../api';
 
 
-export default function ChatComponent (props){
+export default function ChatNotifications(props) {
     const { container, buttonStyle, buttonText, chatList, inputArea, input, scrollStyle } = ChatStyles;
     const [message, setMessage] = useState('');
     const [chatMessages, setChatMessages] = useState([]);
     const { user } = useContext(AuthContext);
     const [friends, setFriends] = useState([]);
     const [selectedFriend, setSelectedFriend] = useState(null);
-
-
     useEffect(() => {
-        fetchMessages();
         fetchFriends();
     }, []);
+
     useEffect(() => {
         if (selectedFriend) {
             fetchMessages();
@@ -39,30 +35,31 @@ export default function ChatComponent (props){
         } catch (err) {
             console.log('Erro ao buscar amigos:', err);
         }
-    }
-
+    };
     const fetchMessages = async () => {
         try {
             const res = await api.get("/messages/get", {
-                params: { user1: props.userId, user2: props.otherUserId },
+                params: { user1: props.userId, user2: selectedFriend.id },
                 headers: { Authorization: `Bearer ${user.token}` }
             });
-
             setChatMessages(res.data);
         } catch (err) {
             console.log('Erro ao buscar mensagens:', err);
         }
-
     };
 
     const sendMessage = async () => {
-        if (!message.trim()) return;
+        if (!message.trim() || !selectedFriend) return;
         try {
             await api.post("/messages/send",
-                { sender_id: props.userId, receiver_id: props.otherUserId, message_text: message }, {
-                headers: { Authorization: `Bearer ${user.token}` },
-            }
-
+                {
+                    sender_id: props.userId,
+                    receiver_id: selectedFriend.id,
+                    message_text: message
+                },
+                {
+                    headers: { Authorization: `Bearer ${user.token}` },
+                }
             );
             setMessage('');
             fetchMessages();
@@ -70,12 +67,11 @@ export default function ChatComponent (props){
             console.log('Erro ao enviar mensagem:', err);
         }
     };
-
     const renderItem = ({ item }) => (
         <View
             style={[
                 styles.messageBubble,
-                item.user_id === props.idUser ? styles.myMessage : styles.otherMessage,
+                item.user_id === props.userId ? styles.myMessage : styles.otherMessage,
             ]}
         >
             <Text style={styles.messageText}>{item.message_text}</Text>
@@ -87,6 +83,24 @@ export default function ChatComponent (props){
 
     return (
         <View style={container}>
+            {/* Lista de amigos */}
+            <ScrollView horizontal style={{ marginVertical: 10 }}>
+                {friends.map((friend) => (
+                    <TouchableOpacity
+                        key={friend.id}
+                        onPress={() => setSelectedFriend(friend)}
+                        style={{
+                            padding: 10,
+                            backgroundColor: selectedFriend?.id === friend.id ? '#ccc' : '#eee',
+                            borderRadius: 10,
+                            marginHorizontal: 5,
+                        }}>
+                        <Text>{friend.name}</Text>
+
+                    </TouchableOpacity>
+                ))}
+            </ScrollView>
+            {/* Área de mensagens */}
             <ScrollView style={scrollStyle}>
                 <FlatList
                     data={chatMessages}
@@ -95,6 +109,7 @@ export default function ChatComponent (props){
                     style={chatList}
                 />
             </ScrollView>
+            {/* Input de mensagem */}
             <View style={inputArea}>
                 <TextInput
                     style={input}
@@ -109,8 +124,7 @@ export default function ChatComponent (props){
                     end={{ x: 1, y: 1 }}
                     style={buttonStyle}
                 >
-                    <TouchableOpacity
-                        onPress={sendMessage}>
+                    <TouchableOpacity onPress={sendMessage}>
                         <Ionicons style={buttonText} name="send-sharp" size={24} color="white" />
                     </TouchableOpacity>
                 </LinearGradient>

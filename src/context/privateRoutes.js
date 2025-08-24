@@ -17,6 +17,8 @@ import {
 } from "@expo/vector-icons";
 import ChatScreen from "../screens/Chat/index.js";
 import ProfileScreen from "../screens/Profile/index.js";
+import NotificationsScreen from "../screens/Notifications/index.js";
+
 
 const TopTab = createMaterialTopTabNavigator();
 
@@ -60,7 +62,7 @@ function PrivateRoutes() {
                     color={focused ? "#29a139ff" : "#06bcee"} />
             }
         }} />
-        <TopTab.Screen name="Reels" component={Home} options={{
+        <TopTab.Screen name="Reels" component={NotificationsScreen} options={{
             tabBarShowLabel: false,
             unmountOnBlur: true,
             tabBarIcon: ({ focused }) => {

@@ -11,12 +11,14 @@ import ImageUploader from '../../components/Images';
 
 export default function ProfileScreen() {
   const { user, signOut } = useContext(AuthContext);
+  
+  
   const { container } = HomeStyles;
   return (
     <View style={container}>
       <ScrollView>
         <TopSearch />
-        <ImageUploader/>
+        <ImageUploader id_user={user.id_user} accessToken ={user.token}/>
       </ScrollView>
     </View>
   )

@@ -26,13 +26,15 @@ export default function TopSearch() {
             />
             {/* <TouchableOpacity>
                 <FontAwesome5 name="file-image" size={40} color="blue" />
-            </TouchableOpacity> */}
+                </TouchableOpacity> */}
             <TextInput
                 placeholder='No que você está pensando?'
                 placeholderTextColor="#000"
                 multiline={true}
                 style={topSearchComponent}
-            />
+                />
+                {/* <Text style={{fonstize:30, color:"#ccc"}}>{user.token}
+                    </Text> */}
             <TouchableOpacity >
                 <FontAwesome5 name="file-image" size={40} color="green" />
             </TouchableOpacity>
