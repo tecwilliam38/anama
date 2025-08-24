@@ -9,6 +9,7 @@ import TopSearch from '../../components/topSearch';
 
 
 import AddFriendByContact from '../../components/addFriendByContact/index.js';
+import ContatosComponents from '../../components/contacts/index.js';
 
 export default function NotificationsScreen() {
     const { user, signOut } = useContext(AuthContext);
@@ -16,11 +17,23 @@ export default function NotificationsScreen() {
 
     const { container } = HomeStyles;
     return (
-        <View style={container}>
-            <ScrollView>
+        <View style={[container, { flex: 1 }]}>
+            <ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
                 <TopSearch />
-                <AddFriendByContact userId={user.id_user} />
+                <ContatosComponents userId={user.id_user} token={user.token} />
             </ScrollView>
+            <View
+                style={{
+                    position: 'absolute',
+                    bottom: 10,
+                    left: 0,
+                    right: 0,
+                    paddingBottom: 30,
+                    alignItems:"center",
+                    backgroundColor: '#fff', // opcional, para destacar
+                }}>
+                <AddFriendByContact userId={user.id_user} />
+            </View>
         </View>
     )
 }

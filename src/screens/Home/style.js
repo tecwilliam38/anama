@@ -8,7 +8,9 @@ export const HomeStyles = StyleSheet.create({
         flex: 1,
         justifyContent: "flex-start",
         alignItems: "center",
-        backgroundColor:"rgba(5,5,5,0.3)",
+        width: "100%",
+        height:windowHeight,
+        backgroundColor: "rgba(255,255,255,0.8)",
     },
     topSearch: {
         top: 5,
