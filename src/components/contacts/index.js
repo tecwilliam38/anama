@@ -53,7 +53,10 @@ export default function ContatosComponents({ userId, token }) {
                                     </View>
                                     <View style={ContactStyles.friendIcons}>
                                         <Text style={ContactStyles.friendTime}>{item.friend_id || 'Sem nome'}</Text>
-                                        <Text style={styles.friendNotifications}>{item.friend_id}</Text>
+                                    <View style={ContactStyles.friendBottomIcons}>                                   
+                                        <Text style={ContactStyles.friendBottomText}>{item.friend_id || 'Sem nome'}</Text>
+                                        <Text style={ContactStyles.friendBottomText}>{item.friend_id}</Text>
+                                    </View>
                                     </View>
                                 </View>
                             </View>
@@ -64,66 +67,3 @@ export default function ContatosComponents({ userId, token }) {
         </View>
     )
 }
-
-
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        height: Dimensions.get('window').height - 20,
-        width: "100%",
-        backgroundColor: "rgba(153, 153, 153, 0.5)",
-        marginTop: 10,
-        marginBottom: 10,
-    },
-    itemStyle: {
-        height: 40,
-        width: '100%',
-    },
-    contactBody: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: 'space-between',
-        width: '100%',
-        marginVertical: 1,
-        height: 80,
-        backgroundColor: "#fff",
-    },
-    userImage: {
-        margin: 5,
-        width: 60,
-        height: 60,
-        borderRadius: 50,
-        resizeMode: 'cover',
-        backgroundColor: "rgba(204, 204, 204, 0.5)",
-    },
-    friendData: {
-        flexDirection: "column",
-        padding: 10,
-    },
-    title: {
-        fontSize: 20,
-        color: "#000",
-        fontWeight: 'bold',
-        marginBottom: 10,
-    },
-    empty: {
-        fontSize: 16,
-        color: '#777',
-    },
-    friendItem: {
-        padding: 12,
-        borderBottomWidth: 1,
-        borderBottomColor: '#ddd',
-    },
-    name: {
-        fontSize: 16,
-        fontWeight: '500',
-    },
-    contact: {
-        fontSize: 14,
-        color: '#555',
-    },
-});
-
-
