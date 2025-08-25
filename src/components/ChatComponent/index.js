@@ -8,9 +8,10 @@ import { AuthContext } from '../../context/auth';
 import { Ionicons } from "@expo/vector-icons";
 import Button from '../button';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useRoute } from '@react-navigation/native';
 
-export default function ChatComponent({ userId, friend_id, token }) {
-
+export default function ChatComponent({ userId, token, friend_id  }) {
+    
     const { container, buttonStyle, buttonText, chatList, inputArea, input, scrollStyle } = ChatStyles;
     const [message, setMessage] = useState('');
     const [chatMessages, setChatMessages] = useState([]);
@@ -35,7 +36,7 @@ export default function ChatComponent({ userId, friend_id, token }) {
 
         loadConversation();
     }, [friend_id]);
-    console.log(friend_id);
+    // console.log(friend_id);
 
 
 
@@ -43,7 +44,7 @@ export default function ChatComponent({ userId, friend_id, token }) {
         try {
             const response = await api.post("/messages/",
                 {
-                    params: {friend_id},
+                    params: { friend_id },
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },

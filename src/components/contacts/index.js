@@ -12,15 +12,15 @@ export default function ContatosComponents({ userId, token }) {
     const [loading, setLoading] = useState(true);
     const navigation = useNavigation();
 
-    const openChatWithFriend = (friendId) => {
-        navigation.navigate('Chat', { friend_id: friendId  });
+    const openChatWithFriend = (friend_id) => {
+        navigation.navigate('Chat', { friend_id });
     };
 
     const fetchFriends = async () => {
         try {
             const res = await api.get(`/messages/${userId}`, {
                 headers: { Authorization: `Bearer ${token}` }
-            });            
+            });
             setFriends(res.data);
         } catch (err) {
             console.log('Erro ao buscar amigos:', err);
@@ -28,7 +28,7 @@ export default function ContatosComponents({ userId, token }) {
             setLoading(false);
         }
     };
-    
+
     useEffect(() => {
         fetchFriends();
     }, []);
