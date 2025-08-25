@@ -9,19 +9,24 @@ import { Button, TextInput } from 'react-native-paper'
 import { v4 as uuidv4 } from 'uuid';
 import { supabase } from '../../api/supabaseClient'
 import ChatComponent from '../../components/ChatComponent'
+import { useRoute } from '@react-navigation/native'
 
 
 
 export default function ChatScreen({ navigation }) {
+    const route = useRoute();
+    const { friend_id } = route.params;
+
+
     const { container, chatBody, scrollStyle, buttonStyle, buttonText } = ChatStyles;
     const { user } = useContext(AuthContext);
 
     return (
         <View style={container}>
-            <TopSearch />            
-                <View style={chatBody}>
-                    <ChatComponent userId={user.id_user} otherUserId={user.id_user} />
-                </View>            
+            <TopSearch />
+            <View style={chatBody}>
+                <ChatComponent userId={user.id_user} token={user.token} friend_id={friend_id} />
+            </View>
         </View>
     )
 }

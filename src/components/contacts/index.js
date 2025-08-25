@@ -1,21 +1,26 @@
-import { View, Text, StyleSheet, FlatList, Dimensions } from 'react-native'
+import { View, Text, StyleSheet, FlatList, Dimensions, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import api from '../../api';
 import { ActivityIndicator } from 'react-native-paper';
 import { ContactStyles } from './styles';
 import { Image } from 'react-native-elements';
+import { useNavigation } from '@react-navigation/native';
 
 export default function ContatosComponents({ userId, token }) {
 
     const [friends, setFriends] = useState([]);
     const [loading, setLoading] = useState(true);
+    const navigation = useNavigation();
 
+    const openChatWithFriend = (friendId) => {
+        navigation.navigate('Chat', { friend_id: friendId  });
+    };
 
     const fetchFriends = async () => {
         try {
             const res = await api.get(`/messages/${userId}`, {
                 headers: { Authorization: `Bearer ${token}` }
-            });
+            });            
             setFriends(res.data);
         } catch (err) {
             console.log('Erro ao buscar amigos:', err);
@@ -23,6 +28,7 @@ export default function ContatosComponents({ userId, token }) {
             setLoading(false);
         }
     };
+    
     useEffect(() => {
         fetchFriends();
     }, []);
@@ -30,6 +36,37 @@ export default function ContatosComponents({ userId, token }) {
     if (loading) {
         return <ActivityIndicator size="large" color="#4CAF50" style={{ marginTop: 20 }} />;
     }
+
+    const renderItem = ({ item }) => (
+        <>
+            <TouchableOpacity onPress={() => openChatWithFriend(item.friend_id)}>
+                <View style={ContactStyles.contactBody}>
+                    <Image source={require("../../assets/home.png")}
+                        style={ContactStyles.userImage}
+                    />
+                    <View style={ContactStyles.friendCenter}>
+                        <View style={ContactStyles.friendData}>
+                            <Text numberOfLines={1}
+                                ellipsizeMode="tail"
+                                textBreakStrategy="simple"
+                                style={ContactStyles.friendName}>{item.name || 'Sem nome'}</Text>
+                            <Text
+                                numberOfLines={1}
+                                ellipsizeMode="tail"
+                                style={ContactStyles.friendLastMessage}>{item.friend_id}</Text>
+                        </View>
+                        <View style={ContactStyles.friendIcons}>
+                            <Text style={ContactStyles.friendTime}>{item.friend_id || 'Sem nome'}</Text>
+                            <View style={ContactStyles.friendBottomIcons}>
+                                <Text style={ContactStyles.friendBottomText}>{item.friend_id || 'Sem nome'}</Text>
+                                <Text style={ContactStyles.friendBottomText}>{item.friend_id}</Text>
+                            </View>
+                        </View>
+                    </View>
+                </View>
+            </TouchableOpacity>
+        </>
+    );
 
     return (
         <View style={ContactStyles.container}>
@@ -41,26 +78,7 @@ export default function ContatosComponents({ userId, token }) {
                         style={ContactStyles.itemStyle}
                         data={friends}
                         keyExtractor={(item) => item.id_user}
-                        renderItem={({ item }) => (
-                            <View style={ContactStyles.contactBody}>
-                                <Image source={require("../../assets/home.png")}
-                                    style={ContactStyles.userImage}
-                                />
-                                <View style={ContactStyles.friendCenter}>
-                                    <View style={ContactStyles.friendData}>
-                                        <Text style={ContactStyles.friendName}>{item.name || 'Sem nome'}</Text>
-                                        <Text style={ContactStyles.friendLastMessage}>{item.friend_id}</Text>
-                                    </View>
-                                    <View style={ContactStyles.friendIcons}>
-                                        <Text style={ContactStyles.friendTime}>{item.friend_id || 'Sem nome'}</Text>
-                                    <View style={ContactStyles.friendBottomIcons}>                                   
-                                        <Text style={ContactStyles.friendBottomText}>{item.friend_id || 'Sem nome'}</Text>
-                                        <Text style={ContactStyles.friendBottomText}>{item.friend_id}</Text>
-                                    </View>
-                                    </View>
-                                </View>
-                            </View>
-                        )}
+                        renderItem={renderItem}
                     />
                 )
             }

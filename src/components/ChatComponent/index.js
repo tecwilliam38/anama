@@ -9,84 +9,105 @@ import { Ionicons } from "@expo/vector-icons";
 import Button from '../button';
 import { LinearGradient } from 'expo-linear-gradient';
 
+export default function ChatComponent({ userId, friend_id, token }) {
 
-export default function ChatComponent (props){
     const { container, buttonStyle, buttonText, chatList, inputArea, input, scrollStyle } = ChatStyles;
     const [message, setMessage] = useState('');
     const [chatMessages, setChatMessages] = useState([]);
     const { user } = useContext(AuthContext);
-    const [friends, setFriends] = useState([]);
-    const [selectedFriend, setSelectedFriend] = useState(null);
 
-
+    // ✅ Inicia a conversa ao montar o componente
     useEffect(() => {
-        fetchMessages();
-        fetchFriends();
-    }, []);
-    useEffect(() => {
-        if (selectedFriend) {
-            fetchMessages();
+        if (userId && friend_id) {
+            getConversation();
         }
-    }, [selectedFriend]);
+    }, [userId, friend_id]);
 
-    const fetchFriends = async () => {
+    useEffect(() => {
+        async function loadConversation() {
+            try {
+                const messages = await getConversation(friend_id);
+                setChatMessages(messages);
+            } catch (err) {
+                Alert.alert('Erro', 'Não foi possível carregar a conversa.');
+            }
+        }
+
+        loadConversation();
+    }, [friend_id]);
+    console.log(friend_id);
+
+
+
+    async function getConversation(friend_id) {
         try {
-            const res = await api.get("/users/friends", {
-                params: { userId: props.userId },
-                headers: { Authorization: `Bearer ${user.token}` }
-            });
-            setFriends(res.data);
-        } catch (err) {
-            console.log('Erro ao buscar amigos:', err);
+            const response = await api.post("/messages/",
+                {
+                    params: {friend_id},
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+            return response.data; // array de mensagens
+        } catch (error) {
+            console.error('Erro ao buscar conversa:', error);
+            throw error;
         }
     }
 
-    const fetchMessages = async () => {
+
+    async function sendMessage(friend_id, message_text) {
+        if (!message.trim()) return;
+
         try {
-            const res = await api.get("/messages/get", {
-                params: { user1: props.userId, user2: props.otherUserId },
-                headers: { Authorization: `Bearer ${user.token}` }
-            });
-
-            setChatMessages(res.data);
-        } catch (err) {
-            console.log('Erro ao buscar mensagens:', err);
+            const response = await api.post(
+                '/messages/',
+                { id_user: userId, friend_id, message_text: message },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            return response.data;
+        } catch (error) {
+            console.error('Erro ao enviar mensagem:', error);
+            throw error;
         }
-
-    };
-
-    const sendMessage = async () => {
+    }
+    const handleSend = async () => {
         if (!message.trim()) return;
         try {
-            await api.post("/messages/send",
-                { sender_id: props.userId, receiver_id: props.otherUserId, message_text: message }, {
-                headers: { Authorization: `Bearer ${user.token}` },
-            }
-
-            );
+            await sendMessage(friend_id, message);
             setMessage('');
-            fetchMessages();
+            const updated = await getConversation(friend_id);
+            setChatMessages(updated);
         } catch (err) {
-            console.log('Erro ao enviar mensagem:', err);
+            Alert.alert('Erro', 'Não foi possível enviar a mensagem.');
         }
     };
 
     const renderItem = ({ item }) => (
-        <View
-            style={[
-                styles.messageBubble,
-                item.user_id === props.idUser ? styles.myMessage : styles.otherMessage,
-            ]}
-        >
-            <Text style={styles.messageText}>{item.message_text}</Text>
-            <Text style={styles.timestamp}>
-                {new Date(item.created_at).toLocaleTimeString()}
-            </Text>
-        </View>
+        <>
+            <View
+                style={[
+                    styles.messageBubble,
+                    item.user_id === userId ? styles.myMessage : styles.otherMessage,
+                ]}
+            >
+                <Text style={styles.messageText}>{item.message_text}</Text>
+                <Text style={styles.timestamp}>
+                    {new Date(item.created_at).toLocaleTimeString()}
+                </Text>
+            </View>
+        </>
     );
 
     return (
         <View style={container}>
+            <View style={styles.header}>
+                <Text style={styles.headerText}>{friend_id || 'Conversa'}</Text>
+            </View>
             <ScrollView style={scrollStyle}>
                 <FlatList
                     data={chatMessages}
@@ -110,7 +131,7 @@ export default function ChatComponent (props){
                     style={buttonStyle}
                 >
                     <TouchableOpacity
-                        onPress={sendMessage}>
+                        onPress={handleSend}>
                         <Ionicons style={buttonText} name="send-sharp" size={24} color="white" />
                     </TouchableOpacity>
                 </LinearGradient>

@@ -36,6 +36,20 @@ export const styles = StyleSheet.create({
   },
   messageText: { fontSize: 16, color: "#000" },
   timestamp: { fontSize: 10, color: '#666', marginTop: 4 },
+  header: {
+    height: 60,
+    backgroundColor: '#577cccff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    borderBottomWidth: 3,
+    borderBottomColor: '#999',
+  },
+  headerText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
 });
 
 
