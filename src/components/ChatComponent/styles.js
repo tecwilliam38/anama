@@ -22,14 +22,14 @@ export const styles = StyleSheet.create({
   },
   messageBubble: {
     padding: 10,
-    marginTop: 5,
-    marginBottom: 5,
-    borderRadius: 10,
+    marginVertical:8,
+    marginHorizontal:12,
+    borderRadius: 14,
     justifyContent:"space-around",
     maxWidth: '90%',
   },
   myMessage: {
-    backgroundColor: 'rgba(100,100,110, 0.3)',
+    backgroundColor: '#d9fdd3',
     alignSelf: 'flex-end',
   },
   otherMessage: {

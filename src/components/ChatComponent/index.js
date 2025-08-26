@@ -60,8 +60,7 @@ export default function ChatComponent({ userId, token }) {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            console.log("Mensagens",response.data);
-
+            // console.log("Mensagens",response.data);
             setChatMessages(response.data); // salva no state                       
         } catch (error) {
             console.error('Erro ao buscar conversa:', error.response?.data || error.message);
@@ -110,9 +109,6 @@ export default function ChatComponent({ userId, token }) {
             timeZone: 'America/Sao_Paulo', // garante o fuso horário correto
         });
         const isMinhaMensagem = item.userid === user.id_user;
-        console.log(typeof item.id, typeof user.id_user);
-        // console.log('É minha?', item.sender_id === user.id_user, "\n id_sender:", item.sender_id);
-
         return (
             <View
                 style={[
