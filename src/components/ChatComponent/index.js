@@ -48,7 +48,9 @@ export default function ChatComponent({ userId, token }) {
                 console.error('Erro ao buscar amigo:', err);
             }
         };
-      return LoadFriend();
+        if (receiver_id) {
+            LoadFriend();
+        }
     }, [receiver_id])
 
     const fetchMessages = async () => {
@@ -58,7 +60,7 @@ export default function ChatComponent({ userId, token }) {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            // console.log("Mensagens",response.data);
+            console.log("Mensagens",response.data);
 
             setChatMessages(response.data); // salva no state                       
         } catch (error) {
@@ -91,7 +93,7 @@ export default function ChatComponent({ userId, token }) {
             await sendMessage(receiver_id, message);
             setMessage('');
             fetchMessages();
-            // LoadFriend();
+            LoadFriend();
         } catch (err) {
             Alert.alert('Erro', 'Não foi possível enviar a mensagem.');
         }
@@ -107,8 +109,9 @@ export default function ChatComponent({ userId, token }) {
             minute: '2-digit',
             timeZone: 'America/Sao_Paulo', // garante o fuso horário correto
         });
-        const isMinhaMensagem = item.receiver_id === user.id_user;
-        console.log('É minha?', item.sender_id === user.id_user, "\n id_sender:", item.sender_id);
+        const isMinhaMensagem = item.userid === user.id_user;
+        console.log(typeof item.id, typeof user.id_user);
+        // console.log('É minha?', item.sender_id === user.id_user, "\n id_sender:", item.sender_id);
 
         return (
             <View
