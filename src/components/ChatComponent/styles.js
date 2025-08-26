@@ -4,7 +4,7 @@ import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   container: { flex: 1, padding: 10 },
-  chatList: { flex: 1 },
+  chatList: { flex: 1 , marginBottom:80},
   inputArea: {
     flexDirection: 'col',
     alignItems: 'center',
@@ -22,20 +22,22 @@ export const styles = StyleSheet.create({
   },
   messageBubble: {
     padding: 10,
-    marginVertical: 5,
+    marginTop: 5,
+    marginBottom: 5,
     borderRadius: 10,
+    justifyContent:"space-around",
     maxWidth: '90%',
   },
   myMessage: {
-    backgroundColor: '#d1fcd3',
+    backgroundColor: 'rgba(100,100,110, 0.3)',
     alignSelf: 'flex-end',
   },
   otherMessage: {
     backgroundColor: '#f0f0f0',
     alignSelf: 'flex-start',
   },
-  messageText: { fontSize: 16, color: "#000" },
-  timestamp: { fontSize: 10, color: '#666', marginTop: 4 },
+  messageText: { fontSize: 16, color: "#000", paddingHorizontal:10 },
+  timestamp: { fontSize: 10, color: '#666', marginTop: 4, padding:15 },
   header: {
     height: 60,
     backgroundColor: '#577cccff',

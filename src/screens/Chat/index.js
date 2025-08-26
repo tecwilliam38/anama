@@ -15,8 +15,7 @@ import { useRoute } from '@react-navigation/native'
 
 export default function ChatScreen({ navigation }) {
     const route = useRoute();
-    const friend_id = route.params.friend_id;
-
+    
     const { container, chatBody, scrollStyle, buttonStyle, buttonText } = ChatStyles;
     const { user } = useContext(AuthContext);
 
@@ -26,7 +25,6 @@ export default function ChatScreen({ navigation }) {
             <View style={chatBody}>
                 <ChatComponent userId={user.id_user}
                     token={user.token}
-                    friend_id={friend_id}
                 />
             </View>
         </View>

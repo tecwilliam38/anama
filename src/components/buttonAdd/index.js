@@ -10,14 +10,14 @@ export default function ButtonAddcomponent() {
         if (!newFriendId.trim()) return;
 
         try {
-            await api.post("/users/friends", {
+            await api.post("/users/friends/add", {
                 id_user: props.userId,
                 friend_id: newFriendId
             }, {
                 headers: { Authorization: `Bearer ${user.token}` }
             });
 
-            Alert.alert('Sucesso', 'Amigo adicionado!');
+            alert('Sucesso', 'Amigo adicionado!');
             setNewFriendId('');
             fetchFriends();
         } catch (err) {

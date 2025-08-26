@@ -13,12 +13,12 @@ export default function ContatosComponents({ userId, token }) {
     const navigation = useNavigation();
 
     const openChatWithFriend = (friend_id) => {
-        navigation.navigate('Chat', { friend_id });
+        navigation.navigate('Chat', { receiver_id: friend_id });
     };
 
     const fetchFriends = async () => {
         try {
-            const res = await api.get(`/messages/${userId}`, {
+            const res = await api.get(`/messages/friends/${userId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setFriends(res.data);
@@ -49,17 +49,13 @@ export default function ContatosComponents({ userId, token }) {
                             <Text numberOfLines={1}
                                 ellipsizeMode="tail"
                                 textBreakStrategy="simple"
-                                style={ContactStyles.friendName}>{item.name || 'Sem nome'}</Text>
-                            <Text
-                                numberOfLines={1}
-                                ellipsizeMode="tail"
-                                style={ContactStyles.friendLastMessage}>{item.friend_id}</Text>
+                                style={ContactStyles.friendName}>{item.user_name || 'vazio'}</Text>
                         </View>
                         <View style={ContactStyles.friendIcons}>
-                            <Text style={ContactStyles.friendTime}>{item.friend_id || 'Sem nome'}</Text>
+                            <Text style={ContactStyles.friendTime}>{item.friend_id || ''}</Text>
                             <View style={ContactStyles.friendBottomIcons}>
-                                <Text style={ContactStyles.friendBottomText}>{item.friend_id || 'Sem nome'}</Text>
-                                <Text style={ContactStyles.friendBottomText}>{item.friend_id}</Text>
+                                <Text style={ContactStyles.friendBottomText}>{item.friend_id || ''}</Text>
+                                <Text style={ContactStyles.friendBottomText}>{item.friend_id || ''}</Text>
                             </View>
                         </View>
                     </View>

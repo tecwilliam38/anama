@@ -1,5 +1,5 @@
 import { View, Text, FlatList, TouchableOpacity, TextInput, ScrollView } from 'react-native'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { styles } from './styles';
 import { supabase } from '../../api/supabaseClient';
 import { ChatStyles } from '../../screens/Chat/styles';
@@ -8,62 +8,71 @@ import { AuthContext } from '../../context/auth';
 import { Ionicons } from "@expo/vector-icons";
 import Button from '../button';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useRoute } from '@react-navigation/native';
+import { useFocusEffect, useRoute } from '@react-navigation/native';
+// import dayjs from 'dayjs';
+// import 'dayjs/locale/pt-br';
 
-export default function ChatComponent({ userId, token, friend_id  }) {
-    
+
+export default function ChatComponent({ userId, token }) {
+    const route = useRoute();
+    const receiver_id = route.params?.receiver_id;
+    // console.log(receiver_id,"Rota:", route.params);
+
+
     const { container, buttonStyle, buttonText, chatList, inputArea, input, scrollStyle } = ChatStyles;
     const [message, setMessage] = useState('');
     const [chatMessages, setChatMessages] = useState([]);
     const { user } = useContext(AuthContext);
+    const [amigo, setAmigo] = useState("");
 
-    // ✅ Inicia a conversa ao montar o componente
-    useEffect(() => {
-        if (userId && friend_id) {
-            getConversation();
-        }
-    }, [userId, friend_id]);
+    useFocusEffect(
+        useCallback(() => {
+            fetchMessages();
+        }, [receiver_id])
+    );
 
     useEffect(() => {
-        async function loadConversation() {
+        const LoadFriend = async () => {
+            let id_user = receiver_id;
             try {
-                const messages = await getConversation(friend_id);
-                setChatMessages(messages);
+                // const response = await api.get(`/user/profile/${id_user}`);
+                const response = await api.get("/user/profile/" + id_user);
+                if (response?.data) {
+                    setAmigo(response.data);
+
+                } else {
+                    console.warn('Resposta sem dados.');
+                }
+                // console.log("dados amigo:");
             } catch (err) {
-                Alert.alert('Erro', 'Não foi possível carregar a conversa.');
+                console.error('Erro ao buscar amigo:', err);
             }
-        }
+        };
+      return LoadFriend();
+    }, [receiver_id])
 
-        loadConversation();
-    }, [friend_id]);
-    // console.log(friend_id);
-
-
-
-    async function getConversation(friend_id) {
+    const fetchMessages = async () => {
         try {
-            const response = await api.post("/messages/",
-                {
-                    params: { friend_id },
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-            return response.data; // array de mensagens
+            const response = await api.get(`/messages/users/${receiver_id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            // console.log("Mensagens",response.data);
+
+            setChatMessages(response.data); // salva no state                       
         } catch (error) {
-            console.error('Erro ao buscar conversa:', error);
-            throw error;
+            console.error('Erro ao buscar conversa:', error.response?.data || error.message);
         }
-    }
+    };
 
-
-    async function sendMessage(friend_id, message_text) {
+    async function sendMessage(receiver_id, message_text) {
         if (!message.trim()) return;
 
         try {
             const response = await api.post(
                 '/messages/',
-                { id_user: userId, friend_id, message_text: message },
+                { sender_id: userId, receiver_id, message_text: message },
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -79,35 +88,54 @@ export default function ChatComponent({ userId, token, friend_id  }) {
     const handleSend = async () => {
         if (!message.trim()) return;
         try {
-            await sendMessage(friend_id, message);
+            await sendMessage(receiver_id, message);
             setMessage('');
-            const updated = await getConversation(friend_id);
-            setChatMessages(updated);
+            fetchMessages();
+            // LoadFriend();
         } catch (err) {
             Alert.alert('Erro', 'Não foi possível enviar a mensagem.');
         }
     };
 
-    const renderItem = ({ item }) => (
-        <>
+
+
+    const renderItem = ({ item }) => {
+        const timestamp = item.enviadas;
+
+        const horaFormatada = new Date(timestamp).toLocaleTimeString('pt-BR', {
+            hour: '2-digit',
+            minute: '2-digit',
+            timeZone: 'America/Sao_Paulo', // garante o fuso horário correto
+        });
+        const isMinhaMensagem = item.receiver_id === user.id_user;
+        console.log('É minha?', item.sender_id === user.id_user, "\n id_sender:", item.sender_id);
+
+        return (
             <View
                 style={[
                     styles.messageBubble,
-                    item.user_id === userId ? styles.myMessage : styles.otherMessage,
+                    isMinhaMensagem ? styles.myMessage : styles.otherMessage,
                 ]}
             >
-                <Text style={styles.messageText}>{item.message_text}</Text>
-                <Text style={styles.timestamp}>
-                    {new Date(item.created_at).toLocaleTimeString()}
+                <Text style={styles.senderName}>
+                    {isMinhaMensagem ? 'Você' : item.usuario}
                 </Text>
+
+                <Text style={styles.messageText}>
+                    {item.mensagens}
+                </Text>
+
+                <Text style={styles.timestamp}>{horaFormatada}</Text>
             </View>
-        </>
-    );
+        );
+    };
+
+
 
     return (
         <View style={container}>
             <View style={styles.header}>
-                <Text style={styles.headerText}>{friend_id || 'Conversa'}</Text>
+                <Text style={styles.headerText}>{user.user_email || 'Conversa teste'}</Text>
             </View>
             <ScrollView style={scrollStyle}>
                 <FlatList
