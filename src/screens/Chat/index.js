@@ -20,8 +20,7 @@ export default function ChatScreen({ navigation }) {
     const { user } = useContext(AuthContext);
 
     return (
-        <View style={container}>
-            <TopSearch />
+        <View style={container}>            
             <View style={chatBody}>
                 <ChatComponent userId={user.id_user}
                     token={user.token}

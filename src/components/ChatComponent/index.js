@@ -116,9 +116,9 @@ export default function ChatComponent({ userId, token }) {
                     isMinhaMensagem ? styles.myMessage : styles.otherMessage,
                 ]}
             >
-                <Text style={styles.senderName}>
+                {/* <Text style={styles.senderName}>
                     {isMinhaMensagem ? 'Você' : item.usuario}
-                </Text>
+                </Text> */}
 
                 <Text style={styles.messageText}>
                     {item.mensagens}
@@ -134,8 +134,15 @@ export default function ChatComponent({ userId, token }) {
     return (
         <View style={container}>
             <View style={styles.header}>
-                <Text style={styles.headerText}>{user.user_email || 'Conversa teste'}</Text>
-            </View>
+            <LinearGradient
+                colors={["rgba(21, 56, 130, 1)", "rgba(31,143,78, 1)", "rgba(237, 247, 124, 1)"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.buttonStyle}
+            >
+                    <Text style={styles.headerText}>{user.user_name || 'Conversa teste'}</Text>
+            </LinearGradient>
+                </View>
             <ScrollView style={scrollStyle}>
                 <FlatList
                     data={chatMessages}

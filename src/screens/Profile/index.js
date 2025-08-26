@@ -17,8 +17,7 @@ export default function ProfileScreen() {
   return (
     <View style={container}>
       <ScrollView>
-        <TopSearch />
-        <Text>{user.user_email}</Text>
+        <TopSearch />        
         <ImageUploader id_user={user.id_user} accessToken ={user.token}/>
       </ScrollView>
     </View>
