@@ -4,6 +4,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { supabase } from '../../api/supabaseClient';
 import { Ionicons } from '@expo/vector-icons';
 import * as FileSystem from 'expo-file-system';
+import { decode } from 'base64-arraybuffer';
 
 
 
@@ -51,7 +52,7 @@ const ImagePost = ({ id_user }) => {
         timeZone: 'America/Sao_Paulo'
     });
 
-     const sendImage = async () => {
+    const sendImage = async () => {
         if (!imageUri) return;
 
         const ext = getFileExtension(imageUri);
@@ -61,21 +62,23 @@ const ImagePost = ({ id_user }) => {
         }
 
         try {
-            // 1. Lê o arquivo como base64
+            // 1. Converte a URI em Blob
+
             const fileInfo = await FileSystem.getInfoAsync(imageUri);
             const base64Data = await FileSystem.readAsStringAsync(fileInfo.uri, {
                 encoding: FileSystem.EncodingType.Base64,
             });
 
-            // 2. Gera nome único com ID do usuário
-            // const fileName = `${id_user}/${Date.now()}.${ext}`;
+            const arrayBuffer = decode(base64Data); // 👈 converte base64 para ArrayBuffer
+
+            // 2. Gera nome único com ID do usuário            
             const fileName = `${id_user}/${Date.now()}.${ext}`;
             console.log('Caminho do arquivo para upload:', fileName); // 👈 Verificação
 
-            // 3. Faz upload no bucket público
+            // 3. Faz upload no bucket público            
             const { error: uploadError } = await supabase.storage
                 .from('anama') // 👈 Certifique-se que o nome do bucket é exatamente "anama"
-                .upload(fileName, base64Data, {
+                .upload(fileName, arrayBuffer, {
                     contentType: `image/${ext === 'jpg' ? 'jpeg' : ext}`,
                     upsert: false,
                 });
@@ -140,14 +143,14 @@ const ImagePost = ({ id_user }) => {
             {imageUri && <Image source={{ uri: imageUri }} style={{ height: 200, marginVertical: 10 }} />}
             <TouchableOpacity onPress={sendImage} style={styles.buttonCam}>
                 <Ionicons name="send" size={40} color="#fff" />
-            </TouchableOpacity>            
+            </TouchableOpacity>
             {loading && <ActivityIndicator />}
 
-            {/* <FlatList
+            <FlatList
                 data={userImages} // array com URLs das imagens
                 renderItem={renderItem}
                 keyExtractor={(item, index) => index.toString()}
-            /> */}
+            />
 
         </View>
     );
