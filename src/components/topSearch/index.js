@@ -2,11 +2,11 @@ import { View, Text, TextInput, TouchableOpacity } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { HomeStyles } from '../../screens/Home/style'
 import { Image } from 'react-native-elements';
-import { AuthContext } from '../../context/auth';
+
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import { ActivityIndicator } from 'react-native-paper';
+
 import { supabase, supabaseKey, supabaseUrl } from '../../api/supabaseClient';
-import { v4 as uuidv4 } from 'uuid';
+
 import * as FileSystem from 'expo-file-system';
 
 
@@ -19,8 +19,11 @@ export default function TopSearch({ user, id_user, signOut }) {
     const { topSearch, userImage, topSearchComponent, topSearchText } = HomeStyles;
 
     const [imageUri, setImageUri] = useState(null);
-    const [loading, setLoading] = useState(false);
+    const [profileUri, setProfileuri] = useState(null)
     const [userImages, setUserImages] = useState([]);
+    const [userProfile, setUserProfile] = useState(null);
+    const [post_body, setPost_body] = useState("")
+    const [loading, setLoading] = useState(false);
     const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
     const getFileExtension = (uri) => {
         return uri.split('.').pop().toLowerCase();
@@ -41,12 +44,39 @@ export default function TopSearch({ user, id_user, signOut }) {
             if (error) throw error;
             // Atualiza o estado com as URLs das imagens
             // console.log("Imagens recebidas:", data);
+
             setUserImages(data.map(item => item.image_url));
         } catch (err) {
-            console.error('Erro ao buscar imagens:', err.message);
+            console.error('Erro ao buscar imagens users:', err.message);
             // alert('Erro ao carregar imagens. Tente novamente mais tarde.');
         }
     };
+    
+    const fetchUserImagesProfile = async () => {
+        try {
+            const { data, error } = await supabase
+                .from('anama_user')
+                .select('profile_image')
+                .eq('id_user', id_user)
+                .single()
+
+            if (error) throw error;
+
+            // Verifica se há dados e acessa o primeiro item
+            const imageUrl = data?.profile_image; // <- extrai a string da URL
+            setUserProfile(imageUrl); // agora userProfile será uma string
+
+        } catch (err) {
+            console.error('Erro ao buscar imagens aqui:', err.message);
+            // alert('Erro ao carregar imagens. Tente novamente mais tarde.');
+        }
+    };
+
+    console.log("Tipo do dado:", typeof userProfile);
+
+    console.log("URL da imagem de perfil:", userProfile);
+    // setUserProfile(data);
+    // setUserProfile(data.map(item => item.profile_image));
 
     const pickImage = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
@@ -55,6 +85,18 @@ export default function TopSearch({ user, id_user, signOut }) {
         });
         if (!result.canceled && result.assets.length > 0) {
             setImageUri(result.assets[0].uri);
+        }
+    };
+
+    const pickImageProfile = async () => {
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ['images'], // 👈 mais seguro
+            quality: 0.7,
+        });
+
+        if (!result.canceled && result.assets.length > 0) {
+            const selectedUri = result.assets[0].uri;
+            setProfileuri(selectedUri); // 👈 agora sim!
         }
     };
 
@@ -107,6 +149,7 @@ export default function TopSearch({ user, id_user, signOut }) {
                     image_url: imageUrl,
                     id_user: id_user,
                     created_at: new Date().toISOString(),
+                    post_body
                 });
 
             if (dbError) throw dbError;
@@ -125,8 +168,9 @@ export default function TopSearch({ user, id_user, signOut }) {
     };
 
     useEffect(() => {
+        fetchUserImagesProfile();
         fetchUserImages();
-    }, []);
+    }, [user]);
 
     const renderItem = ({ item }) => {
         return (
@@ -138,27 +182,108 @@ export default function TopSearch({ user, id_user, signOut }) {
         )
     };
 
-    // <Image onPress={signOut} source={{uri: userImages[1]}}
+
+
+    const sendProfileImage = async () => {
+        if (!profileUri) return;
+
+        const ext = getFileExtension(profileUri);
+        if (!allowedExtensions.includes(ext)) {
+            alert('Formato de imagem não suportado. Use JPG, JPEG, PNG ou GIF.');
+            return;
+        }
+
+        try {
+            // 1. Converte a imagem em ArrayBuffer
+            const fileInfo = await FileSystem.getInfoAsync(profileUri);
+            const base64Data = await FileSystem.readAsStringAsync(fileInfo.uri, {
+                encoding: FileSystem.EncodingType.Base64,
+            });
+            const arrayBuffer = decode(base64Data);
+
+            // 2. Define nome fixo para imagem de perfil
+            const fileName = `profile/${id_user}.${ext}`; // 👈 sobrescreve sempre a mesma imagem
+            console.log('Upload de imagem de perfil:', fileName);
+
+            // 3. Faz upload no bucket
+            const { error: uploadError } = await supabase.storage
+                .from('anama')
+                .upload(fileName, arrayBuffer, {
+                    contentType: `image/${ext === 'jpg' ? 'jpeg' : ext}`,
+                    upsert: true, // 👈 permite sobrescrever
+                });
+
+            if (uploadError) throw uploadError;
+
+            // 4. Recupera URL pública
+            const { data: publicUrlData, error: publicUrlError } = supabase.storage
+                .from('anama')
+                .getPublicUrl(fileName);
+
+            if (publicUrlError) throw publicUrlError;
+
+            const profileImageUrl = publicUrlData.publicUrl;
+
+            // 5. Atualiza imagem de perfil no banco
+            const { error: updateError } = await supabase
+                .from('anama_user') // 👈 substitua pelo nome da sua tabela de usuários
+                .update({ profile_image: profileImageUrl })
+                .eq('id_user', id_user); // 👈 ou 'id_user', dependendo da sua estrutura
+
+            if (updateError) throw updateError;
+
+            console.log('Imagem de perfil atualizada com sucesso:', profileImageUrl);
+            setProfileuri(null);
+        } catch (err) {
+            console.error('Erro ao enviar imagem de perfil:', err.message);
+            alert('Erro ao enviar imagem de perfil. Verifique sua conexão ou formato.');
+        }
+    };
 
     return (
         <View style={topSearch}>
-            <Image onPress={signOut} source={require("../../assets/splash-icon.png")}
+            {userProfile ? (
+                <Image
+                    source={{ uri: userProfile }}
+                    style={userImage}
+                    onError={(e) => console.log('Erro ao carregar imagem:', e.nativeEvent.error)}
+                />
+            ) : null}
+
+
+            {/* <Image
+                source={{ uri: 'https://yulykztzhmoxfztykeop.supabase.co/storage/v1/object/public/anama/profile/3.jpeg' }} // imagem padrão
+                // source={require("../../assets/splash-icon.png")} // imagem padrão
                 style={userImage}
-            />         
+                onTouchEnd={signOut}
+            /> */}
+
+            {profileUri ? (
+                <TouchableOpacity style={{ padding: 5 }} onPress={sendProfileImage}>
+                    <FontAwesome5 name="cloud-upload-alt" size={40} color="green" />
+                </TouchableOpacity>
+            ) : (
+                <TouchableOpacity style={{ padding: 5 }} onPress={pickImageProfile}>
+                    <FontAwesome5 name="file-image" size={40} color="blue" />
+                </TouchableOpacity>
+            )}
             <TextInput
                 placeholder='No que você está pensando?'
                 placeholderTextColor="#000"
                 multiline={true}
+                value={post_body}
                 style={topSearchComponent}
+                onChangeText={setPost_body}
             />
             {/* <Text style={{fonstize:30, color:"#ccc"}}>{user.token}
-                    </Text> */}            
+                    </Text> */}
+            {imageUri && <Image source={{ uri: imageUri }} style={{ height: 200, marginVertical: 10 }} />}
             {imageUri ? (
-                <TouchableOpacity style={{padding:5}} onPress={sendImage}>
+                <TouchableOpacity style={{ padding: 5 }} onPress={sendImage}>
                     <FontAwesome5 name="cloud-upload-alt" size={40} color="blue" />
                 </TouchableOpacity>
             ) : (
-                <TouchableOpacity style={{padding:5}} onPress={pickImage}>
+                <TouchableOpacity style={{ padding: 5 }} onPress={pickImage}>
                     <FontAwesome5 name="file-image" size={40} color="blue" />
                 </TouchableOpacity>
             )}

@@ -1,6 +1,7 @@
 // Pages
 import { Image, StyleSheet } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 // Icons
 
@@ -18,7 +19,6 @@ import {
 import ChatScreen from "../screens/Chat/index.js";
 import ProfileScreen from "../screens/Profile/index.js";
 import NotificationsScreen from "../screens/Notifications/index.js";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import ContactsScreen from "../screens/Contacts/index.js";
 
 const TopTab = createMaterialTopTabNavigator();
@@ -107,7 +107,7 @@ function TabsRoutes() {
                     color={focused ? "#29a139ff" : "#06bcee"} />
             }
         }} />
-        <TopTab.Screen name="Perfil" component={Home} options={{
+        <TopTab.Screen name="Perfil" component={ProfileScreen} options={{
             tabBarShowLabel: false,
             unmountOnBlur: true,
             tabBarIcon: ({ focused }) => {

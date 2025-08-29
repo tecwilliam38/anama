@@ -19,7 +19,7 @@ export const feedStyle = StyleSheet.create({
         marginVertical: 3,
         borderRadius: 12,
         width: "98%",
-        height: 900,
+        height: 'auto',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.25,
@@ -57,8 +57,7 @@ export const feedStyle = StyleSheet.create({
     },
     itemImage: {
         width: "100%",
-        height: 420,
-        borderRadius: 12,
-        resizeMode: "stretch"
+        height: 460,
+        borderRadius: 12,        
     }
 })

@@ -8,7 +8,7 @@ import { decode } from 'base64-arraybuffer';
 
 
 
-const ReelsList = ({ id_user }) => {
+const ReelsList = ({ user, id_user }) => {
     const [imageUri, setImageUri] = useState(null);
     const [loading, setLoading] = useState(false);
     const [userImages, setUserImages] = useState([]);
@@ -121,7 +121,7 @@ const ReelsList = ({ id_user }) => {
 
     useEffect(() => {
         fetchUserImages();
-    }, []);
+    }, [user, userImages]);
 
     const renderItem = ({ item }) => {
         return (
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
         // Android shadow
-        elevation: 1,        
+        elevation: 1,
     },
     title: {
         color: '#000',
@@ -196,8 +196,8 @@ const styles = StyleSheet.create({
         width: 100,
         height: 200,
         borderRadius: 15,
-        marginHorizontal:4,
-        borderWidth:1,
-        borderColor:"#666"
+        marginHorizontal: 4,
+        borderWidth: 1,
+        borderColor: "#666"
     }
 })
