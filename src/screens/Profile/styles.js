@@ -20,7 +20,6 @@ export const styles = StyleSheet.create({
         padding: 8,
         borderRadius: 20,
     },
-
     card: {
         backgroundColor: '#fff',
         width: '95%',
@@ -63,6 +62,7 @@ export const styles = StyleSheet.create({
     profileImage: {
         width: 120,
         height: 120,
+        padding:3,
         borderRadius: 60,
         marginBottom: 12,
     },

@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import api from '../../api';
 import { supabase } from '../../api/supabaseClient';
 import { ActivityIndicator } from 'react-native-paper';
@@ -7,14 +7,23 @@ import { styles } from '../../screens/Profile/styles';
 import { Image } from 'react-native-elements';
 import Icon from "react-native-vector-icons/MaterialCommunityIcons"
 import * as ImagePicker from 'expo-image-picker';
-import { FontAwesome5 } from '@expo/vector-icons';
+import * as FileSystem from 'expo-file-system';
+import { decode } from 'base64-arraybuffer';
+
+import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
+import { AuthContext } from '../../context/auth';
 
 export default function ProfileComponent({ user, id_user }) {
 
     const [userData, setUserData] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [userProfile, setUserProfile] = useState(null);
     const [profileUri, setProfileuri] = useState(null)
+
+    const { signOut } = useContext(AuthContext)
+
+    const getFileExtension = (uri) => uri.split('.').pop().toLowerCase();
+    const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+
 
     async function ProfileLoad(id_user) {
 
@@ -41,7 +50,7 @@ export default function ProfileComponent({ user, id_user }) {
 
     useEffect(() => {
         ProfileLoad(id_user)
-    }, [profileUri]);
+    }, []);
 
     const handleChangePhoto = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
@@ -117,7 +126,7 @@ export default function ProfileComponent({ user, id_user }) {
             console.log('Imagem de perfil atualizada com sucesso:', profileImageUrl);
             setUserData(prev => ({ ...prev, profile: profileImageUrl, }));
             setProfileuri(null);
-            console.log('Profile URI resetado');
+            ProfileLoad(id_user);
 
         } catch (err) {
             console.error('Erro ao enviar imagem de perfil:', err.message);
@@ -134,13 +143,12 @@ export default function ProfileComponent({ user, id_user }) {
                 <>
                     <View style={styles.profileContainer}>
                         <Image
-                            key={userData.profile}
-                            source={{ uri: userData.profile }}
+                            source={{ uri: `${userData.profile}?t=${Date.now()}` }}
                             style={styles.profileImage}
+                            resizeMode='cover'
                         />
                         {profileUri ? (
                             <TouchableOpacity
-                                key="upload"
                                 style={{ padding: 5 }}
                                 onPress={sendProfileImage}
                             >
@@ -148,7 +156,6 @@ export default function ProfileComponent({ user, id_user }) {
                             </TouchableOpacity>
                         ) : (
                             <TouchableOpacity
-                                key="camera"
                                 onPress={handleChangePhoto}
                                 style={styles.editButton}
                             >
@@ -182,6 +189,11 @@ export default function ProfileComponent({ user, id_user }) {
                         <Text style={styles.label}>Endereço:</Text>
                         <Text style={styles.value}>{userData.endereco}</Text>
                     </View>
+                    <TouchableOpacity style={styles.logoutButton} onPress={signOut}>
+                        <MaterialCommunityIcons name="logout" size={30} color="#666" style={styles.logoutIcon} />
+                        <Text style={styles.logoutText}>Sair</Text>
+
+                    </TouchableOpacity>
 
                 </>
             ) : (

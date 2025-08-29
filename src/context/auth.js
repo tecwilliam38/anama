@@ -5,6 +5,7 @@ export const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+   const [profileImageUrl, setProfileImageUrl] = useState(null);
 
      useEffect(() => {
       const loadUserData = async () => {
@@ -44,7 +45,7 @@ export const AuthProvider = ({ children }) => {
 
  
     return (
-      <AuthContext.Provider value={{ user, signIn, signOut }}>
+      <AuthContext.Provider value={{ user, signIn, signOut, profileImageUrl, setProfileImageUrl  }}>
         {children}
       </AuthContext.Provider>
     );

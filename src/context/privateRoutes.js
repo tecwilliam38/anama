@@ -7,8 +7,6 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import { COLORS } from "../context/constants.js";
 import Home from "../screens/Home/index.js";
-import icon from "./icon.js";
-
 
 import {
     Ionicons,
@@ -24,35 +22,20 @@ import ContactsScreen from "../screens/Contacts/index.js";
 const TopTab = createMaterialTopTabNavigator();
 const ChatStack = createNativeStackNavigator();
 
-export default function PrivateRoutes({ props }) {
-
+export default function PrivateRoutes() {
     return (
-        <>
-            <ChatStack.Navigator >
-                <ChatStack.Screen name="Home"
-                    component={TabsRoutes}
-                    options={{ headerShown: false }} />
-                <ChatStack.Screen name="Contacts"
-                    component={ContactsScreen}
-                    options={{ headerShown: false }} />
-                <ChatStack.Screen name="MyChat"
-                    component={ChatScreen}
-                    options={{
-                        title: "Converse", // Título do header
-                        headerStyle: {
-                            backgroundColor: '#29a139', // Cor de fundo
-                        },
-                        headerShown: false,
-                        headerTintColor: '#fff', // Cor dos ícones e texto
-                        headerTitleStyle: {
-                            fontWeight: 'bold',
-                            fontSize: 20,
-                        },
-
-                    }}
-                />
-            </ChatStack.Navigator>
-        </>
+        <ChatStack.Navigator >
+            <ChatStack.Screen name="Home"
+                component={TabsRoutes}
+                options={{ headerShown: false }} />
+            <ChatStack.Screen name="Contacts"
+                component={ContactsScreen}
+                options={{ headerShown: false }} />
+            <ChatStack.Screen name="MyChat"
+                component={ChatScreen}
+                options={{ headerShown: false }}
+            />
+        </ChatStack.Navigator>
     )
 }
 
@@ -74,44 +57,39 @@ function TabsRoutes() {
             tabBarShowLabel: false,
             unmountOnBlur: true,
             tabBarIcon: ({ focused }) => {
-                let iconName;
                 return <Ionicons name="home" size={30}
                     color={focused ? "#29a139ff" : "#06bcee"} />
             }
         }} />
-        <TopTab.Screen name="Calendar" component={ProfileScreen} options={{
+        {/* <TopTab.Screen name="Calendar" component={ProfileScreen} options={{
             tabBarShowLabel: false,
             unmountOnBlur: true,
-            tabBarIcon: ({ focused }) => {
-                let iconName;
+            tabBarIcon: ({ focused }) => {                
                 return <FontAwesome name="user-circle-o" size={30}
                     color={focused ? "#29a139ff" : "#06bcee"} />
             }
-        }} />
+        }} /> */}
         <TopTab.Screen name="Chat" component={ContactsScreen} options={{
             headerShown: false,
             tabBarShowLabel: false,
             unmountOnBlur: true,
             tabBarIcon: ({ focused }) => {
-                let iconName;
                 return <AntDesign name="wechat" size={30}
                     color={focused ? "#29a139ff" : "#06bcee"} />
             }
         }} />
-        <TopTab.Screen name="Reels" component={NotificationsScreen} options={{
+        {/* <TopTab.Screen name="Reels" component={NotificationsScreen} options={{
             tabBarShowLabel: false,
             unmountOnBlur: true,
-            tabBarIcon: ({ focused }) => {
-                let iconName;
+            tabBarIcon: ({ focused }) => {                
                 return <MaterialCommunityIcons name={focused ? "bell-outline" : "bell"} size={30}
                     color={focused ? "#29a139ff" : "#06bcee"} />
             }
-        }} />
+        }} /> */}
         <TopTab.Screen name="Perfil" component={ProfileScreen} options={{
             tabBarShowLabel: false,
             unmountOnBlur: true,
             tabBarIcon: ({ focused }) => {
-                let iconName;
                 return <FontAwesome name="user" size={30}
                     color={focused ? "#29a139ff" : "#06bcee"} />
             }

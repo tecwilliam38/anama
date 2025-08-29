@@ -13,10 +13,13 @@ import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 import { decode } from 'base64-arraybuffer';
+import { AuthContext } from '../../context/auth';
 
 
 export default function TopSearch({ user, id_user, signOut }) {
     const { topSearch, userImage, topSearchComponent, topSearchText } = HomeStyles;
+    // const { profileImageUrl } = useContext(AuthContext);
+
 
     const [imageUri, setImageUri] = useState(null);
     const [userImages, setUserImages] = useState([]);
@@ -71,10 +74,6 @@ export default function TopSearch({ user, id_user, signOut }) {
             // alert('Erro ao carregar imagens. Tente novamente mais tarde.');
         }
     };
-
-    // console.log("Tipo do dado:", typeof userProfile);
-
-    // console.log("URL da imagem de perfil:", userProfile);
 
     const pickImage = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
@@ -165,11 +164,12 @@ export default function TopSearch({ user, id_user, signOut }) {
             alert('Erro ao enviar imagem. Verifique sua conexão ou o formato do arquivo.');
         }
     };
+    // console.log(userProfile);
 
     useEffect(() => {
         fetchUserImagesProfile();
         fetchUserImages();
-    }, [user]);
+    }, []);
 
     const renderItem = ({ item }) => {
         return (
@@ -185,7 +185,7 @@ export default function TopSearch({ user, id_user, signOut }) {
         <View style={topSearch}>
             {userProfile ? (
                 <Image
-                    source={{ uri: userProfile }}
+                    source={{ uri: `${userProfile}?t=${Date.now()}` }}
                     style={userImage}
                     onError={(e) => console.log('Erro ao carregar imagem:', e.nativeEvent.error)}
                 />
