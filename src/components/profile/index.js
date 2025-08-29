@@ -7,6 +7,7 @@ import { styles } from '../../screens/Profile/styles';
 import { Image } from 'react-native-elements';
 import Icon from "react-native-vector-icons/MaterialCommunityIcons"
 import * as ImagePicker from 'expo-image-picker';
+import { FontAwesome5 } from '@expo/vector-icons';
 
 export default function ProfileComponent({ user, id_user }) {
 
@@ -37,32 +38,10 @@ export default function ProfileComponent({ user, id_user }) {
         }
 
     }
-    // console.log("URL da imagem:", userProfile);
-    // console.log("Tipo:", typeof userProfile);
-    const fetchUserImagesProfile = async () => {
-        try {
-            const { data, error } = await supabase
-                .from('anama_user')
-                .select('profile_image')
-                .eq('id_user', id_user)
-                .single()
-
-            if (error) throw error;
-
-            // Verifica se há dados e acessa o primeiro item
-            const imageUrl = data?.profile_image; // <- extrai a string da URL
-            setUserProfile(imageUrl); // agora userProfile será uma string
-
-        } catch (err) {
-            console.error('Erro ao buscar imagens aqui:', err.message);
-            // alert('Erro ao carregar imagens. Tente novamente mais tarde.');
-        }
-    };
 
     useEffect(() => {
-        fetchUserImagesProfile(id_user)
         ProfileLoad(id_user)
-    }, []);
+    }, [profileUri]);
 
     const handleChangePhoto = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
@@ -136,14 +115,15 @@ export default function ProfileComponent({ user, id_user }) {
             if (updateError) throw updateError;
 
             console.log('Imagem de perfil atualizada com sucesso:', profileImageUrl);
+            setUserData(prev => ({ ...prev, profile: profileImageUrl, }));
             setProfileuri(null);
-            fetchUserImagesProfile();
+            console.log('Profile URI resetado');
+
         } catch (err) {
             console.error('Erro ao enviar imagem de perfil:', err.message);
             alert('Erro ao enviar imagem de perfil. Verifique sua conexão ou formato.');
         }
     };
-
 
     return (
 
@@ -154,18 +134,26 @@ export default function ProfileComponent({ user, id_user }) {
                 <>
                     <View style={styles.profileContainer}>
                         <Image
+                            key={userData.profile}
                             source={{ uri: userData.profile }}
                             style={styles.profileImage}
                         />
                         {profileUri ? (
-                            <TouchableOpacity style={{ padding: 5 }} onPress={sendProfileImage}>
-                                <FontAwesome5 name="cloud-upload-alt" size={40} color="green" />
+                            <TouchableOpacity
+                                key="upload"
+                                style={{ padding: 5 }}
+                                onPress={sendProfileImage}
+                            >
+                                <FontAwesome5 name="cloud-upload-alt" size={40} color="yellow" />
                             </TouchableOpacity>
                         ) : (
-                            <TouchableOpacity onPress={handleChangePhoto} style={styles.editButton}>
+                            <TouchableOpacity
+                                key="camera"
+                                onPress={handleChangePhoto}
+                                style={styles.editButton}
+                            >
                                 <Icon name="camera" size={24} color="#007AFF" />
                             </TouchableOpacity>
-
                         )}
 
                     </View>
