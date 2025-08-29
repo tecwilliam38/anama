@@ -9,11 +9,24 @@ export const styles = StyleSheet.create({
         justifyContent: "flex-start",
         alignItems: "center",
     },
+    profileContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 16,
+    },
+    editButton: {
+        marginLeft: 12,
+        backgroundColor: '#f0f0f0',
+        padding: 8,
+        borderRadius: 20,
+    },
+
     card: {
         backgroundColor: '#fff',
-        width: '100%',
+        width: '95%',
         marginVertical: 20,
-        padding: 20,
+        paddingVertical: 20,
+        paddingHorizontal: 5,
         borderRadius: 12,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
@@ -31,15 +44,17 @@ export const styles = StyleSheet.create({
     infoRow: {
         flexDirection: 'row',
         marginBottom: 10,
+        padding: 6,
     },
     label: {
         fontWeight: '600',
-        color: '#555',
+        color: '#000',
         width: 'auto',
     },
     value: {
         flex: 1,
         color: '#222',
+        marginLeft: 5
     },
     error: {
         color: 'red',
@@ -50,8 +65,9 @@ export const styles = StyleSheet.create({
         height: 120,
         borderRadius: 60,
         marginBottom: 12,
-        backgroundColor: '#eee',
     },
-
+    icon: {
+        marginRight: 8,
+    }
 })
 

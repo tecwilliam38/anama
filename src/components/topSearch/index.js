@@ -19,11 +19,11 @@ export default function TopSearch({ user, id_user, signOut }) {
     const { topSearch, userImage, topSearchComponent, topSearchText } = HomeStyles;
 
     const [imageUri, setImageUri] = useState(null);
-    const [profileUri, setProfileuri] = useState(null)
     const [userImages, setUserImages] = useState([]);
     const [userProfile, setUserProfile] = useState(null);
     const [post_body, setPost_body] = useState("")
     const [loading, setLoading] = useState(false);
+
     const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
     const getFileExtension = (uri) => {
         return uri.split('.').pop().toLowerCase();
@@ -75,7 +75,7 @@ export default function TopSearch({ user, id_user, signOut }) {
     // console.log("Tipo do dado:", typeof userProfile);
 
     // console.log("URL da imagem de perfil:", userProfile);
-   
+
     const pickImage = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ['images'],
@@ -181,76 +181,6 @@ export default function TopSearch({ user, id_user, signOut }) {
         )
     };
 
-
-
-    const sendProfileImage = async () => {
-        if (!profileUri) return;
-
-        const ext = getFileExtension(profileUri);
-        if (!allowedExtensions.includes(ext)) {
-            alert('Formato de imagem não suportado. Use JPG, JPEG, PNG ou GIF.');
-            return;
-        }
-
-        try {
-            // 🔍 1. Verifica se o usuário já tem imagem salva
-            const { data: existingData, error: fetchError } = await supabase
-                .from('anama_user')
-                .select('profile_image')
-                .eq('id_user', id_user)
-                .single();
-
-            if (fetchError) throw fetchError;
-
-            const existingImageUrl = existingData?.profile_image;
-            const fileName = `profile/${id_user}.${ext}`; // nome fixo
-
-            // 🧠 2. Decide se vai sobrescrever ou criar nova
-            const shouldOverwrite = !!existingImageUrl;
-
-            // 📦 3. Converte imagem em ArrayBuffer
-            const fileInfo = await FileSystem.getInfoAsync(profileUri);
-            const base64Data = await FileSystem.readAsStringAsync(fileInfo.uri, {
-                encoding: FileSystem.EncodingType.Base64,
-            });
-            const arrayBuffer = decode(base64Data);
-
-            // 📤 4. Upload no bucket
-            const { error: uploadError } = await supabase.storage
-                .from('anama')
-                .upload(fileName, arrayBuffer, {
-                    contentType: `image/${ext === 'jpg' ? 'jpeg' : ext}`,
-                    upsert: shouldOverwrite, // 👈 sobrescreve se já existir
-                });
-
-            if (uploadError) throw uploadError;
-
-            // 🌐 5. Recupera URL pública
-            const { data: publicUrlData, error: publicUrlError } = supabase.storage
-                .from('anama')
-                .getPublicUrl(fileName);
-
-            if (publicUrlError) throw publicUrlError;
-
-            const profileImageUrl = publicUrlData.publicUrl;
-
-            // 📝 6. Atualiza no banco
-            const { error: updateError } = await supabase
-                .from('anama_user')
-                .update({ profile_image: profileImageUrl })
-                .eq('id_user', id_user);
-
-            if (updateError) throw updateError;
-
-            console.log('Imagem de perfil atualizada com sucesso:', profileImageUrl);
-            setProfileuri(null);
-            fetchUserImagesProfile();
-        } catch (err) {
-            console.error('Erro ao enviar imagem de perfil:', err.message);
-            alert('Erro ao enviar imagem de perfil. Verifique sua conexão ou formato.');
-        }
-    };
-
     return (
         <View style={topSearch}>
             {userProfile ? (
@@ -262,22 +192,6 @@ export default function TopSearch({ user, id_user, signOut }) {
             ) : null}
 
 
-            {/* <Image
-                source={{ uri: 'https://yulykztzhmoxfztykeop.supabase.co/storage/v1/object/public/anama/profile/3.jpeg' }} // imagem padrão
-                // source={require("../../assets/splash-icon.png")} // imagem padrão
-                style={userImage}
-                onTouchEnd={signOut}
-            /> */}
-
-            {/* {profileUri ? (
-                <TouchableOpacity style={{ padding: 5 }} onPress={sendProfileImage}>
-                    <FontAwesome5 name="cloud-upload-alt" size={40} color="green" />
-                </TouchableOpacity>
-            ) : (
-                <TouchableOpacity style={{ padding: 5 }} onPress={pickImageProfile}>
-                    <FontAwesome5 name="file-image" size={40} color="blue" />
-                </TouchableOpacity>
-            )} */}
             <TextInput
                 placeholder='No que você está pensando?'
                 placeholderTextColor="#000"
