@@ -21,10 +21,12 @@ const ImagePost = ({ id_user }) => {
                 .order('created_at', { ascending: false });
 
             if (error) throw error;
-
-            setUserImages(data); // Atualiza o estado com as imagens
+            // Atualiza o estado com as URLs das imagens
+            console.log("Imagens recebidas:", data);
+            setUserImages(data.map(item => item.image_url));
         } catch (err) {
             console.error('Erro ao buscar imagens:', err.message);
+            alert('Erro ao carregar imagens. Tente novamente mais tarde.');
         }
     };
 
@@ -37,12 +39,18 @@ const ImagePost = ({ id_user }) => {
             setImageUri(result.assets[0].uri);
         }
     };
-    
+
     const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
 
     const getFileExtension = (uri) => {
         return uri.split('.').pop().toLowerCase();
     };
+
+    const agora = new Date();
+    const dataHoraBrasil = agora.toLocaleString('pt-BR', {
+        timeZone: 'America/Sao_Paulo'
+    });
+    console.log(dataHoraBrasil);
 
     const sendImage = async () => {
         if (!imageUri) return;
@@ -61,11 +69,13 @@ const ImagePost = ({ id_user }) => {
             });
 
             // 2. Gera nome único com ID do usuário
+            // const fileName = `${id_user}/${Date.now()}.${ext}`;
             const fileName = `${id_user}/${Date.now()}.${ext}`;
+            console.log('Caminho do arquivo para upload:', fileName); // 👈 Verificação
 
             // 3. Faz upload no bucket público
             const { error: uploadError } = await supabase.storage
-                .from('anama')
+                .from('anama') // 👈 Certifique-se que o nome do bucket é exatamente "anama"
                 .upload(fileName, base64Data, {
                     contentType: `image/${ext === 'jpg' ? 'jpeg' : ext}`,
                     upsert: false,
@@ -74,11 +84,13 @@ const ImagePost = ({ id_user }) => {
             if (uploadError) throw uploadError;
 
             // 4. Recupera URL pública da imagem
-            const { data } = supabase.storage
+            const { data: publicUrlData, error: publicUrlError } = supabase.storage
                 .from('anama')
                 .getPublicUrl(fileName);
 
-            const imageUrl = data.publicUrl;
+            if (publicUrlError) throw publicUrlError;
+
+            const imageUrl = publicUrlData.publicUrl;
 
             // 5. Insere no banco de dados
             const { error: dbError } = await supabase
@@ -86,7 +98,7 @@ const ImagePost = ({ id_user }) => {
                 .insert({
                     image_url: imageUrl,
                     id_user: id_user,
-                    created_at: new Date().toISOString(), // opcional, se não tiver default
+                    created_at: new Date().toISOString(),
                 });
 
             if (dbError) throw dbError;
@@ -95,28 +107,29 @@ const ImagePost = ({ id_user }) => {
 
             // 6. Limpa imagem selecionada (fecha picker)
             setImageUri(null);
+
             // 7. Recarrega imagens do usuário
+            fetchUserImages();
         } catch (err) {
             console.error('Erro ao enviar imagem:', err.message);
             alert('Erro ao enviar imagem. Verifique sua conexão ou o formato do arquivo.');
         }
     };
 
-    fetchUserImages();
 
     useEffect(() => {
         fetchUserImages();
-    }, []);
+    }, []);    
 
-    const renderItem = ({ item }) => (
-        <Image
-            source={{ uri: item.image_url }}
-            style={{ width: 100, height: 100, margin: 5 }}
-        />
-    );
-
-
-
+    const renderItem = ({ item }) => {
+        return (
+            <Image
+                source={{ uri: item }}
+                style={{ width: 100, height: 200, margin: 5, borderRadius: 8 }}
+                resizeMode='cover'
+            />
+        )
+    };
 
     return (
         <View style={{ padding: 20 }}>
