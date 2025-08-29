@@ -14,12 +14,13 @@ import FeedScreen from '../../components/Feed';
 export default function Home() {
   const { user, signOut } = useContext(AuthContext);
   const { container } = HomeStyles;
+  const id_user = user.id_user;
   return (
     <View style={container}>
       <ScrollView>
-        <TopSearch />
-        <ReelsList />
-        <FeedScreen />
+        <TopSearch user={user} id_user={id_user} signOut={signOut} />
+        <ReelsList user={user} id_user={id_user} signOut={signOut} />
+        <FeedScreen user={user} id_user={id_user} signOut={signOut} />
       </ScrollView>
     </View>
   )

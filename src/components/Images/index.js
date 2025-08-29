@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Button, Image, FlatList, ActivityIndicator, TouchableOpacity, StyleSheet } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { supabase } from '../../api/supabaseClient';
-import { Ionicons } from '@expo/vector-icons';
+import { FontAwesome5, Ionicons } from '@expo/vector-icons';
 import * as FileSystem from 'expo-file-system';
 import { decode } from 'base64-arraybuffer';
 
@@ -27,7 +27,7 @@ const ImagePost = ({ id_user }) => {
             setUserImages(data.map(item => item.image_url));
         } catch (err) {
             console.error('Erro ao buscar imagens:', err.message);
-            alert('Erro ao carregar imagens. Tente novamente mais tarde.');
+            // alert('Erro ao carregar imagens. Tente novamente mais tarde.');
         }
     };
 
@@ -135,21 +135,26 @@ const ImagePost = ({ id_user }) => {
 
     return (
         <View style={{ padding: 20, width: "100%" }}>
-            <TouchableOpacity onPress={pickImage} style={styles.buttonCam}>
-                <Ionicons name="camera-outline" size={40} color="#fff" />
-            </TouchableOpacity>
-
-            {/* <Button title="Escolher imagem" onPress={pickImage} /> */}
+            {imageUri ? (
+                <TouchableOpacity onPress={sendImage}>
+                    <FontAwesome5 name="cloud-upload-alt" size={40} color="blue" />
+                </TouchableOpacity>
+            ) : (
+                <TouchableOpacity onPress={pickImage}>
+                    <FontAwesome5 name="file-image" size={40} color="blue" />
+                </TouchableOpacity>
+            )}
             {imageUri && <Image source={{ uri: imageUri }} style={{ height: 200, marginVertical: 10 }} />}
-            <TouchableOpacity onPress={sendImage} style={styles.buttonCam}>
-                <Ionicons name="send" size={40} color="#fff" />
-            </TouchableOpacity>
+
             {loading && <ActivityIndicator />}
 
             <FlatList
                 data={userImages} // array com URLs das imagens
                 renderItem={renderItem}
                 keyExtractor={(item, index) => index.toString()}
+                horizontal={true} // 👈 isso ativa a rolagem horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.listContainer}
             />
 
         </View>
