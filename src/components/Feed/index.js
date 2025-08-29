@@ -17,7 +17,7 @@ export default function FeedScreen({ user, id_user }) {
 
     useEffect(() => {
         fetchUserImages();
-    }, []);
+    }, [user]);
 
     const fetchUserImages = async () => {
         try {
