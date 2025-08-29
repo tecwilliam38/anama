@@ -21,6 +21,47 @@ export default function ContatosComponents({ userId, token }) {
         }, [receiver_id])
     );
 
+
+    const fetchFriendsWithMessages = async () => {
+        try {
+            const res = await api.get(`/messages/friends/${userId}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            const friendsData = res.data;
+
+            // Para cada amigo, buscar a última mensagem
+            const enrichedFriends = await Promise.all(
+                friendsData.map(async (friend) => {
+                    try {
+                        const msgRes = await api.get(`/messages/users/${friend.friend_id}`, {
+                            headers: { Authorization: `Bearer ${token}` }
+                        });
+
+                        const mensagens = msgRes.data;
+                        const ultima = mensagens[mensagens.length - 1];
+
+                        return {
+                            ...friend,
+                            last_message: ultima || null
+                        };
+                    } catch (err) {
+                        console.log(`Erro ao buscar mensagens de ${friend.friend_id}`, err);
+                        return {
+                            ...friend,
+                            last_message: null
+                        };
+                    }
+                })
+            );
+
+            setFriends(enrichedFriends);
+        } catch (err) {
+            console.log('Erro ao buscar amigos:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
     const fetchMessages = async () => {
         try {
             const response = await api.get(`/messages/users/${receiver_id}`, {
@@ -58,6 +99,7 @@ export default function ContatosComponents({ userId, token }) {
     };
 
     useEffect(() => {
+        fetchFriendsWithMessages();
         fetchFriends();
     }, []);
 
@@ -91,26 +133,26 @@ export default function ContatosComponents({ userId, token }) {
                                 <Text numberOfLines={1}
                                     ellipsizeMode="tail"
                                     textBreakStrategy="simple"
-                                    style={ContactStyles.friendName}>{item.user_name || 'vazio'}</Text>
-                                <Text style={ContactStyles.friendBottomText} numberOfLines={1} ellipsizeMode="tail">
-                                    {chatMessages.length > 0 ? chatMessages[chatMessages.length - 1].mensagens : 'Sem mensagens'}
+                                    style={ContactStyles.friendName}>{item.user_name || ''}</Text>
+                                <Text style={ContactStyles.friendBottomText}>
+                                    {item.last_message?.mensagens || '...'}
                                 </Text>
                             </View>
                             <View style={ContactStyles.friendIcons}>
-                                <Text style={ContactStyles.friendBottomText} numberOfLines={1} ellipsizeMode="tail">
-                                    {chatMessages.length > 0
-                                        ? new Date(chatMessages[chatMessages.length - 1].enviadas).toLocaleTimeString('pt-BR', {
+                                <Text style={ContactStyles.friendBottomText}>
+                                    {item.last_message?.enviadas
+                                        ? new Date(item.last_message.enviadas).toLocaleTimeString('pt-BR', {
                                             hour: '2-digit',
                                             minute: '2-digit',
                                             timeZone: 'America/Sao_Paulo',
                                         })
                                         : 'Sem hora'}
-                                </Text>
+                                </Text>                              
                                 <View style={ContactStyles.friendBottomIcons}>
                                     <Text numberOfLines={1}
                                         ellipsizeMode="tail"
                                         textBreakStrategy="simple"
-                                        style={ContactStyles.friendTime}>{item.id_user || 'vazio'}</Text>
+                                        style={ContactStyles.friendTime}>{item.id_user || '...'}</Text>
                                     <Text style={ContactStyles.friendTime}>{item.friend_id || ''}</Text>
                                 </View>
                             </View>

@@ -73,7 +73,7 @@ export const ContactStyles = StyleSheet.create({
         fontSize: 18,
         color: "#555",
         fontWeight: "bold",
-        width: "150%",
+        width: "100%",
     },
     friendLastMessage: {
         width: "150%",

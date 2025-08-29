@@ -10,7 +10,6 @@ export const HomeStyles = StyleSheet.create({
         alignItems: "center",
         width: "100%",
         height:windowHeight,
-        backgroundColor: "rgba(255,255,255,0.8)",
     },
     topSearch: {
         top: 5,

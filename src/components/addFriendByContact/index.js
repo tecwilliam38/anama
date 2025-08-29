@@ -57,7 +57,10 @@ export default function AddFriendByContact({ userId, onFriendAdded }) {
 
             // Alert.alert('Sucesso', 'Amigo adicionado!');
             setContact('');
-            if (onFriendAdded) onFriendAdded(); // Atualiza lista de amigos
+            setModalVisible(false)
+            if (onFriendAdded) {
+                onFriendAdded();
+            } // Atualiza lista de amigos
         } catch (err) {
             console.log('Erro ao adicionar amigo:', err);
             Alert.alert('Erro', 'Não foi possível adicionar o amigo.');

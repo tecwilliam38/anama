@@ -9,18 +9,16 @@ import TopSearch from '../../components/topSearch';
 
 import ImageUploader from '../../components/Images';
 import ProfileComponent from '../../components/profile/index.js';
+import { styles } from './styles.js';
 
 export default function ProfileScreen() {
   const { user, signOut } = useContext(AuthContext);
-  const id_user= user.id_user;
-  
-  const { container } = HomeStyles;
+  const id_user = user.id_user;
+
+  const { container } = styles;
   return (
     <View style={container}>
-      <ScrollView>
-        {/* <TopSearch />         */}
-        <ProfileComponent user={user} id_user={id_user}/>
-      </ScrollView>
+      <ProfileComponent user={user} id_user={id_user} />
     </View>
   )
 }
