@@ -1,14 +1,15 @@
-import { View, Text, FlatList, TouchableOpacity, TextInput, ScrollView } from 'react-native'
+import { View, Text, FlatList, TouchableOpacity, ScrollView,TextInput, ToastAndroid, KeyboardAvoidingView, Platform, } from 'react-native'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { styles } from './styles';
 import { supabase } from '../../api/supabaseClient';
 import { ChatStyles } from '../../screens/Chat/styles';
 import api from '../../api';
 import { AuthContext } from '../../context/auth';
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import Button from '../button';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useFocusEffect, useRoute } from '@react-navigation/native';
+import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
+// import { TextInput } from 'react-native-paper';
 // import dayjs from 'dayjs';
 // import 'dayjs/locale/pt-br';
 
@@ -17,6 +18,7 @@ export default function ChatComponent({ userId, token }) {
     const route = useRoute();
     const receiver_id = route.params?.receiver_id;
     // console.log(receiver_id,"Rota:", route.params);
+    const navigation = useNavigation();
 
 
     const { container, buttonStyle, buttonText, chatList, inputArea, input, scrollStyle } = ChatStyles;
@@ -90,6 +92,7 @@ export default function ChatComponent({ userId, token }) {
         if (!message.trim()) return;
         try {
             await sendMessage(receiver_id, message);
+
             setMessage('');
             fetchMessages();
             LoadFriend();
@@ -97,8 +100,6 @@ export default function ChatComponent({ userId, token }) {
             Alert.alert('Erro', 'Não foi possível enviar a mensagem.');
         }
     };
-
-
 
     const renderItem = ({ item }) => {
         const timestamp = item.enviadas;
@@ -116,14 +117,7 @@ export default function ChatComponent({ userId, token }) {
                     isMinhaMensagem ? styles.myMessage : styles.otherMessage,
                 ]}
             >
-                {/* <Text style={styles.senderName}>
-                    {isMinhaMensagem ? 'Você' : item.usuario}
-                </Text> */}
-
-                <Text style={styles.messageText}>
-                    {item.mensagens}
-                </Text>
-
+                <Text style={styles.messageText}>{item.mensagens}</Text>
                 <Text style={styles.timestamp}>{horaFormatada}</Text>
             </View>
         );
@@ -132,45 +126,58 @@ export default function ChatComponent({ userId, token }) {
 
 
     return (
-        <View style={container}>
-            <View style={styles.header}>
-            <LinearGradient
-                colors={["rgba(21, 56, 130, 1)", "rgba(31,143,78, 1)", "rgba(237, 247, 124, 1)"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.buttonStyle}
-            >
-                    <Text style={styles.headerText}>{user.user_name || 'Conversa teste'}</Text>
-            </LinearGradient>
-                </View>
-            <ScrollView style={scrollStyle}>
+        <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
+        >
+            <View style={container}>
+                <LinearGradient
+                    colors={["rgba(21, 56, 130, 1)", "rgba(31,143,78, 1)", "rgba(237, 247, 124, 1)"]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={styles.buttonStyle}
+                >
+                    <TouchableOpacity onPress={() => navigation.goBack()}>
+                        <Text style={styles.headerText}>Clique para voltar {user.user_name || 'Conversa teste'}</Text>
+                    </TouchableOpacity>
+                </LinearGradient>
+
                 <FlatList
                     data={chatMessages}
                     renderItem={renderItem}
                     keyExtractor={(item) => item.id}
                     style={chatList}
+                    contentContainerStyle={{ paddingBottom: 100 }} // espaço para input
                 />
-            </ScrollView>
-            <View style={inputArea}>
-                <TextInput
-                    style={input}
-                    value={message}
-                    onChangeText={setMessage}
-                    placeholder="Digite sua mensagem..."
-                    placeholderTextColor="#000"
-                />
-                <LinearGradient
-                    colors={["rgba(27, 47, 90, 1)", "rgba(66, 101, 170, 1)", "rgba(51, 201, 113, 1)", "rgba(237, 247, 124, 1)"]}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 1 }}
-                    style={buttonStyle}
-                >
-                    <TouchableOpacity
-                        onPress={handleSend}>
-                        <Ionicons style={buttonText} name="send-sharp" size={24} color="white" />
-                    </TouchableOpacity>
-                </LinearGradient>
+
+                <View style={inputArea}>
+                  <TextInput
+                        style={input}
+                        value={message}
+                        onChangeText={setMessage}
+                        placeholder="Mensagem"
+                        placeholderTextColor="#000"
+                        // right={<TextInput.Icon icon="paperclip" onPress={() => console.log('Anexar arquivo')} />}
+                    />
+                    <LinearGradient
+                        colors={["rgba(27, 47, 90, 1)", "rgba(66, 101, 170, 1)", "rgba(51, 201, 113, 1)", "rgba(237, 247, 124, 1)"]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 1 }}
+                        style={buttonStyle}
+                    >
+                        <TouchableOpacity onPress={handleSend}>
+                            <MaterialCommunityIcons
+                                style={buttonText}
+                                name={message.trim() ? "send" : "microphone"}
+                                size={24}
+                                color="white"
+                            />
+                        </TouchableOpacity>
+                    </LinearGradient>
+                </View>
             </View>
-        </View>
+        </KeyboardAvoidingView>
+
     );
 };

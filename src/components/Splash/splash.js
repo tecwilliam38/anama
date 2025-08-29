@@ -3,17 +3,17 @@ import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
 import { StyleSheet, ImageBackground, Animated, View, SafeAreaView } from 'react-native';
 
-import {
-  BallIndicator,
-  BarIndicator,
-  DotIndicator,
-  MaterialIndicator,
-  PacmanIndicator,
-  PulseIndicator,
-  SkypeIndicator,
-  UIActivityIndicator,
-  WaveIndicator,
-} from 'react-native-indicators';
+// import {
+//   BallIndicator,
+//   BarIndicator,
+//   DotIndicator,
+//   MaterialIndicator,
+//   PacmanIndicator,
+//   PulseIndicator,
+//   SkypeIndicator,
+//   UIActivityIndicator,
+//   WaveIndicator,
+// } from 'react-native-indicators';
 import { ActivityIndicator } from 'react-native-paper';
 
 export default function SplashScreenPage() {
@@ -21,7 +21,7 @@ export default function SplashScreenPage() {
     <React.Fragment key={"spinner"}>
       <ImageBackground source={require('../../assets/splash.png')} style={styles.content}>
         <SafeAreaView style={styles.splashContainer}>
-          <PulseIndicator color="rgba(255, 255, 255, 0.7)" style={styles.loadingActive} size={50} />
+          <ActivityIndicator color="rgba(255, 255, 255, 0.7)" style={styles.loadingActive} size={50} />
         </SafeAreaView>
       </ImageBackground>
     </React.Fragment>
@@ -55,6 +55,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   loadingActive: {
-    top: 290,
+    top: 270,
   },
 });

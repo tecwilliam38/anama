@@ -10,18 +10,16 @@ import TopSearch from '../../components/topSearch';
 
 import AddFriendByContact from '../../components/addFriendByContact/index.js';
 import ContatosComponents from '../../components/contacts/index.js';
+import ImagePost from '../../components/Images/index.js';
 
 export default function NotificationsScreen() {
     const { user, signOut } = useContext(AuthContext);
-
+    const id_user = user.id_user;
 
     const { container } = HomeStyles;
     return (
         <View style={[container, { flex: 1 }]}>
-            <ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
-                <TopSearch />
-                <ContatosComponents userId={user.id_user} token={user.token} />
-            </ScrollView>
+            <ImagePost user={user} id_user={id_user}/>           
             <View
                 style={{
                     position: 'absolute',
@@ -32,7 +30,6 @@ export default function NotificationsScreen() {
                     alignItems:"center",
                     backgroundColor: '#fff', // opcional, para destacar
                 }}>
-                <AddFriendByContact userId={user.id_user} />
             </View>
         </View>
     )

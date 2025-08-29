@@ -1,119 +1,148 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { View, Button, Image, ActivityIndicator, Alert, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Button, Image, FlatList, ActivityIndicator, TouchableOpacity, StyleSheet } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-
-import { AuthContext } from '../../context/auth';
+import { supabase } from '../../api/supabaseClient';
 import { Ionicons } from '@expo/vector-icons';
-
-// Banco firebase
-import uuid from 'react-native-uuid';
-
-import { collection, addDoc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { db, storage } from '../../api/firebase';
-import { createClient } from '@supabase/supabase-js';
-import { NHOST_STORAGE_URL } from '../../api/nhostApi';
-import axios from 'axios';
-// import { supabase } from '../../api/supabaseClient';
+import * as FileSystem from 'expo-file-system';
 
 
 
-
-
-export default function ImageUploader({ id_user, accessToken  }) {
-    const [image, setImage] = useState(null);
-    const [uploading, setUploading] = useState(false);
+const ImagePost = ({ id_user }) => {
     const [imageUri, setImageUri] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [userImages, setUserImages] = useState([]);
 
-
-    const { user } = useContext(AuthContext)
-
-    useEffect(() => {
-        if (!user) return;
-        // Carregar as imagens do bucket:
-        loadImages();
-    }, [user])
-
-    const loadImages = async () => {
-        setLoadingImages(true);
+    const fetchUserImages = async () => {
         try {
-            const q = query(collection(db, 'user_images'), where('id_user', '==', id_user));
-            const querySnapshot = await getDocs(q);
-            const images = querySnapshot.docs.map(doc => doc.data().image_url);
-            setUserImages(images);
-        } catch (error) {
-            console.error('Erro ao carregar imagens:', error);
-        } finally {
-            setLoadingImages(false);
-        }
+            const { data, error } = await supabase
+                .from('anama_posts')
+                .select('image_url')
+                .eq('id_user', id_user)
+                .order('created_at', { ascending: false });
 
-    }
+            if (error) throw error;
+
+            setUserImages(data); // Atualiza o estado com as imagens
+        } catch (err) {
+            console.error('Erro ao buscar imagens:', err.message);
+        }
+    };
 
     const pickImage = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ['images'],
-            quality: 1,
+            quality: 0.7,
         });
-
-        if (!result.canceled) {
-            setImage(result.assets[0].uri);
+        if (!result.canceled && result.assets.length > 0) {
+            setImageUri(result.assets[0].uri);
         }
     };
+    
+    const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
 
-    const uploadImage = async () => {
-        if (!imageUri || !accessToken) return;
+    const getFileExtension = (uri) => {
+        return uri.split('.').pop().toLowerCase();
+    };
 
-        setUploading(true);
+    const sendImage = async () => {
+        if (!imageUri) return;
+
+        const ext = getFileExtension(imageUri);
+        if (!allowedExtensions.includes(ext)) {
+            alert('Formato de imagem não suportado. Use JPG, JPEG, PNG ou GIF.');
+            return;
+        }
+
         try {
-            const response = await fetch(imageUri);
-            const blob = await response.blob();
-            const fileName = `${id_user}_${Date.now()}.jpg`;
-
-            const formData = new FormData();
-            formData.append('file', blob, fileName);
-
-            const uploadRes = await axios.post(`${NHOST_STORAGE_URL}/files`, formData, {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                    'Content-Type': 'multipart/form-data',
-                },
+            // 1. Lê o arquivo como base64
+            const fileInfo = await FileSystem.getInfoAsync(imageUri);
+            const base64Data = await FileSystem.readAsStringAsync(fileInfo.uri, {
+                encoding: FileSystem.EncodingType.Base64,
             });
 
-            const fileId = uploadRes.data.id;
-            const fileUrl = `${NHOST_STORAGE_URL}/files/${fileId}`;
+            // 2. Gera nome único com ID do usuário
+            const fileName = `${id_user}/${Date.now()}.${ext}`;
 
-            Alert.alert('Sucesso', 'Imagem enviada com sucesso!');
-            console.log('URL da imagem:', fileUrl);
+            // 3. Faz upload no bucket público
+            const { error: uploadError } = await supabase.storage
+                .from('anama')
+                .upload(fileName, base64Data, {
+                    contentType: `image/${ext === 'jpg' ? 'jpeg' : ext}`,
+                    upsert: false,
+                });
+
+            if (uploadError) throw uploadError;
+
+            // 4. Recupera URL pública da imagem
+            const { data } = supabase.storage
+                .from('anama')
+                .getPublicUrl(fileName);
+
+            const imageUrl = data.publicUrl;
+
+            // 5. Insere no banco de dados
+            const { error: dbError } = await supabase
+                .from('anama_posts')
+                .insert({
+                    image_url: imageUrl,
+                    id_user: id_user,
+                    created_at: new Date().toISOString(), // opcional, se não tiver default
+                });
+
+            if (dbError) throw dbError;
+
+            console.log('Imagem enviada e registrada com sucesso:', imageUrl);
+
+            // 6. Limpa imagem selecionada (fecha picker)
             setImageUri(null);
-        } catch (error) {
-            console.error(error);
-            Alert.alert('Erro', 'Falha ao enviar imagem.');
-        } finally {
-            setUploading(false);
+            // 7. Recarrega imagens do usuário
+        } catch (err) {
+            console.error('Erro ao enviar imagem:', err.message);
+            alert('Erro ao enviar imagem. Verifique sua conexão ou o formato do arquivo.');
         }
     };
+
+    fetchUserImages();
+
+    useEffect(() => {
+        fetchUserImages();
+    }, []);
+
+    const renderItem = ({ item }) => (
+        <Image
+            source={{ uri: item.image_url }}
+            style={{ width: 100, height: 100, margin: 5 }}
+        />
+    );
+
 
 
 
     return (
-        <View style={{ alignItems: 'center', marginVertical: 50 }}>
+        <View style={{ padding: 20 }}>
             <TouchableOpacity onPress={pickImage} style={styles.buttonCam}>
                 <Ionicons name="camera-outline" size={40} color="#fff" />
             </TouchableOpacity>
 
+            {/* <Button title="Escolher imagem" onPress={pickImage} /> */}
+            {imageUri && <Image source={{ uri: imageUri }} style={{ height: 200, marginVertical: 10 }} />}
+            <TouchableOpacity onPress={sendImage} style={styles.buttonCam}>
+                <Ionicons name="send" size={40} color="#fff" />
+            </TouchableOpacity>
+            {/* <Button title="Postar imagem" onPress={uploadImage} disabled={loading} /> */}
+            {loading && <ActivityIndicator />}
 
-            {image && (
-                <>
-                    <Image source={{ uri: image }}
-                        style={{ width: 200, height: 250, marginVertical: 10, borderRadius: 15 }} />
-                    <Button title="Enviar para Supabase" onPress={uploadImage} />
-                </>
-            )}
-            {uploading && <ActivityIndicator size="large" color="#0000ff" />}
+            <FlatList
+                data={userImages} // array com URLs das imagens
+                renderItem={renderItem}
+                keyExtractor={(item, index) => index.toString()}
+            />
+
         </View>
     );
-}
+};
 
+export default ImagePost;
 
 const styles = StyleSheet.create({
     buttonCam: {

@@ -18,11 +18,45 @@ import {
 import ChatScreen from "../screens/Chat/index.js";
 import ProfileScreen from "../screens/Profile/index.js";
 import NotificationsScreen from "../screens/Notifications/index.js";
-
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import ContactsScreen from "../screens/Contacts/index.js";
 
 const TopTab = createMaterialTopTabNavigator();
+const ChatStack = createNativeStackNavigator();
 
-function PrivateRoutes() {
+export default function PrivateRoutes({ props }) {
+
+    return (
+        <>
+            <ChatStack.Navigator >
+                <ChatStack.Screen name="Home"
+                    component={TabsRoutes}
+                    options={{ headerShown: false }} />
+                <ChatStack.Screen name="Contacts"
+                    component={ContactsScreen}
+                    options={{ headerShown: false }} />
+                <ChatStack.Screen name="MyChat"
+                    component={ChatScreen}
+                    options={{
+                        title: "Converse", // Título do header
+                        headerStyle: {
+                            backgroundColor: '#29a139', // Cor de fundo
+                        },
+                        headerShown: false,
+                        headerTintColor: '#fff', // Cor dos ícones e texto
+                        headerTitleStyle: {
+                            fontWeight: 'bold',
+                            fontSize: 20,
+                        },
+
+                    }}
+                />
+            </ChatStack.Navigator>
+        </>
+    )
+}
+
+function TabsRoutes() {
 
     return <TopTab.Navigator screenOptions={{
         tabBarStyle: {
@@ -35,6 +69,7 @@ function PrivateRoutes() {
         },
         headerShown: false,
     }}>
+        {/* Icons */}
         <TopTab.Screen name="Home" component={Home} options={{
             tabBarShowLabel: false,
             unmountOnBlur: true,
@@ -53,7 +88,8 @@ function PrivateRoutes() {
                     color={focused ? "#29a139ff" : "#06bcee"} />
             }
         }} />
-        <TopTab.Screen name="Chat" component={ChatScreen} options={{
+        <TopTab.Screen name="Chat" component={ContactsScreen} options={{
+            headerShown: false,
             tabBarShowLabel: false,
             unmountOnBlur: true,
             tabBarIcon: ({ focused }) => {
@@ -82,5 +118,3 @@ function PrivateRoutes() {
         }} />
     </TopTab.Navigator>
 }
-
-export default PrivateRoutes;

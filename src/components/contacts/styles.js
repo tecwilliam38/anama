@@ -9,22 +9,22 @@ export const ContactStyles = StyleSheet.create({
         marginTop: 10,
         marginBottom: 10,
     },
-    itemStyle: {        
+    itemStyle: {
         width: '100%',
     },
     contactBody: {
         flexDirection: "row",
         alignItems: "center",
         width: '100%',
-        marginVertical: 1.5,
+        marginVertical: 1,
         height: 90,
         backgroundColor: "#fff",
     },
     friendCenter: {
         flexDirection: "row",
-        paddingLeft:10,
+        // paddingLeft:10,
         alignItems: "center",
-        justifyContent: 'space-between',            
+        // justifyContent: 'space-between',            
     },
     userImage: {
         margin: 10,
@@ -37,19 +37,21 @@ export const ContactStyles = StyleSheet.create({
     },
     friendData: {
         flexDirection: "column",
-        width: '55%',
-        alignItems: "flex-start",        
+        width: '60%',
+        alignItems: "flex-start",
+        // borderWidth: 2,
+        // borderColor: "#555",
     },
     friendIcons: {
         flexDirection: "column",
         width: "25%",
         alignItems: "center",
-        height:80,
-        justifyContent:"space-around",
-        paddingVertical:8,
+        height: 80,
+        justifyContent: "space-around",
+        paddingVertical: 8,
 
-        // borderWidth:2,
-        // borderColor:"#555",
+        // borderWidth: 2,
+        // borderColor: "#555",
     },
     bodyStyle: {
         marginVertical: 5,
@@ -70,35 +72,38 @@ export const ContactStyles = StyleSheet.create({
         paddingVertical: 10,
         fontSize: 18,
         color: "#555",
-        fontWeight:"bold",
-        width:"150%",
+        fontWeight: "bold",
+        width: "150%",
     },
     friendLastMessage: {
-        width:"150%",
+        width: "150%",
         fontSize: 13,
         color: "#777",
     },
-    friendTime:{
-        width:"15%",
-        fontSize:12,
-        color:"#666",
+    friendTime: {
+        width: "15%",
+        fontSize: 12,
+        color: "#666",
     },
-    friendNotifications:{
-        width:"15%",
-        fontSize:12,
-        color:"#000",
+    friendNotifications: {
+        width: "15%",
+        fontSize: 12,
+        color: "#000",
     },
-    friendBottomIcons:{
-        flexDirection:'row',        
-        justifyContent:"space-around",
-        paddingHorizontal:7,
-        width:"100%",
+    friendBottomIcons: {
+        flexDirection: 'row',
+        justifyContent: "space-around",
+        paddingHorizontal: 7,
+        // marginRight: 20,
+        width: "100%",
     },
-    friendBottomText:{
+    friendBottomText: {
         // borderWidth:2,
         // borderColor:"#555",
-        fontSize:16,
-        color:"#000",
+        // marginRight:15,
+        textAlign: "center",
+        fontSize: 14,
+        color: "#555",
     },
 })
 
