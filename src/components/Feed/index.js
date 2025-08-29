@@ -33,17 +33,14 @@ export default function FeedScreen({ user, id_user }) {
                 .order('created_at', { ascending: false });
 
             if (error) throw error;
-            // Atualiza o estado com as URLs das imagens
-            // console.log("Imagens recebidas:", data);
-
+        
             setUserImages(data.map(item => ({
                 image: item.image_url,
                 body_text: item.post_body
             })
             ));
         } catch (err) {
-            console.error('Erro ao buscar imagens:', err.message);
-            // alert('Erro ao carregar imagens. Tente novamente mais tarde.');
+            console.error('Erro ao buscar imagens:', err.message);        
         }
     };
 

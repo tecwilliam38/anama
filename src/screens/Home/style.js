@@ -35,7 +35,7 @@ export const HomeStyles = StyleSheet.create({
         borderColor: "#ccc",
         width: "70%",
         backgroundColor: "#fff",
-        color: "#fff",
+        color: "#000",
         paddingStart: 15,
         fontSize: 20,
         paddingVertical: 10,
@@ -47,6 +47,7 @@ export const HomeStyles = StyleSheet.create({
     userImage: {
         width: 60,
         height: 60,
+        margin:5,
         borderRadius: 50,
     },
 })

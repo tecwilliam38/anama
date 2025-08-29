@@ -51,7 +51,7 @@ export default function TopSearch({ user, id_user, signOut }) {
             // alert('Erro ao carregar imagens. Tente novamente mais tarde.');
         }
     };
-    
+
     const fetchUserImagesProfile = async () => {
         try {
             const { data, error } = await supabase
@@ -72,12 +72,10 @@ export default function TopSearch({ user, id_user, signOut }) {
         }
     };
 
-    console.log("Tipo do dado:", typeof userProfile);
+    // console.log("Tipo do dado:", typeof userProfile);
 
-    console.log("URL da imagem de perfil:", userProfile);
-    // setUserProfile(data);
-    // setUserProfile(data.map(item => item.profile_image));
-
+    // console.log("URL da imagem de perfil:", userProfile);
+   
     const pickImage = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ['images'],
@@ -154,10 +152,11 @@ export default function TopSearch({ user, id_user, signOut }) {
 
             if (dbError) throw dbError;
 
-            console.log('Imagem enviada e registrada com sucesso:', imageUrl);
+            // console.log('Imagem enviada e registrada com sucesso:', imageUrl);
 
             // 6. Limpa imagem selecionada (fecha picker)
             setImageUri(null);
+            setPost_body(null)
 
             // 7. Recarrega imagens do usuário
             fetchUserImages();
@@ -194,28 +193,39 @@ export default function TopSearch({ user, id_user, signOut }) {
         }
 
         try {
-            // 1. Converte a imagem em ArrayBuffer
+            // 🔍 1. Verifica se o usuário já tem imagem salva
+            const { data: existingData, error: fetchError } = await supabase
+                .from('anama_user')
+                .select('profile_image')
+                .eq('id_user', id_user)
+                .single();
+
+            if (fetchError) throw fetchError;
+
+            const existingImageUrl = existingData?.profile_image;
+            const fileName = `profile/${id_user}.${ext}`; // nome fixo
+
+            // 🧠 2. Decide se vai sobrescrever ou criar nova
+            const shouldOverwrite = !!existingImageUrl;
+
+            // 📦 3. Converte imagem em ArrayBuffer
             const fileInfo = await FileSystem.getInfoAsync(profileUri);
             const base64Data = await FileSystem.readAsStringAsync(fileInfo.uri, {
                 encoding: FileSystem.EncodingType.Base64,
             });
             const arrayBuffer = decode(base64Data);
 
-            // 2. Define nome fixo para imagem de perfil
-            const fileName = `profile/${id_user}.${ext}`; // 👈 sobrescreve sempre a mesma imagem
-            console.log('Upload de imagem de perfil:', fileName);
-
-            // 3. Faz upload no bucket
+            // 📤 4. Upload no bucket
             const { error: uploadError } = await supabase.storage
                 .from('anama')
                 .upload(fileName, arrayBuffer, {
                     contentType: `image/${ext === 'jpg' ? 'jpeg' : ext}`,
-                    upsert: true, // 👈 permite sobrescrever
+                    upsert: shouldOverwrite, // 👈 sobrescreve se já existir
                 });
 
             if (uploadError) throw uploadError;
 
-            // 4. Recupera URL pública
+            // 🌐 5. Recupera URL pública
             const { data: publicUrlData, error: publicUrlError } = supabase.storage
                 .from('anama')
                 .getPublicUrl(fileName);
@@ -224,16 +234,17 @@ export default function TopSearch({ user, id_user, signOut }) {
 
             const profileImageUrl = publicUrlData.publicUrl;
 
-            // 5. Atualiza imagem de perfil no banco
+            // 📝 6. Atualiza no banco
             const { error: updateError } = await supabase
-                .from('anama_user') // 👈 substitua pelo nome da sua tabela de usuários
+                .from('anama_user')
                 .update({ profile_image: profileImageUrl })
-                .eq('id_user', id_user); // 👈 ou 'id_user', dependendo da sua estrutura
+                .eq('id_user', id_user);
 
             if (updateError) throw updateError;
 
             console.log('Imagem de perfil atualizada com sucesso:', profileImageUrl);
             setProfileuri(null);
+            fetchUserImagesProfile();
         } catch (err) {
             console.error('Erro ao enviar imagem de perfil:', err.message);
             alert('Erro ao enviar imagem de perfil. Verifique sua conexão ou formato.');
@@ -258,7 +269,7 @@ export default function TopSearch({ user, id_user, signOut }) {
                 onTouchEnd={signOut}
             /> */}
 
-            {profileUri ? (
+            {/* {profileUri ? (
                 <TouchableOpacity style={{ padding: 5 }} onPress={sendProfileImage}>
                     <FontAwesome5 name="cloud-upload-alt" size={40} color="green" />
                 </TouchableOpacity>
@@ -266,7 +277,7 @@ export default function TopSearch({ user, id_user, signOut }) {
                 <TouchableOpacity style={{ padding: 5 }} onPress={pickImageProfile}>
                     <FontAwesome5 name="file-image" size={40} color="blue" />
                 </TouchableOpacity>
-            )}
+            )} */}
             <TextInput
                 placeholder='No que você está pensando?'
                 placeholderTextColor="#000"

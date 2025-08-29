@@ -8,17 +8,18 @@ import { Icon, MD3Colors } from 'react-native-paper';
 import TopSearch from '../../components/topSearch';
 
 import ImageUploader from '../../components/Images';
+import ProfileComponent from '../../components/profile/index.js';
 
 export default function ProfileScreen() {
   const { user, signOut } = useContext(AuthContext);
-  
+  const id_user= user.id_user;
   
   const { container } = HomeStyles;
   return (
     <View style={container}>
       <ScrollView>
         {/* <TopSearch />         */}
-        <ImageUploader id_user={user.id_user} accessToken ={user.token}/>
+        <ProfileComponent user={user} id_user={id_user}/>
       </ScrollView>
     </View>
   )
