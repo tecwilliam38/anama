@@ -22,7 +22,7 @@ const ImagePost = ({ id_user }) => {
 
             if (error) throw error;
             // Atualiza o estado com as URLs das imagens
-            console.log("Imagens recebidas:", data);
+            // console.log("Imagens recebidas:", data);
             setUserImages(data.map(item => item.image_url));
         } catch (err) {
             console.error('Erro ao buscar imagens:', err.message);
@@ -50,9 +50,8 @@ const ImagePost = ({ id_user }) => {
     const dataHoraBrasil = agora.toLocaleString('pt-BR', {
         timeZone: 'America/Sao_Paulo'
     });
-    console.log(dataHoraBrasil);
 
-    const sendImage = async () => {
+     const sendImage = async () => {
         if (!imageUri) return;
 
         const ext = getFileExtension(imageUri);
@@ -119,7 +118,7 @@ const ImagePost = ({ id_user }) => {
 
     useEffect(() => {
         fetchUserImages();
-    }, []);    
+    }, []);
 
     const renderItem = ({ item }) => {
         return (
@@ -132,7 +131,7 @@ const ImagePost = ({ id_user }) => {
     };
 
     return (
-        <View style={{ padding: 20 }}>
+        <View style={{ padding: 20, width: "100%" }}>
             <TouchableOpacity onPress={pickImage} style={styles.buttonCam}>
                 <Ionicons name="camera-outline" size={40} color="#fff" />
             </TouchableOpacity>
@@ -141,15 +140,14 @@ const ImagePost = ({ id_user }) => {
             {imageUri && <Image source={{ uri: imageUri }} style={{ height: 200, marginVertical: 10 }} />}
             <TouchableOpacity onPress={sendImage} style={styles.buttonCam}>
                 <Ionicons name="send" size={40} color="#fff" />
-            </TouchableOpacity>
-            {/* <Button title="Postar imagem" onPress={uploadImage} disabled={loading} /> */}
+            </TouchableOpacity>            
             {loading && <ActivityIndicator />}
 
-            <FlatList
+            {/* <FlatList
                 data={userImages} // array com URLs das imagens
                 renderItem={renderItem}
                 keyExtractor={(item, index) => index.toString()}
-            />
+            /> */}
 
         </View>
     );
