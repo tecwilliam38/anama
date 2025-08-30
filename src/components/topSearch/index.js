@@ -3,7 +3,7 @@
 // junto com um texto de postagem. Também exibe a imagem de perfil do usuário.
 
 import React, { useContext, useEffect, useState } from 'react';
-import { View, TextInput, TouchableOpacity, Image } from 'react-native';
+import { View, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 
 import { HomeStyles } from '../../screens/Home/style';
@@ -124,49 +124,84 @@ export default function TopSearch({ user, id_user }) {
 
     return (
         <View style={topSearch}>
-            {/* Exibe imagem de perfil se disponível */}
-            {userProfile && (
-                <Image
-                    source={{ uri: `${userProfile}?t=${Date.now()}` }} // Cache busting
-                    style={userImage}
-                    onError={(e) => console.log('Erro ao carregar imagem:', e.nativeEvent.error)}
-                />
-            )}
-            <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-                {/* Campo de texto para a postagem */}
+            <View style={styles.inlineContainer}>
+                {userProfile && (
+                    <Image
+                        source={{ uri: `${userProfile}?t=${Date.now()}` }} // Cache busting
+                        style={userImage}
+                        onError={(e) => console.log('Erro ao carregar imagem:', e.nativeEvent.error)}
+                    />
+                )}
+                {/* Campo de texto */}
                 <TextInput
-                    placeholder='No que você está pensando?'
+                    placeholder="No que você está pensando?"
                     placeholderTextColor="#000"
                     multiline
                     value={post_body}
-                    style={topSearchComponent}
                     onChangeText={setPost_body}
+                    style={styles.inputFlex}
+                    returnKeyType="send"
                     onSubmitEditing={sendImage}
-                    returnKeyType="send" // muda o botão do teclado para "Enviar"
-
                 />
 
-                {/* Prévia da imagem selecionada */}
+                {/* Imagem de prévia */}
                 {imageUri && (
-                    <Image source={{ uri: imageUri }} style={{ height: 200, marginVertical: 10 }} />
+                    <Image
+                        source={{ uri: imageUri }}
+                        style={styles.previewImage}
+                    />
                 )}
-            </View>
-            {/* Botão para selecionar ou enviar imagem */}
-            <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-                <TouchableOpacity onPress={pickImage}>
-                    <FontAwesome5 name="file-image" size={40} color="blue" />
-                </TouchableOpacity>
 
-                <TouchableOpacity onPress={takePhoto}>
-                    <FontAwesome5 name="camera" size={40} color="green" />
-                </TouchableOpacity>
-
-                {imageUri && (
-                    <TouchableOpacity onPress={sendImage}>
-                        <FontAwesome5 name="cloud-upload-alt" size={40} color="purple" />
+                {/* Ícones de ação */}
+                <View style={styles.iconColumn}>
+                    <TouchableOpacity onPress={pickImage}>
+                        <FontAwesome5 name="file-image" size={24} color="blue" />
                     </TouchableOpacity>
-                )}
+                    {imageUri && (
+                        <TouchableOpacity onPress={sendImage}>
+                            <FontAwesome5 name="cloud-upload-alt" size={24} color="purple" />
+                        </TouchableOpacity>
+                    )}
+                </View>
             </View>
+
+            {imageUri && (
+                <TouchableOpacity onPress={sendImage}>
+                    <FontAwesome5 name="cloud-upload-alt" size={40} color="purple" />
+                </TouchableOpacity>
+            )}
         </View>
     );
 }
+
+const styles = StyleSheet.create({
+    inlineContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent:"space-around",
+        padding: 10,
+        gap: 10, // se estiver usando React Native 0.71+
+    },
+
+    inputFlex: {
+        flex: 1,
+        borderWidth: 1.5,
+        borderColor: '#ccc',
+        borderRadius: 40,
+        height:100,
+        padding: 8,
+        fontSize: 18,
+    },
+
+    previewImage: {
+        width: 60,
+        height: 60,
+        borderRadius: 8,
+    },
+
+    iconColumn: {
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        gap: 6,
+    }
+})

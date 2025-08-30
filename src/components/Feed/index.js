@@ -42,8 +42,7 @@ export default function FeedComponent({ user, id_user }) {
 
 
     return (
-        <View style={container}>
-            {/* <View style={{ marginTop: 30 }}><Text>{user.user_email}</Text></View> */}
+        <View style={container}>           
             <FlatList
                 data={userImages}
                 renderItem={({ item }) => <PostComponent item={item} />}
@@ -54,3 +53,12 @@ export default function FeedComponent({ user, id_user }) {
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    container: {
+        width: '99%',
+        alignSelf: 'center',
+        padding: 10,
+        backgroundColor: '#fff',
+    },  
+});

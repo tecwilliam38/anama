@@ -12,8 +12,7 @@ export const HomeStyles = StyleSheet.create({
         height: windowHeight,
     },
     topSearch: {
-        width:'99%',
-        padding: 16,
+        width:'99%',        
         backgroundColor: '#fff',
         borderRadius: 12,
         shadowColor: '#000',
@@ -56,6 +55,7 @@ export const HomeStyles = StyleSheet.create({
         backgroundColor: '#007AFF',
         padding: 10,
         borderRadius: 50,
-    }
+    },
+    
 })
 
