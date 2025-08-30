@@ -6,6 +6,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { View, TextInput, TouchableOpacity } from 'react-native';
 import { Image } from 'react-native-elements'; // ⚠️ Pode ser substituído por 'react-native' se não usar recursos extras
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { HomeStyles } from '../../screens/Home/style';
 import { supabase } from '../../api/supabaseClient';
@@ -16,7 +17,7 @@ import { decode } from 'base64-arraybuffer';
 
 import { AuthContext } from '../../context/auth';
 
-export default function TopSearch({ user, id_user, signOut }) {
+export default function TopSearch({ user, id_user }) {
     const { topSearch, userImage, topSearchComponent } = HomeStyles;
     const { profileImage } = useContext(AuthContext);
 
@@ -38,6 +39,22 @@ export default function TopSearch({ user, id_user, signOut }) {
     const pickImage = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images, // ✅ Corrigido: 'images' não é válido
+            quality: 1,
+        });
+
+        if (!result.canceled && result.assets?.length > 0) {
+            setImageUri(result.assets[0].uri);
+        }
+    };
+    // Função para tirar uma foto e postar:
+    const takePhoto = async () => {
+        const permission = await ImagePicker.requestCameraPermissionsAsync();
+        if (!permission.granted) {
+            alert('Permissão da câmera é necessária para tirar fotos.');
+            return;
+        }
+
+        const result = await ImagePicker.launchCameraAsync({
             quality: 0.7,
         });
 
@@ -105,6 +122,31 @@ export default function TopSearch({ user, id_user, signOut }) {
         }
     };
 
+   const sendTextPost = async () => {
+  if (!post_body.trim()) {
+    alert('Digite algo antes de enviar.');
+    return;
+  }
+
+  try {
+    const { error: dbError } = await supabase
+      .from('anama_posts')
+      .insert({       
+        image_url: "", // em vez de null
+        id_user,
+        created_at: new Date().toISOString(),
+        post_body,
+      });
+
+    if (dbError) throw dbError;
+
+    setPost_body(""); // limpa o campo após envio    
+  } catch (err) {
+    console.error('Erro ao enviar postagem:', err.message);
+    alert('Erro ao enviar postagem.');
+  }
+};
+
     return (
         <View style={topSearch}>
             {/* Exibe imagem de perfil se disponível */}
@@ -115,30 +157,43 @@ export default function TopSearch({ user, id_user, signOut }) {
                     onError={(e) => console.log('Erro ao carregar imagem:', e.nativeEvent.error)}
                 />
             )}
+            <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                {/* Campo de texto para a postagem */}
+                <TextInput
+                    placeholder='No que você está pensando?'
+                    placeholderTextColor="#000"
+                    multiline
+                    value={post_body}
+                    style={topSearchComponent}
+                    onChangeText={setPost_body}
+                    onSubmitEditing={sendImage}
+                    returnKeyType="send" // muda o botão do teclado para "Enviar"
 
-            {/* Campo de texto para a postagem */}
-            <TextInput
-                placeholder='No que você está pensando?'
-                placeholderTextColor="#000"
-                multiline
-                value={post_body}
-                style={topSearchComponent}
-                onChangeText={setPost_body}
-            />
-
-            {/* Prévia da imagem selecionada */}
-            {imageUri && (
-                <Image source={{ uri: imageUri }} style={{ height: 200, marginVertical: 10 }} />
-            )}
-
-            {/* Botão para selecionar ou enviar imagem */}
-            <TouchableOpacity style={{ padding: 5 }} onPress={imageUri ? sendImage : pickImage}>
-                <FontAwesome5
-                    name={imageUri ? "cloud-upload-alt" : "file-image"}
-                    size={40}
-                    color="blue"
                 />
-            </TouchableOpacity>
+                <TouchableOpacity onPress={sendTextPost}>
+                    <Ionicons name="send" size={40} color="blue" />
+                </TouchableOpacity>
+                {/* Prévia da imagem selecionada */}
+                {imageUri && (
+                    <Image source={{ uri: imageUri }} style={{ height: 200, marginVertical: 10 }} />
+                )}
+            </View>
+            {/* Botão para selecionar ou enviar imagem */}
+            <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                <TouchableOpacity onPress={pickImage}>
+                    <FontAwesome5 name="file-image" size={40} color="blue" />
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={takePhoto}>
+                    <FontAwesome5 name="camera" size={40} color="green" />
+                </TouchableOpacity>
+
+                {imageUri && (
+                    <TouchableOpacity onPress={sendImage}>
+                        <FontAwesome5 name="cloud-upload-alt" size={40} color="purple" />
+                    </TouchableOpacity>
+                )}
+            </View>
         </View>
     );
 }
