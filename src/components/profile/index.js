@@ -19,7 +19,7 @@ export default function ProfileComponent({ user, id_user }) {
     const [loading, setLoading] = useState(true);
     const [profileUri, setProfileuri] = useState(null)
 
-    const { signOut } = useContext(AuthContext)
+    const { signOut, profileImage, setProfileImage } = useContext(AuthContext)
 
     const getFileExtension = (uri) => uri.split('.').pop().toLowerCase();
     const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
@@ -50,6 +50,7 @@ export default function ProfileComponent({ user, id_user }) {
 
     useEffect(() => {
         ProfileLoad(id_user)
+        setProfileImage(userData.profile)
     }, []);
 
     const handleChangePhoto = async () => {
@@ -126,14 +127,15 @@ export default function ProfileComponent({ user, id_user }) {
             console.log('Imagem de perfil atualizada com sucesso:', profileImageUrl);
             setUserData(prev => ({ ...prev, profile: profileImageUrl, }));
             setProfileuri(null);
+            setProfileImage(profileImageUrl);
             ProfileLoad(id_user);
+            console.log('URL enviada para o contexto:', profileImageUrl);
 
         } catch (err) {
             console.error('Erro ao enviar imagem de perfil:', err.message);
             alert('Erro ao enviar imagem de perfil. Verifique sua conexão ou formato.');
         }
     };
-
     return (
 
         <View style={styles.card}>

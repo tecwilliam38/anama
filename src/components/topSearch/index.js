@@ -18,7 +18,9 @@ import { AuthContext } from '../../context/auth';
 
 export default function TopSearch({ user, id_user, signOut }) {
     const { topSearch, userImage, topSearchComponent, topSearchText } = HomeStyles;
-    // const { profileImageUrl } = useContext(AuthContext);
+
+    const { profileImage } = useContext(AuthContext);
+
 
 
     const [imageUri, setImageUri] = useState(null);
@@ -85,17 +87,6 @@ export default function TopSearch({ user, id_user, signOut }) {
         }
     };
 
-    const pickImageProfile = async () => {
-        const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ['images'], // 👈 mais seguro
-            quality: 0.7,
-        });
-
-        if (!result.canceled && result.assets.length > 0) {
-            const selectedUri = result.assets[0].uri;
-            setProfileuri(selectedUri); // 👈 agora sim!
-        }
-    };
 
     const sendImage = async () => {
         if (!imageUri) return;
@@ -164,12 +155,13 @@ export default function TopSearch({ user, id_user, signOut }) {
             alert('Erro ao enviar imagem. Verifique sua conexão ou o formato do arquivo.');
         }
     };
-    // console.log(userProfile);
+    console.log("aqui profileimage:", profileImage);
 
     useEffect(() => {
         fetchUserImagesProfile();
         fetchUserImages();
-    }, []);
+    }, [profileImage]);
+
 
     const renderItem = ({ item }) => {
         return (
@@ -185,7 +177,8 @@ export default function TopSearch({ user, id_user, signOut }) {
         <View style={topSearch}>
             {userProfile ? (
                 <Image
-                    source={{ uri: `${userProfile}?t=${Date.now()}` }}
+                    source={{ uri: profileImage }}
+                    // source={{ uri: `${userProfile || profileImage}?t=${Date.now()}` }}
                     style={userImage}
                     onError={(e) => console.log('Erro ao carregar imagem:', e.nativeEvent.error)}
                 />
