@@ -1,169 +1,214 @@
 import React, { useState, useContext, useEffect, useRef } from 'react';
 import {
-    View,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    Alert,
-    FlatList,
-    Modal,
-    StyleSheet,
-    Animated,
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+  Modal,
+  StyleSheet,
+  Animated,
 } from 'react-native';
 import { AuthContext } from '../../context/auth';
 import api from '../../api';
 import { AntDesign } from '@expo/vector-icons';
-import { ActivityIndicator } from 'react-native-paper';
+import { Icon } from 'react-native-elements';
 
 export default function AddFriendByContact({ userId, onFriendAdded }) {
-    const [contact, setContact] = useState('');
-    const { user } = useContext(AuthContext);
-    const [modalVisible, setModalVisible] = useState(false);
-    const fadeAnim = useRef(new Animated.Value(0)).current;
-    const slideAnim = useRef(new Animated.Value(300)).current;
+  const [contact, setContact] = useState('');
+  const { user } = useContext(AuthContext);
+  const [modalVisible, setModalVisible] = useState(false);
 
-    useEffect(() => {
-        if (modalVisible) {
-            Animated.parallel([
-                Animated.timing(slideAnim, {
-                    toValue: 0,
-                    duration: 600,
-                    useNativeDriver: true,
-                }),
-                Animated.timing(fadeAnim, {
-                    toValue: 1,
-                    duration: 600,
-                    useNativeDriver: true,
-                }),
-            ]).start();
-        } else {
-            fadeAnim.setValue(0.5);
-            slideAnim.setValue(300);
+  // Animações para entrada do modal
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(300)).current;
+
+  useEffect(() => {
+    if (modalVisible) {
+      // Anima modal ao abrir
+      Animated.parallel([
+        Animated.timing(slideAnim, {
+          toValue: 0,
+          duration: 600,
+          useNativeDriver: true,
+        }),
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 600,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    } else {
+      // Reseta animações ao fechar
+      fadeAnim.setValue(0);
+      slideAnim.setValue(300);
+    }
+  }, [modalVisible]);
+
+  // Função para adicionar amigo via contato
+  const addFriend = async () => {
+    if (!contact.trim()) return; // Evita envio vazio
+
+    try {
+      const res = await api.post(
+        "/friends/contact",
+        {
+          requester_id: userId,
+          contact_info: contact,
+        },
+        {
+          headers: { Authorization: `Bearer ${user.token}` },
         }
-    }, [modalVisible]);
+      );
 
+      if (res.status >= 200 && res.status < 300) {
+        setContact('');
+        setModalVisible(false); // Fecha modal
+        if (onFriendAdded) onFriendAdded(); // Atualiza lista no componente pai
+      } else {
+        Alert.alert('Erro', 'Não foi possível adicionar o amigo.');
+      }
+    } catch (err) {
+      console.log('Erro ao adicionar amigo:', err);
+      Alert.alert('Erro', 'Não foi possível adicionar o amigo.');
+    }
+  };
 
+  return (
+    <View style={styles.container}>
+      {/* Botão para abrir modal */}
+      <TouchableOpacity
+        onPress={() => setModalVisible(true)}
+        style={styles.openButton}
+      >
+        <AntDesign name="adduser" size={28} color="white" />
+      </TouchableOpacity>
 
-    const addFriend = async () => {
-        if (!contact.trim()) return;
-
-        try {
-            const res = await api.post("/friends/contact", {
-                requester_id: userId,
-                contact_info: contact
-            }, {
-                headers: { Authorization: `Bearer ${user.token}` }
-            });
-
-            // Alert.alert('Sucesso', 'Amigo adicionado!');
-            setContact('');
-            setModalVisible(false)
-            if (onFriendAdded) {
-                onFriendAdded();
-            } // Atualiza lista de amigos
-        } catch (err) {
-            console.log('Erro ao adicionar amigo:', err);
-            Alert.alert('Erro', 'Não foi possível adicionar o amigo.');
-        }
-    };
-    return (
-        <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 10 }}>
+      {/* Modal de adicionar amigo */}
+      <Modal
+        animationType="slide"
+        transparent
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.overlay}>
+          <Animated.View
+            style={[
+              styles.modalContent,
+              {
+                transform: [{ translateY: slideAnim }],
+                opacity: fadeAnim,
+              },
+            ]}
+          >
+            {/* Botão de fechar modal */}
             <TouchableOpacity
-                onPress={() => setModalVisible(true)}
-                style={styles.openButton}
+              onPress={() => setModalVisible(false)}
+              style={styles.closeIcon}
             >
-                <AntDesign name="adduser" size={28} color="white" />
+              <Icon name="close" size={24} color="#fff" />
             </TouchableOpacity>
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => setModalVisible(false)}
-            >
-                <View style={styles.overlay}>
-                    <Animated.View style={[styles.modalContent, {
-                        transform: [{ translateY: slideAnim }],
-                        opacity: fadeAnim
-                    }]}>
-                        <Text style={styles.title}>Adicionar amigo</Text>
-                        <TextInput
-                            placeholder="Email ou telefone"
-                            placeholderTextColor="#555"
-                            style={styles.input}
-                            value={contact}
-                            onChangeText={setContact}
-                        />
-                        <View style={styles.buttonRow}>
-                            <TouchableOpacity onPress={addFriend} style={styles.confirmButton}>
-                                <Text style={styles.buttonText}>Adicionar</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.cancelButton}>
-                                <Text style={styles.buttonText}>Cancelar</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </Animated.View>
-                </View>
-            </Modal>
+
+            <Text style={styles.title}>Adicionar amigo</Text>
+
+            {/* Campo de contato */}
+            <TextInput
+              placeholder="Email ou telefone"
+              placeholderTextColor="#555"
+              style={styles.input}
+              value={contact}
+              onChangeText={setContact}
+            />
+
+            {/* Botões de ação */}
+            <View style={styles.buttonRow}>
+              <TouchableOpacity onPress={addFriend} style={styles.confirmButton}>
+                <Text style={styles.buttonText}>Adicionar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.cancelButton}>
+                <Text style={styles.buttonText}>Cancelar</Text>
+              </TouchableOpacity>
+            </View>
+          </Animated.View>
         </View>
-    );
+      </Modal>
+    </View>
+  );
 }
+
 const styles = StyleSheet.create({
-    openButton: {
-        backgroundColor: '#4CAF50',
-        padding: 12,
-        borderRadius: 50,
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: 60,
-        height: 60,
-    },
-    overlay: {
-        flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.2)',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    modalContent: {
-        backgroundColor: '#fff',
-        padding: 20,
-        borderRadius: 12,
-        width: '80%',
-        elevation: 5,
-    },
-    title: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 12,
-        textAlign: 'center',
-    },
-    input: {
-        borderWidth: 1,
-        borderColor: '#ccc',
-        padding: 10,
-        borderRadius: 8,
-        marginBottom: 16,
-    },
-    buttonRow: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-    },
-    confirmButton: {
-        backgroundColor: 'rgba(85, 152, 207, 1)',
-        padding: 10,
-        borderRadius: 8,
-        flex: 1,
-        marginRight: 8,
-    },
-    cancelButton: {
-        backgroundColor: '#f44336',
-        padding: 10,
-        borderRadius: 8,
-        flex: 1,
-        marginLeft: 8,
-    },
-    buttonText: {
-        color: 'white',
-        textAlign: 'center',
-        fontWeight: '600',
-    },
+  container: {
+    flexDirection: 'row',
+    width: '100%',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  openButton: {
+    backgroundColor: '#4CAF50',
+    padding: 12,
+    borderRadius: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 100,
+    height: 60,
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    width: '85%',
+    backgroundColor: '#009C3B',
+    borderRadius: 12,
+    padding: 20,
+    elevation: 5,
+    position: 'relative',
+  },
+  closeIcon: {
+    position: 'absolute',
+    top: 12,
+    right: 12,
+    backgroundColor: '#002776',
+    padding: 6,
+    borderRadius: 20,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#FFD700',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    padding: 10,
+    borderRadius: 8,
+    marginBottom: 16,
+    backgroundColor: '#fff',
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  confirmButton: {
+    backgroundColor: '#002776',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+  },
+  cancelButton: {
+    backgroundColor: '#FFD700',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
 });
+

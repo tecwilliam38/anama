@@ -142,28 +142,29 @@ export default function ProfileComponent({ user, id_user }) {
                 <ActivityIndicator size="large" color="#007AFF" />
             ) : userData ? (
                 <>
-                    <View style={styles.profileContainer}>
+                    <View style={stylesinline.imageContainer}>
                         <Image
                             source={{ uri: `${userData.profile}?t=${Date.now()}` }}
-                            style={styles.profileImage}
-                            resizeMode='cover'
+                            style={stylesinline.profileImage}
+                            resizeMode="cover"
                         />
+
+                        {/* Ícone sobreposto no canto superior direito */}
                         {profileUri ? (
                             <TouchableOpacity
-                                style={{ padding: 5 }}
+                                style={stylesinline.uploadIcon}
                                 onPress={sendProfileImage}
                             >
-                                <FontAwesome5 name="cloud-upload-alt" size={40} color="yellow" />
+                                <FontAwesome5 name="cloud-upload-alt" size={24} color="yellow" />
                             </TouchableOpacity>
                         ) : (
                             <TouchableOpacity
                                 onPress={handleChangePhoto}
-                                style={styles.editButton}
+                                style={stylesinline.cameraIcon}
                             >
                                 <Icon name="camera" size={24} color="#007AFF" />
                             </TouchableOpacity>
                         )}
-
                     </View>
 
                     <Text style={styles.title}>Perfil do Usuário</Text>
@@ -206,3 +207,35 @@ export default function ProfileComponent({ user, id_user }) {
     )
 }
 
+const stylesinline = StyleSheet.create({
+  imageContainer: {
+    position: 'relative', // necessário para posicionar filhos com absolute
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    overflow: 'hidden',
+  },
+  profileImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 60,
+  },
+  cameraIcon: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    backgroundColor: 'white',
+    padding: 6,
+    borderRadius: 20,
+    elevation: 3, // sombra no Android
+  },
+  uploadIcon: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    backgroundColor: 'white',
+    padding: 6,
+    borderRadius: 20,
+    elevation: 3,
+  },
+});
