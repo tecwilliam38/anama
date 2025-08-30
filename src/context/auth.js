@@ -6,7 +6,6 @@ export const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [profileImageUrl, setProfileImageUrl] = useState(null);
   const [profileImage, setProfileImage] = useState(null);
 
   // const fetchUserImagesProfile = async () => {
@@ -70,7 +69,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, signIn, signOut, profileImageUrl, setProfileImageUrl, profileImage, setProfileImage }}>
+      value={{ user, signIn, signOut, profileImage, setProfileImage }}>
       {children}
     </AuthContext.Provider>
   );

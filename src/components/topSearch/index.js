@@ -155,7 +155,6 @@ export default function TopSearch({ user, id_user, signOut }) {
             alert('Erro ao enviar imagem. Verifique sua conexão ou o formato do arquivo.');
         }
     };
-    console.log("aqui profileimage:", profileImage);
 
     useEffect(() => {
         fetchUserImagesProfile();
