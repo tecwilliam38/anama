@@ -26,7 +26,6 @@ export default function ProfileComponent({ user, id_user }) {
 
 
     async function ProfileLoad(id_user) {
-
         try {
             const response = await api.get(`/user/profile/${id_user}`, {
                 headers: {

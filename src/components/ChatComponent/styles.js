@@ -19,7 +19,7 @@ export const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 8,
     marginRight: 10,
-  },  
+  },
   messageBubble: {
     maxWidth: '75%',
     padding: 10,
@@ -50,7 +50,7 @@ export const styles = StyleSheet.create({
   header: {
     width: '100%',
     height: 100,
-    marginTop: '5%',
+    marginTop: '1%',
     borderWidth: 2,
     borderColor: '#000',
     borderBottomWidth: 3,
@@ -59,14 +59,23 @@ export const styles = StyleSheet.create({
   },
   buttonStyle: {
     width: "100%",
-    alignItems: 'center',         // centraliza horizontalmente o LinearGradient
-    padding: 10,
+    alignItems: 'center',
+    justifyContent: "space-between",
+    flexDirection: "row",        // centraliza horizontalmente o LinearGradient
+    paddingHorizontal: 20,
+    paddingVertical:15,    
     borderRadius: 8,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+  },
+  friendImageProfile: {
+    width: 50,
+    height: 50,
+    margin: 5,
+    borderRadius: 50
   },
   headerText: {
     marginHorizontal: 8,
@@ -77,10 +86,15 @@ export const styles = StyleSheet.create({
   },
   buttonText: {
     height: 60,
-    width: '30%',
+    // width: '30%',
     // marginLeft: 10,
     alignItems: "center",
     justifyContent: "center",
+  },
+  buttonTextgoback: {
+    top:10,
+    marginHorizontal: 10,    
+    
   }
 });
 

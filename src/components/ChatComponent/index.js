@@ -1,4 +1,4 @@
-import { View, Text, FlatList, TouchableOpacity, ScrollView,TextInput, ToastAndroid, KeyboardAvoidingView, Platform, } from 'react-native'
+import { View, Text, FlatList, Image, TouchableOpacity, ScrollView, TextInput, ToastAndroid, KeyboardAvoidingView, Platform, } from 'react-native'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { styles } from './styles';
 import { supabase } from '../../api/supabaseClient';
@@ -101,8 +101,32 @@ export default function ChatComponent({ userId, token }) {
         }
     };
 
+    const [friendData, setFriendData] = useState(null);
+
+    useEffect(() => {
+        const fetchFriendInfo = async () => {
+            try {
+                const { data, error } = await supabase
+                    .from('anama_user')
+                    .select('user_email, user_name, profile_image, user_cel_phone')
+                    .eq('id_user', receiver_id)
+                    .single();
+
+                if (error) throw error;
+
+                setFriendData(data);
+            } catch (err) {
+                console.error('Erro ao buscar telefone do amigo:', err.message);
+            }
+        };
+
+        fetchFriendInfo();
+    }, [receiver_id]);
+
+
     const renderItem = ({ item }) => {
         const timestamp = item.enviadas;
+
 
         const horaFormatada = new Date(timestamp).toLocaleTimeString('pt-BR', {
             hour: '2-digit',
@@ -138,9 +162,24 @@ export default function ChatComponent({ userId, token }) {
                     end={{ x: 1, y: 1 }}
                     style={styles.buttonStyle}
                 >
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <Text style={styles.headerText}>Clique para voltar {user.user_name || 'Conversa teste'}</Text>
+
+                    <Image
+                        source={{ uri: friendData?.profile_image }}
+                        style={styles.friendImageProfile}
+                        resizeMode='cover'
+                    />
+                    <TouchableOpacity style={{flexDirection:"row"}} onPress={() => navigation.goBack()}>
+                        <Text style={styles.headerText}>
+                            {friendData?.user_name || user.user_email || 'Conversa teste'}
+                        </Text>
+                            <MaterialCommunityIcons
+                                style={styles.buttonTextgoback}
+                                name={"send"}
+                                size={34}
+                                color="white"
+                            />
                     </TouchableOpacity>
+
                 </LinearGradient>
 
                 <FlatList
@@ -152,13 +191,13 @@ export default function ChatComponent({ userId, token }) {
                 />
 
                 <View style={inputArea}>
-                  <TextInput
+                    <TextInput
                         style={input}
                         value={message}
                         onChangeText={setMessage}
                         placeholder="Mensagem"
                         placeholderTextColor="#000"
-                        // right={<TextInput.Icon icon="paperclip" onPress={() => console.log('Anexar arquivo')} />}
+                    // right={<TextInput.Icon icon="paperclip" onPress={() => console.log('Anexar arquivo')} />}
                     />
                     <LinearGradient
                         colors={["rgba(27, 47, 90, 1)", "rgba(66, 101, 170, 1)", "rgba(51, 201, 113, 1)", "rgba(237, 247, 124, 1)"]}

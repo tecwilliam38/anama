@@ -8,26 +8,6 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [profileImage, setProfileImage] = useState(null);
 
-  // const fetchUserImagesProfile = async () => {
-  //   try {
-  //     const { data, error } = await supabase
-  //       .from('anama_user')
-  //       .select('profile_image')
-  //       .eq('id_user', id_user)
-  //       .single()
-
-  //     if (error) throw error;
-
-  //     // Verifica se há dados e acessa o primeiro item
-  //     const imageUrl = data?.profile_image; // <- extrai a string da URL
-  //     setUserProfile(imageUrl); // agora userProfile será uma string
-  //     setProfileImage(imageUrl)
-  //   } catch (err) {
-  //     console.error('Erro ao buscar imagens aqui:', err.message);
-  //     // alert('Erro ao carregar imagens. Tente novamente mais tarde.');
-  //   }
-  // };
-
   useEffect(() => {
     const loadUserData = async () => {
       try {

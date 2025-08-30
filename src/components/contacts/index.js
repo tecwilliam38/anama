@@ -1,16 +1,19 @@
 import { View, Text, StyleSheet, FlatList, Dimensions, TouchableOpacity } from 'react-native'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import api from '../../api';
 import { ActivityIndicator } from 'react-native-paper';
 import { ContactStyles } from './styles';
 import { Image } from 'react-native-elements';
 import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
+import { AuthContext } from '../../context/auth';
+import { supabase } from '../../api/supabaseClient';
 
 export default function ContatosComponents({ userId, token }) {
 
     const [friends, setFriends] = useState([]);
     const [loading, setLoading] = useState(true);
     const [chatMessages, setChatMessages] = useState([]);
+    const [friendImage, setFriendImage] = useState(null);
     const navigation = useNavigation();
     const route = useRoute();
     const receiver_id = route.params?.receiver_id || 2;
@@ -21,6 +24,28 @@ export default function ContatosComponents({ userId, token }) {
         }, [receiver_id])
     );
 
+    const fetchUserImagesProfile = async (receiver_id) => {
+        try {
+            const { data, error } = await supabase
+                .from('anama_user')
+                .select('profile_image')
+                .eq('id_user', receiver_id)
+                .single()
+
+            if (error) throw error;
+
+            // Verifica se há dados e acessa o primeiro item
+            const imageUrl = data?.profile_image; // <- extrai a string da URL
+            setUserProfile(imageUrl); // agora userProfile será uma string
+            setFriendImage(imageUrl)
+            // console.log("userprofile:", imageUrl);
+
+        } catch (err) {
+            console.error('Erro ao buscar imagens aqui:', err.message);
+            // alert('Erro ao carregar imagens. Tente novamente mais tarde.');
+        }
+    };
+
 
     const fetchFriendsWithMessages = async () => {
         try {
@@ -30,26 +55,37 @@ export default function ContatosComponents({ userId, token }) {
 
             const friendsData = res.data;
 
-            // Para cada amigo, buscar a última mensagem
             const enrichedFriends = await Promise.all(
                 friendsData.map(async (friend) => {
                     try {
+                        // Busca última mensagem
                         const msgRes = await api.get(`/messages/users/${friend.friend_id}`, {
                             headers: { Authorization: `Bearer ${token}` }
                         });
-
                         const mensagens = msgRes.data;
                         const ultima = mensagens[mensagens.length - 1];
 
+                        // Busca imagem de perfil
+                        const { data: profileData, error: profileError } = await supabase
+                            .from('anama_user')
+                            .select('profile_image')
+                            .eq('id_user', friend.friend_id)
+                            .single();
+
+                        // .eq('id_user', receiver_id)
+                        if (profileError) throw profileError;
+                        // console.log("Buscando imagem para:", friend.data);
                         return {
                             ...friend,
-                            last_message: ultima || null
+                            last_message: ultima || null,
+                            profile_image: profileData?.profile_image || null
                         };
                     } catch (err) {
-                        console.log(`Erro ao buscar mensagens de ${friend.friend_id}`, err);
+                        console.log(`Erro ao buscar dados de ${friend.friend_id}`, err);
                         return {
                             ...friend,
-                            last_message: null
+                            last_message: null,
+                            profile_image: null
                         };
                     }
                 })
@@ -62,6 +98,8 @@ export default function ContatosComponents({ userId, token }) {
             setLoading(false);
         }
     };
+
+
     const fetchMessages = async () => {
         try {
             const response = await api.get(`/messages/users/${receiver_id}`, {
@@ -109,10 +147,8 @@ export default function ContatosComponents({ userId, token }) {
 
     const renderItem = ({ item }) => {
         const lastMessages = item.chatMessages?.enviadas || [];
-
         // Pegando o último timestamp, se existir
         const lastTimestamp = lastMessages.length > 0 ? lastMessages[lastMessages.length - 1]?.timestamp : null;
-
 
         const horaFormatada = lastTimestamp
             ? new Date(lastTimestamp).toLocaleTimeString('pt-BR', {
@@ -124,10 +160,17 @@ export default function ContatosComponents({ userId, token }) {
         return (
             <>
                 <TouchableOpacity onPress={() => openChatWithFriend(item.friend_id)}>
+
                     <View style={ContactStyles.contactBody}>
-                        <Image source={require("../../assets/home.png")}
+                        <Image
+                            source={
+                                item.profile_image
+                                    ? { uri: `${item.profile_image}?t=${Date.now()}` }
+                                    : require("../../assets/clock.png")
+                            }
                             style={ContactStyles.userImage}
                         />
+
                         <View style={ContactStyles.friendCenter}>
                             <View style={ContactStyles.friendData}>
                                 <Text numberOfLines={1}
@@ -147,7 +190,7 @@ export default function ContatosComponents({ userId, token }) {
                                             timeZone: 'America/Sao_Paulo',
                                         })
                                         : 'Sem hora'}
-                                </Text>                              
+                                </Text>
                                 <View style={ContactStyles.friendBottomIcons}>
                                     <Text numberOfLines={1}
                                         ellipsizeMode="tail"
