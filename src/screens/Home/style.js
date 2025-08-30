@@ -12,7 +12,7 @@ export const HomeStyles = StyleSheet.create({
         height: windowHeight,
     },
     topSearch: {
-
+        width:'99%',
         padding: 16,
         backgroundColor: '#fff',
         borderRadius: 12,
@@ -20,8 +20,8 @@ export const HomeStyles = StyleSheet.create({
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 4,
-        elevation: 3, // para Android
-        margin: 10,
+        elevation: 1, // para Android
+        marginBottom: 10,
     },
     topSearchComponent: {
         borderWidth: 1,

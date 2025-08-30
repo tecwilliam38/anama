@@ -5,9 +5,11 @@ import { StyleSheet } from "react-native";
 export const feedStyle = StyleSheet.create({
     container: {
         flex: 1,
+        width:"100%",
     },
     listContainer: {
         width: "100%",
+        height:500,
     },
     itemBody: {
         alignItems: 'center',
@@ -58,6 +60,7 @@ export const feedStyle = StyleSheet.create({
     itemImage: {
         width: "100%",
         height: 460,
-        borderRadius: 12,        
+        borderRadius: 12,  
+        border:3      
     }
 })

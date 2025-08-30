@@ -1,21 +1,17 @@
+
 import { View, Text, StyleSheet, FlatList, Dimensions, Image } from 'react-native'
 import { feedStyle } from './styles.js';
-import { useContext, useEffect, useState } from 'react';
-import axios from 'axios';
-import { AuthContext } from '../../context/auth.js';
+import { useEffect, useState } from 'react';
 import { supabase } from '../../api/supabaseClient.js';
+import PostComponent from './post.js';
 
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
 
-export default function FeedScreen({ user, id_user }) {
-    const { itemBody,
-        title,
+
+export default function FeedComponent({ user, id_user }) {
+    const {
         container,
         listContainer,
-        itemImage,
-        titleDescription,
-        titleEpisodios, titleRank, itemDescription } = feedStyle;
+    } = feedStyle;
 
 
     const [userImages, setUserImages] = useState([]);
@@ -33,38 +29,24 @@ export default function FeedScreen({ user, id_user }) {
                 .order('created_at', { ascending: false });
 
             if (error) throw error;
-        
+
             setUserImages(data.map(item => ({
                 image: item.image_url,
                 body_text: item.post_body
             })
             ));
         } catch (err) {
-            console.error('Erro ao buscar imagens:', err.message);        
+            console.error('Erro ao buscar imagens:', err.message);
         }
     };
 
-    const renderItem = ({ item }) => {
-        return (
-            <View style={itemBody}>
-                <Image
-                    source={{ uri: item.image }}
-                    style={itemImage}
-                    resizeMode='cover'
-                />
-                <Text>
-                    {item.body_text}
-                </Text>
-            </View>
-        )
-    };
 
     return (
         <View style={container}>
             {/* <View style={{ marginTop: 30 }}><Text>{user.user_email}</Text></View> */}
             <FlatList
                 data={userImages}
-                renderItem={renderItem}
+                renderItem={({ item }) => <PostComponent item={item} />}
                 keyExtractor={(item, index) => index.toString()}
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={listContainer}
@@ -72,5 +54,3 @@ export default function FeedScreen({ user, id_user }) {
         </View>
     )
 }
-
-

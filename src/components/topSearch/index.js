@@ -3,10 +3,8 @@
 // junto com um texto de postagem. Também exibe a imagem de perfil do usuário.
 
 import React, { useContext, useEffect, useState } from 'react';
-import { View, TextInput, TouchableOpacity } from 'react-native';
-import { Image } from 'react-native-elements'; // ⚠️ Pode ser substituído por 'react-native' se não usar recursos extras
+import { View, TextInput, TouchableOpacity, Image } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { HomeStyles } from '../../screens/Home/style';
 import { supabase } from '../../api/supabaseClient';
@@ -27,8 +25,8 @@ export default function TopSearch({ user, id_user }) {
 
     // Atualiza imagem de perfil quando 'profileImage' muda
     useEffect(() => {
-        setUserProfile(user?.profile_image); // ✅ Adicionado operador de segurança
-    }, [profileImage]);
+        setUserProfile(user?.profile_image);
+    }, [user?.profile_image]);
 
     const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
 
@@ -122,30 +120,7 @@ export default function TopSearch({ user, id_user }) {
         }
     };
 
-   const sendTextPost = async () => {
-  if (!post_body.trim()) {
-    alert('Digite algo antes de enviar.');
-    return;
-  }
 
-  try {
-    const { error: dbError } = await supabase
-      .from('anama_posts')
-      .insert({       
-        image_url: "", // em vez de null
-        id_user,
-        created_at: new Date().toISOString(),
-        post_body,
-      });
-
-    if (dbError) throw dbError;
-
-    setPost_body(""); // limpa o campo após envio    
-  } catch (err) {
-    console.error('Erro ao enviar postagem:', err.message);
-    alert('Erro ao enviar postagem.');
-  }
-};
 
     return (
         <View style={topSearch}>
@@ -170,9 +145,7 @@ export default function TopSearch({ user, id_user }) {
                     returnKeyType="send" // muda o botão do teclado para "Enviar"
 
                 />
-                <TouchableOpacity onPress={sendTextPost}>
-                    <Ionicons name="send" size={40} color="blue" />
-                </TouchableOpacity>
+
                 {/* Prévia da imagem selecionada */}
                 {imageUri && (
                     <Image source={{ uri: imageUri }} style={{ height: 200, marginVertical: 10 }} />
