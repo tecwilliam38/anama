@@ -177,8 +177,8 @@ export default function TopSearch({ user, id_user, signOut }) {
         <View style={topSearch}>
             {userProfile ? (
                 <Image
-                    source={{ uri: profileImage }}
-                    // source={{ uri: `${userProfile || profileImage}?t=${Date.now()}` }}
+                    // source={{ uri: profileImage }}
+                    source={{ uri: `${profileImage}?t=${Date.now()}` }}
                     style={userImage}
                     onError={(e) => console.log('Erro ao carregar imagem:', e.nativeEvent.error)}
                 />
