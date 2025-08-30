@@ -1,10 +1,14 @@
+// Componente TopSearch desenvolvido por William com colaboração de Microsoft Copilot 🤝
+// Este componente permite ao usuário selecionar uma imagem, visualizar uma prévia e enviá-la para o Supabase,
+// junto com um texto de postagem. Também exibe a imagem de perfil do usuário.
+
 import React, { useContext, useEffect, useState } from 'react';
 import { View, TextInput, TouchableOpacity } from 'react-native';
-import { Image } from 'react-native-elements'; // ⚠️ Pode ser substituído por react-native padrão se não usar recursos extras
+import { Image } from 'react-native-elements'; // ⚠️ Pode ser substituído por 'react-native' se não usar recursos extras
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 
 import { HomeStyles } from '../../screens/Home/style';
-import { supabase } from '../../api/supabaseClient'; // ✅ Removi supabaseKey e supabaseUrl pois não são usados
+import { supabase } from '../../api/supabaseClient';
 
 import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
@@ -12,43 +16,37 @@ import { decode } from 'base64-arraybuffer';
 
 import { AuthContext } from '../../context/auth';
 
-
-
 export default function TopSearch({ user, id_user, signOut }) {
     const { topSearch, userImage, topSearchComponent } = HomeStyles;
     const { profileImage } = useContext(AuthContext);
 
-    useEffect(() => {
-        setUserProfile(user.profile_image)       
-    }, [profileImage]);
-    // 
+    const [imageUri, setImageUri] = useState(null); // URI da imagem selecionada
+    const [userProfile, setUserProfile] = useState(null); // URL da imagem de perfil
+    const [post_body, setPost_body] = useState(""); // Texto da postagem
 
-    const [imageUri, setImageUri] = useState(null);
-    const [userImages, setUserImages] = useState([]); // ⚠️ Não está sendo usado no render
-    const [userProfile, setUserProfile] = useState(null); // ⚠️ Também não está sendo usado diretamente
-    const [post_body, setPost_body] = useState("");
+    // Atualiza imagem de perfil quando 'profileImage' muda
+    useEffect(() => {
+        setUserProfile(user?.profile_image); // ✅ Adicionado operador de segurança
+    }, [profileImage]);
 
     const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
 
+    // Extrai a extensão do arquivo a partir da URI
     const getFileExtension = (uri) => uri.split('.').pop().toLowerCase();
 
-    const agora = new Date();
-    const dataHoraBrasil = agora.toLocaleString('pt-BR', {
-        timeZone: 'America/Sao_Paulo'
-    });
-
-
+    // Função para selecionar imagem da galeria
     const pickImage = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ['images'],
+            mediaTypes: ImagePicker.MediaTypeOptions.Images, // ✅ Corrigido: 'images' não é válido
             quality: 0.7,
         });
-        if (!result.canceled && result.assets.length > 0) {
+
+        if (!result.canceled && result.assets?.length > 0) {
             setImageUri(result.assets[0].uri);
         }
     };
 
-
+    // Função para enviar imagem ao Supabase
     const sendImage = async () => {
         if (!imageUri) return;
 
@@ -67,6 +65,7 @@ export default function TopSearch({ user, id_user, signOut }) {
             const arrayBuffer = decode(base64Data);
             const fileName = `${id_user}/${Date.now()}.${ext}`;
 
+            // Upload da imagem para o bucket 'anama'
             const { error: uploadError } = await supabase.storage
                 .from('anama')
                 .upload(fileName, arrayBuffer, {
@@ -76,6 +75,7 @@ export default function TopSearch({ user, id_user, signOut }) {
 
             if (uploadError) throw uploadError;
 
+            // Obtém URL pública da imagem
             const { data: publicUrlData, error: publicUrlError } = supabase.storage
                 .from('anama')
                 .getPublicUrl(fileName);
@@ -84,6 +84,7 @@ export default function TopSearch({ user, id_user, signOut }) {
 
             const imageUrl = publicUrlData.publicUrl;
 
+            // Insere registro no banco de dados
             const { error: dbError } = await supabase
                 .from('anama_posts')
                 .insert({
@@ -95,35 +96,27 @@ export default function TopSearch({ user, id_user, signOut }) {
 
             if (dbError) throw dbError;
 
+            // Limpa os campos após envio
             setImageUri(null);
             setPost_body("");
-            fetchUserImages();
         } catch (err) {
             console.error('Erro ao enviar imagem:', err.message);
             alert('Erro ao enviar imagem.');
         }
     };
 
-    const renderItem = ({ item }) => {
-        return (
-            <Image
-                source={{ uri: item }}
-                style={{ width: 100, height: 200, margin: 5, borderRadius: 8 }}
-                resizeMode='cover'
-            />
-        )
-    };
-
     return (
         <View style={topSearch}>
+            {/* Exibe imagem de perfil se disponível */}
             {userProfile && (
                 <Image
-                    source={{ uri: `${userProfile}?t=${Date.now()}` }}
+                    source={{ uri: `${userProfile}?t=${Date.now()}` }} // Cache busting
                     style={userImage}
                     onError={(e) => console.log('Erro ao carregar imagem:', e.nativeEvent.error)}
                 />
             )}
 
+            {/* Campo de texto para a postagem */}
             <TextInput
                 placeholder='No que você está pensando?'
                 placeholderTextColor="#000"
@@ -133,10 +126,12 @@ export default function TopSearch({ user, id_user, signOut }) {
                 onChangeText={setPost_body}
             />
 
+            {/* Prévia da imagem selecionada */}
             {imageUri && (
                 <Image source={{ uri: imageUri }} style={{ height: 200, marginVertical: 10 }} />
             )}
 
+            {/* Botão para selecionar ou enviar imagem */}
             <TouchableOpacity style={{ padding: 5 }} onPress={imageUri ? sendImage : pickImage}>
                 <FontAwesome5
                     name={imageUri ? "cloud-upload-alt" : "file-image"}
