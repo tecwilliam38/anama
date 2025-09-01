@@ -10,7 +10,7 @@ import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import { decode } from 'base64-arraybuffer';
 
-import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
+import { FontAwesome5, MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import { AuthContext } from '../../context/auth';
 
 export default function ProfileComponent({ user, id_user }) {
@@ -143,11 +143,19 @@ export default function ProfileComponent({ user, id_user }) {
             ) : userData ? (
                 <>
                     <View style={stylesinline.imageContainer}>
-                        <Image
-                            source={{ uri: `${userData.profile}?t=${Date.now()}` }}
-                            style={stylesinline.profileImage}
-                            resizeMode="cover"
-                        />
+                        {profileUri ?
+                            <Image
+                                source={{ uri: profileUri }}
+                                style={styles.profileImage}
+                                resizeMode="cover"
+                            />
+                            :
+                            <Image
+                                source={{ uri: `${userData.profile}?t=${Date.now()}` }}
+                                style={stylesinline.profileImage}
+                                resizeMode="cover"
+                            />
+                        }
 
                         {/* Ícone sobreposto no canto superior direito */}
                         {profileUri ? (
@@ -155,7 +163,7 @@ export default function ProfileComponent({ user, id_user }) {
                                 style={stylesinline.uploadIcon}
                                 onPress={sendProfileImage}
                             >
-                                <FontAwesome5 name="cloud-upload-alt" size={24} color="yellow" />
+                                <Ionicons name="send" size={24} color="#007AFF" />
                             </TouchableOpacity>
                         ) : (
                             <TouchableOpacity
@@ -208,34 +216,34 @@ export default function ProfileComponent({ user, id_user }) {
 }
 
 const stylesinline = StyleSheet.create({
-  imageContainer: {
-    position: 'relative', // necessário para posicionar filhos com absolute
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    overflow: 'hidden',
-  },
-  profileImage: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 60,
-  },
-  cameraIcon: {
-    position: 'absolute',
-    top: 8,
-    right: 8,
-    backgroundColor: 'white',
-    padding: 6,
-    borderRadius: 20,
-    elevation: 3, // sombra no Android
-  },
-  uploadIcon: {
-    position: 'absolute',
-    top: 8,
-    right: 8,
-    backgroundColor: 'white',
-    padding: 6,
-    borderRadius: 20,
-    elevation: 3,
-  },
+    imageContainer: {
+        position: 'relative', // necessário para posicionar filhos com absolute
+        width: 120,
+        height: 120,
+        borderRadius: 60,
+        overflow: 'hidden',
+    },
+    profileImage: {
+        width: '100%',
+        height: '100%',
+        borderRadius: 60,
+    },
+    cameraIcon: {
+        position: 'absolute',
+        bottom: 1,
+        right: 9,
+        backgroundColor: 'rgba(255,255,255,0.7)',
+        padding: 6,
+        borderRadius: 20,
+        elevation: 3, // sombra no Android
+    },
+    uploadIcon: {
+        position: 'absolute',
+        bottom: 1,
+        right: 9,
+        backgroundColor: 'rgba(255,255,255,0.7)',
+        padding: 6,
+        borderRadius: 20,
+        elevation: 3,
+    },
 });

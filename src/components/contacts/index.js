@@ -7,6 +7,7 @@ import { Image } from 'react-native-elements'; // ✅ manter
 import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native'; // ✅ manter
 import { supabase } from '../../api/supabaseClient'; // ✅ manter
 import Feather from '@expo/vector-icons/Feather';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 export default function ContatosComponents({ userId, token }) {
   const [friends, setFriends] = useState([]);
@@ -164,10 +165,10 @@ export default function ContatosComponents({ userId, token }) {
                   ellipsizeMode="tail"
                   style={ContactStyles.friendTime}
                 >
-                  {item.id_user || '...'}
+                  {<Ionicons name="person-outline" size={14} color="black" /> || item.id_user}
                 </Text>
                 <Text style={ContactStyles.friendTime}>
-                  {item.friend_id || ''}
+                  {<Ionicons name="notifications-sharp" size={14} color="green" /> || item.friend_id}
                 </Text>
               </View>
             </View>

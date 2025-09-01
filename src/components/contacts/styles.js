@@ -76,19 +76,19 @@ export const ContactStyles = StyleSheet.create({
         color: "#777",
     },
     friendTime: {
-        width: "15%",
+        width: "auto",
         fontSize: 12,
         color: "#666",
     },
     friendNotifications: {
-        width: "15%",
+        width: "auto",
         fontSize: 12,
         color: "#000",
     },
     friendBottomIcons: {
         flexDirection: 'row',
         justifyContent: "space-between",                
-        width: "80%",
+        width: "50%",
     },
     friendBottomText: {
         textAlign: "center",
