@@ -10,15 +10,19 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { supabase } from '../../api/supabaseClient';
+import * as FileSystem from 'expo-file-system';
 
-export default function PostComponent({ item }) {
+
+export default function PostComponent({ item, index, activeMenuIndex, setActiveMenuIndex, fetchUserImages }) {
+  const isMenuOpen = activeMenuIndex === index;
+
   const [likes, setLikes] = useState(0);
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState([]);
   const [showReactions, setShowReactions] = useState(false);
   const [selectedReaction, setSelectedReaction] = useState(null);
   const [showCommentBox, setShowCommentBox] = useState(false);
-  const [showOptions, setShowOptions] = useState(false);
+
 
   const handleCommentSubmit = () => {
     if (comment.trim()) {
@@ -50,6 +54,8 @@ export default function PostComponent({ item }) {
             if (dbError) throw dbError;
 
             Alert.alert('Postagem excluída com sucesso');
+            fetchUserImages();
+
           } catch (err) {
             console.error('Erro ao excluir postagem:', err.message);
             Alert.alert('Erro', 'Não foi possível excluir a postagem.');
@@ -58,14 +64,17 @@ export default function PostComponent({ item }) {
       },
     ]);
   };
+  // console.log(item);
+  
 
   return (
-    <View style={styles.itemBody}>
-      <TouchableOpacity onPress={() => setShowOptions(prev => !prev)} style={styles.menuButton}>
-        <Icon name="ellipsis-v" size={28} color="#000" />
+    <View style={styles.itemBody}>      
+      <TouchableOpacity style={styles.menuButton} onPress={() => setActiveMenuIndex(index)}>
+        <Icon name="ellipsis-v" size={28} color="#000" />        
       </TouchableOpacity>
 
-      {showOptions && (
+
+      {isMenuOpen && (
         <View style={styles.optionsMenu}>
           <TouchableOpacity onPress={() => Alert.alert('Post ocultado')}>
             <Text style={styles.optionText}>Ocultar</Text>

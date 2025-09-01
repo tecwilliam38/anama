@@ -41,7 +41,9 @@ export default function ChatComponent({ userId, token }) {
             fetchMessages();
         }, [receiver_id])
     );
-    ToastAndroid.show('Nova mensagem recebida!', ToastAndroid.SHORT);
+
+    // ToastAndroid.show('Nova mensagem recebida!', ToastAndroid.SHORT);
+
     useEffect(() => {
         const channel = supabase
             .channel('mensagens-realtime')
@@ -51,11 +53,17 @@ export default function ChatComponent({ userId, token }) {
                     event: 'INSERT',
                     schema: 'public',
                     table: 'messages',
-                    filter: `receiver_id=eq.${userId}`, // ou receiver_id === user.id_user
+                    filter: `receiver_id=eq.${userId}`,
                 },
                 (payload) => {
-                    console.log('Nova mensagem recebida:', payload.new);
-                    setChatMessages(prev => [...prev, payload.new]);
+                    const novaMensagem = payload.new;
+
+                    // Verifica se a mensagem é da conversa atual
+                    if (novaMensagem.sender_id === receiver_id) {
+                        console.log('Nova mensagem recebida:', novaMensagem);
+                        setChatMessages(prev => [...prev, novaMensagem]);
+                        ToastAndroid.show('Nova mensagem recebida!', ToastAndroid.SHORT);
+                    }
                 }
             )
             .subscribe();
@@ -63,7 +71,8 @@ export default function ChatComponent({ userId, token }) {
         return () => {
             supabase.removeChannel(channel);
         };
-    }, [userId]);
+    }, [userId, receiver_id]);
+
     // Busca dados do amigo no Supabase
     useEffect(() => {
         const fetchFriendInfo = async () => {

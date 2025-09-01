@@ -11,41 +11,81 @@ import api from '../../api';
 import { supabase } from '../../api/supabaseClient';
 
 export default function SigninScreen() {
-    const { container, backgroundstyle, inputstyle, buttonstyle, buttontext, keyboardStyle } = StylesSignin;
+    const { container, backgroundstyle, inputstyle, keyboardStyle } = StylesSignin;
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPass, setShowPass] = useState(true);
     const { setUser, signIn } = useContext(AuthContext);
     const [loading, setLoading] = useState(false);
-    
 
     async function HandleSignin(e) {
         e.preventDefault();
+
+        if (!email || !password) {
+            alert("Por favor, preencha o e-mail e a senha.");
+            return;
+        }
+
         try {
+            // 1. Autenticação no seu backend
             const response = await api.post('/user/login', {
                 user_email: email,
                 password: password
             });
-            if (response.data?.token) {
-                api.defaults.headers.common['authorization'] = "Bearer " + response.data.token;
-                const { data, error } = await supabase.auth                
-                    .signInWithPassword({ email, password });
 
-                if (error) {
-                    console.error('Erro no Supabase Auth:', error.message);
-                    alert('Erro ao autenticar no Supabase.');
+            const token = response.data?.token;
+            if (!token) {
+                alert("Token não recebido. Verifique suas credenciais.");
+                return;
+            }
+
+            api.defaults.headers.common['authorization'] = `Bearer ${token}`;
+
+            // 2. Tentativa de login no Supabase
+            let { data: supaData, error: supaError } = await supabase.auth.signInWithPassword({ email, password });
+
+            // 3. Se falhar, tenta criar o usuário
+            if (supaError) {
+                console.warn("Login no Supabase falhou:", supaError.message);
+
+                if (supaError.message === 'Invalid login credentials') {
+                    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+                        email,
+                        password
+                    });
+
+                    if (signUpError) {
+                        console.error("Erro ao criar usuário no Supabase:", signUpError.message);
+                        // alert("Erro ao criar conta no Supabase.");
+                        return;
+                    }
+
+                    console.log("✅ Usuário criado no Supabase.");
+
+                    // 4. Tenta login novamente após criação
+                    const { data: retryData, error: retryError } = await supabase.auth.signInWithPassword({ email, password });
+
+                    if (retryError) {
+                        console.error("Erro ao logar após criação:", retryError.message);
+                        // alert("Erro ao logar após criação de conta.");
+                        return;
+                    }
+
+                    supaData = retryData;
+                } else {
+                    // alert("Erro inesperado ao autenticar no Supabase.");
                     return;
                 }
-                await signIn(response.data); // sua função de persistência
-                console.log('Login bem-sucedido!');
-
             }
-        } catch (error) {
-            console.log(error);
-            alert("Login failed. Please check your credentials.");
-        }
 
+            // 5. Persistência local
+            await signIn(response.data);
+            console.log("✅ Login bem-sucedido!");
+        } catch (err) {
+            console.error("Erro geral no login:", err);
+            // alert("Falha no login. Verifique suas credenciais.");
+        }
     }
 
     return (
@@ -56,21 +96,35 @@ export default function SigninScreen() {
                     <KeyboardAvoidingView behavior='padding'
                         style={keyboardStyle}>
                         <Input
-                            placeholderTextColor={"#fff"}
+                            placeholderTextColor={"#000"}
                             inputStyle={inputstyle}
                             placeholder='E-mail'
                             value={email}
+                            style={{
+                                textShadowColor: '#fff',
+                                textShadowOffset: { width: -1, height: 2 }, // Shadow offset
+                                textShadowRadius: 3,
+                            }}
                             onChangeText={setEmail}
                             leftIcon={<Icon
                                 name='envelope'
                                 size={22}
-                                color='#fff'
+                                color='#888'
                             />}
                         />
                         <Input
                             placeholder='Password'
-                            placeholderTextColor={"#fff"}
-                            inputStyle={{ color: "#fff", fontWeight: 'bold', marginLeft: 10 }}
+                            placeholderTextColor={"#000"}
+                            inputStyle={{
+                                color: "#000",
+                                fontWeight: 'bold',
+                                marginLeft: 10
+                            }}
+                            style={{
+                                textShadowColor: '#fff',
+                                textShadowOffset: { width: -1, height: 2 }, // Shadow offset
+                                textShadowRadius: 3,
+                            }}
                             value={password}
                             onChangeText={setPassword}
                             secureTextEntry={showPass}
@@ -78,7 +132,7 @@ export default function SigninScreen() {
                                 <IconEntypo
                                     name={showPass ? "eye-with-line" : "eye"}
                                     size={22}
-                                    color='#fff'
+                                    color='#777'
                                     onPress={() => setShowPass(!showPass)}
                                 />
                             }

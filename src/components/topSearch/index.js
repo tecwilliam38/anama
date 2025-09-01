@@ -2,7 +2,7 @@
 // Este componente permite ao usuário selecionar uma imagem, visualizar uma prévia e enviá-la para o Supabase,
 // junto com um texto de postagem. Também exibe a imagem de perfil do usuário.
 
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { View, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 
@@ -16,17 +16,21 @@ import { decode } from 'base64-arraybuffer';
 import { AuthContext } from '../../context/auth';
 
 export default function TopSearch({ user, id_user }) {
-    const { topSearch, userImage, topSearchComponent } = HomeStyles;
+    const { topSearch, userImage } = HomeStyles;
     const { profileImage } = useContext(AuthContext);
 
     const [imageUri, setImageUri] = useState(null); // URI da imagem selecionada
     const [userProfile, setUserProfile] = useState(null); // URL da imagem de perfil
     const [post_body, setPost_body] = useState(""); // Texto da postagem
 
+
+    const [userImages, setUserImages] = useState([]);
+
     // Atualiza imagem de perfil quando 'profileImage' muda
     useEffect(() => {
         setUserProfile(user?.profile_image);
     }, [user?.profile_image]);
+
 
     const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
 
@@ -36,7 +40,7 @@ export default function TopSearch({ user, id_user }) {
     // Função para selecionar imagem da galeria
     const pickImage = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images, // ✅ Corrigido: 'images' não é válido
+            mediaTypes: ['images'], // ✅ Corrigido: 'images' não é válido
             quality: 1,
         });
 
@@ -114,13 +118,37 @@ export default function TopSearch({ user, id_user }) {
             // Limpa os campos após envio
             setImageUri(null);
             setPost_body("");
+            fetchUserImages();
         } catch (err) {
             console.error('Erro ao enviar imagem:', err.message);
             alert('Erro ao enviar imagem.');
         }
     };
 
+    const fetchUserImages = useCallback(async () => {
+        try {
+            const { data, error } = await supabase
+                .from('anama_posts')
+                .select('image_url, post_body')
+                .eq('id_user', user.id_user)
+                .order('created_at', { ascending: false });
 
+            if (error) throw error;
+
+            if (Array.isArray(data)) {
+                setUserImages(data.map(item => ({
+                    image: item.image_url,
+                    body_text: item.post_body
+                })));
+            } else {
+                setUserImages([]); // ou trate como preferir
+                console.warn('Nenhum dado retornado do Supabase.');
+            }
+        } catch (err) {
+            console.error('Erro ao buscar imagens:', err.message || err);
+            setUserImages([]); // garante que o estado não fique indefinido
+        }
+    }, [user.id_user]);
 
     return (
         <View style={topSearch}>
@@ -153,23 +181,15 @@ export default function TopSearch({ user, id_user }) {
                 )}
 
                 {/* Ícones de ação */}
-                <View style={styles.iconColumn}>
+                {imageUri ? <TouchableOpacity onPress={sendImage}>
+                    <FontAwesome5 name="cloud-upload-alt" size={24} color="purple" />
+                </TouchableOpacity>
+                    :
                     <TouchableOpacity onPress={pickImage}>
                         <FontAwesome5 name="file-image" size={24} color="blue" />
                     </TouchableOpacity>
-                    {imageUri && (
-                        <TouchableOpacity onPress={sendImage}>
-                            <FontAwesome5 name="cloud-upload-alt" size={24} color="purple" />
-                        </TouchableOpacity>
-                    )}
-                </View>
+                }
             </View>
-
-            {imageUri && (
-                <TouchableOpacity onPress={sendImage}>
-                    <FontAwesome5 name="cloud-upload-alt" size={40} color="purple" />
-                </TouchableOpacity>
-            )}
         </View>
     );
 }
@@ -178,7 +198,7 @@ const styles = StyleSheet.create({
     inlineContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent:"space-around",
+        justifyContent: "space-around",
         padding: 10,
         gap: 10, // se estiver usando React Native 0.71+
     },
@@ -188,7 +208,7 @@ const styles = StyleSheet.create({
         borderWidth: 1.5,
         borderColor: '#ccc',
         borderRadius: 40,
-        height:100,
+        height: 100,
         padding: 8,
         fontSize: 18,
     },

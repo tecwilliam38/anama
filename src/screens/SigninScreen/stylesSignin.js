@@ -26,7 +26,7 @@ const StylesSignin = StyleSheet.create({
         width: "90%",
     },
     inputstyle: {
-        color: "#fff",
+        color: "#111",
         fontWeight: 'bold',
         marginLeft: 10,
         width: '100%'

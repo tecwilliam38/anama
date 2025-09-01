@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, useContext, useEffect, useState } from 'react';
 // Importa o cliente Supabase (não está sendo usado neste trecho)
 import { supabase } from '../api/supabaseClient';
+import * as FileSystem from 'expo-file-system';
 
 // Cria o contexto de autenticação
 export const AuthContext = createContext({});

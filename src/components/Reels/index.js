@@ -2,8 +2,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { View, Image, FlatList, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { supabase } from '../../api/supabaseClient';
 import { MaterialIcons } from '@expo/vector-icons';
+import * as FileSystem from 'expo-file-system';
 
-const ReelsList = ({ id_user }) => {
+
+const ReelsList = ({ user }) => {
     const [userImages, setUserImages] = useState([]);
 
     const fetchUserImages = useCallback(async () => {
@@ -11,19 +13,26 @@ const ReelsList = ({ id_user }) => {
             const { data, error } = await supabase
                 .from('anama_posts')
                 .select('image_url')
-                .eq('id_user', id_user)
+                .eq('id_user', user.id_user)
                 .order('created_at', { ascending: false });
 
             if (error) throw error;
-            const imagensValidas = data
-                .map(item => item.image_url)
-                .filter(url => typeof url === 'string' && url.trim() !== '');
 
-            setUserImages(imagensValidas);
+            if (Array.isArray(data)) {
+                const imagensValidas = data
+                    .map(item => item.image_url)
+                    .filter(url => typeof url === 'string' && url.trim() !== '');
+
+                setUserImages(imagensValidas);
+            } else {
+                console.warn('Nenhum dado retornado do Supabase.');
+                setUserImages([]);
+            }
         } catch (err) {
-            console.error('Erro ao buscar imagens:', err.message);
+            console.error('Erro ao buscar imagens:', err.message || err);
+            setUserImages([]); // garante que o estado não fique indefinido
         }
-    }, [id_user]);
+    }, [user.id_user]);
 
     useEffect(() => {
         fetchUserImages();
@@ -46,7 +55,7 @@ const ReelsList = ({ id_user }) => {
                 .from('anama_posts')
                 .delete()
                 .eq('image_url', imageUrl)
-                .eq('id_user', id_user);
+                .eq('id_user', user.id_user);
 
             if (dbError) throw dbError;
 
@@ -66,6 +75,7 @@ const ReelsList = ({ id_user }) => {
                 { text: 'Excluir', style: 'destructive', onPress: () => deleteImage(imageUrl) }
             ]
         );
+        fetchUserImages();
     };
 
     const renderItem = ({ item }) => (

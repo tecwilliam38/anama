@@ -60,14 +60,10 @@ export default function AddFriendByContact({ userId, onFriendAdded }) {
           headers: { Authorization: `Bearer ${user.token}` },
         }
       );
-
-      if (res.status >= 200 && res.status < 300) {
-        setContact('');
-        setModalVisible(false); // Fecha modal
-        if (onFriendAdded) onFriendAdded(); // Atualiza lista no componente pai
-      } else {
-        Alert.alert('Erro', 'Não foi possível adicionar o amigo.');
-      }
+      setContact('');
+      setModalVisible(false); // Fecha modal
+      if (onFriendAdded) onFriendAdded(); // Atualiza lista no componente pai
+      
     } catch (err) {
       console.log('Erro ao adicionar amigo:', err);
       Alert.alert('Erro', 'Não foi possível adicionar o amigo.');
@@ -211,4 +207,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
+
 

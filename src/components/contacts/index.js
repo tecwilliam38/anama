@@ -1,24 +1,11 @@
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity
-} from 'react-native';
-import React, {
-  useCallback,
-  useEffect,
-  useState
-} from 'react';
-import api from '../../api';
-import { ActivityIndicator } from 'react-native-paper';
-import { ContactStyles } from './styles';
-import { Image } from 'react-native-elements';
-import {
-  useFocusEffect,
-  useNavigation,
-  useRoute
-} from '@react-navigation/native';
-import { supabase } from '../../api/supabaseClient';
+import { View, Text, FlatList, TouchableOpacity } from 'react-native'; // ✅ manter
+import React, { useCallback, useEffect, useState } from 'react'; // ✅ manter
+import api from '../../api'; // ✅ manter
+import { ActivityIndicator } from 'react-native-paper'; // ✅ manter
+import { ContactStyles } from './styles'; // ✅ manter
+import { Image } from 'react-native-elements'; // ✅ manter
+import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native'; // ✅ manter
+import { supabase } from '../../api/supabaseClient'; // ✅ manter
 
 export default function ContatosComponents({ userId, token }) {
   const [friends, setFriends] = useState([]);
@@ -37,32 +24,26 @@ export default function ContatosComponents({ userId, token }) {
     }, [receiver_id])
   );
 
-  // Busca imagem de perfil de um usuário específico
-  const fetchUserImagesProfile = async (receiver_id) => {
-    try {
-      const { data, error } = await supabase
-        .from('anama_user')
-        .select('profile_image')
-        .eq('id_user', receiver_id)
-        .single();
-
-      if (error) throw error;
-
-      const imageUrl = data?.profile_image;
-      setFriendImage(imageUrl);
-    } catch (err) {
-      console.error('Erro ao buscar imagem de perfil:', err.message);
-    }
-  };
-
   // Busca amigos e enriquece com última mensagem + imagem
   const fetchFriendsWithMessages = async () => {
+    if (!userId || !token) {
+      console.warn('Usuário ou token ausente. Abortando fetch.');
+      setLoading(false);
+      return;
+    }
+
     try {
       const res = await api.get(`/messages/friends/${userId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
-      const friendsData = res.data;
+      const friendsData = Array.isArray(res.data) ? res.data : [];
+
+      if (friendsData.length === 0) {
+        console.log('Nenhum amigo encontrado.');
+        setFriends([]);
+        return;
+      }
 
       const enrichedFriends = await Promise.all(
         friendsData.map(async (friend) => {
@@ -72,8 +53,8 @@ export default function ContatosComponents({ userId, token }) {
               headers: { Authorization: `Bearer ${token}` }
             });
 
-            const mensagens = msgRes.data;
-            const ultima = mensagens[mensagens.length - 1];
+            const mensagens = Array.isArray(msgRes.data) ? msgRes.data : [];
+            const ultima = mensagens.length > 0 ? mensagens[mensagens.length - 1] : null;
 
             // Busca imagem de perfil
             const { data: profileData, error: profileError } = await supabase
@@ -86,11 +67,11 @@ export default function ContatosComponents({ userId, token }) {
 
             return {
               ...friend,
-              last_message: ultima || null,
+              last_message: ultima,
               profile_image: profileData?.profile_image || null
             };
           } catch (err) {
-            console.log(`Erro ao buscar dados de ${friend.friend_id}`, err);
+            console.error(`Erro ao buscar dados de ${friend.friend_id}:`, err.message || err);
             return {
               ...friend,
               last_message: null,
@@ -102,7 +83,8 @@ export default function ContatosComponents({ userId, token }) {
 
       setFriends(enrichedFriends);
     } catch (err) {
-      console.log('Erro ao buscar amigos:', err);
+      console.error('Erro ao buscar amigos:', err.message || err);
+      setFriends([]);
     } finally {
       setLoading(false);
     }
@@ -125,29 +107,10 @@ export default function ContatosComponents({ userId, token }) {
   const openChatWithFriend = (friend_id) => {
     navigation.navigate('MyChat', { receiver_id: friend_id });
   };
-
-  // ⚠️ Essa função está redundante com fetchFriendsWithMessages
-  const fetchFriends = async () => {
-    try {
-      const res = await api.get(`/messages/friends/${userId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-
-      setFriends(res.data);
-      // ⚠️ Linha abaixo não faz nada
-      chatMessages;
-    } catch (err) {
-      console.log('Erro ao buscar amigos:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+ 
   // Carrega dados ao montar o componente
   useEffect(() => {
     fetchFriendsWithMessages();
-    // ⚠️ fetchFriends pode ser removido se for redundante
-    fetchFriends();
   }, []);
 
   if (loading) {
@@ -163,10 +126,10 @@ export default function ContatosComponents({ userId, token }) {
 
     const horaFormatada = lastTimestamp
       ? new Date(lastTimestamp).toLocaleTimeString('pt-BR', {
-          hour: '2-digit',
-          minute: '2-digit',
-          timeZone: 'America/Sao_Paulo'
-        })
+        hour: '2-digit',
+        minute: '2-digit',
+        timeZone: 'America/Sao_Paulo'
+      })
       : '';
 
     return (
@@ -182,7 +145,7 @@ export default function ContatosComponents({ userId, token }) {
           />
 
           <View style={ContactStyles.friendCenter}>
-            <View style={ContactStyles.friendData}>
+            <View style={ContactStyles.friendDatastyle}>
               <Text
                 numberOfLines={1}
                 ellipsizeMode="tail"
@@ -199,10 +162,10 @@ export default function ContatosComponents({ userId, token }) {
               <Text style={ContactStyles.friendBottomText}>
                 {item.last_message?.enviadas
                   ? new Date(item.last_message.enviadas).toLocaleTimeString('pt-BR', {
-                      hour: '2-digit',
-                      minute: '2-digit',
-                      timeZone: 'America/Sao_Paulo'
-                    })
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    timeZone: 'America/Sao_Paulo'
+                  })
                   : 'Sem hora'}
               </Text>
 

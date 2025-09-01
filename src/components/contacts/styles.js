@@ -35,7 +35,7 @@ export const ContactStyles = StyleSheet.create({
         resizeMode: 'cover',
         // backgroundColor: "rgba(204, 204, 204, 0.5)",
     },
-    friendData: {
+    friendDatastyle: {
         flexDirection: "column",
         width: '60%',
         alignItems: "flex-start",
