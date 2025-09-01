@@ -50,8 +50,7 @@ export const AuthProvider = ({ children }) => {
 
   const deleteImage = async (imageUrl) => {
     try {
-      const path = imageUrl?.split?.('/anama/')?.[1];
-      console.log(path);
+      const path = imageUrl?.split?.('/anama/')?.[1];     
 
       if (!path) throw new Error('Caminho da imagem inválido');
 
