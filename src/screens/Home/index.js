@@ -25,6 +25,7 @@ export default function Home() {
         renderItem={({ item }) => item.render()}
         keyExtractor={(item) => item.key}
         showsVerticalScrollIndicator={false}
+        style={{ flex: 1, width: '100%' }}
       />
     </View>
   );

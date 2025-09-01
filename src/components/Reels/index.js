@@ -1,87 +1,27 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useContext } from 'react';
 import { View, Image, FlatList, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { supabase } from '../../api/supabaseClient';
 import { MaterialIcons } from '@expo/vector-icons';
 import * as FileSystem from 'expo-file-system';
+import { AuthContext } from '../../context/auth';
 
 
 const ReelsList = ({ user }) => {
-    const [userImages, setUserImages] = useState([]);
 
-    const fetchUserImages = useCallback(async () => {
-        try {
-            const { data, error } = await supabase
-                .from('anama_posts')
-                .select('image_url')
-                .eq('id_user', user.id_user)
-                .order('created_at', { ascending: false });
+    const { userImages, fetchUserImages, confirmDelete } = useContext(AuthContext);
 
-            if (error) throw error;
-
-            if (Array.isArray(data)) {
-                const imagensValidas = data
-                    .map(item => item.image_url)
-                    .filter(url => typeof url === 'string' && url.trim() !== '');
-
-                setUserImages(imagensValidas);
-            } else {
-                console.warn('Nenhum dado retornado do Supabase.');
-                setUserImages([]);
-            }
-        } catch (err) {
-            console.error('Erro ao buscar imagens:', err.message || err);
-            setUserImages([]); // garante que o estado não fique indefinido
-        }
-    }, [user.id_user]);
 
     useEffect(() => {
         fetchUserImages();
     }, []);
 
-    const deleteImage = async (imageUrl) => {
-        try {
-            // Extrai o caminho do arquivo do URL público
-            const path = imageUrl.split('/anama/')[1];
 
-            // Remove do storage
-            const { error: storageError } = await supabase.storage
-                .from('anama')
-                .remove([path]);
 
-            if (storageError) throw storageError;
-
-            // Remove do banco
-            const { error: dbError } = await supabase
-                .from('anama_posts')
-                .delete()
-                .eq('image_url', imageUrl)
-                .eq('id_user', user.id_user);
-
-            if (dbError) throw dbError;
-
-            fetchUserImages();
-        } catch (err) {
-            console.error('Erro ao excluir imagem:', err.message);
-            Alert.alert('Erro', 'Não foi possível excluir a imagem.');
-        }
-    };
-
-    const confirmDelete = (imageUrl) => {
-        Alert.alert(
-            'Excluir imagem',
-            'Tem certeza que deseja excluir esta imagem?',
-            [
-                { text: 'Cancelar', style: 'cancel' },
-                { text: 'Excluir', style: 'destructive', onPress: () => deleteImage(imageUrl) }
-            ]
-        );
-        fetchUserImages();
-    };
 
     const renderItem = ({ item }) => (
         <View style={styles.item}>
-            <Image source={{ uri: item }} style={styles.itemImage} resizeMode='cover' />
-            <TouchableOpacity style={styles.menuButton} onPress={() => confirmDelete(item)}>
+            <Image source={{ uri: item.image }} style={styles.itemImage} resizeMode='cover' />
+            <TouchableOpacity style={styles.menuButton} onPress={() => confirmDelete(item.image)}>
                 <MaterialIcons name="more-vert" size={24} color="#000" />
             </TouchableOpacity>
         </View>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   View,
   Text,
@@ -11,6 +11,7 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { supabase } from '../../api/supabaseClient';
 import * as FileSystem from 'expo-file-system';
+import { AuthContext } from '../../context/auth';
 
 
 export default function PostComponent({ item, index, activeMenuIndex, setActiveMenuIndex, fetchUserImages }) {
@@ -23,6 +24,8 @@ export default function PostComponent({ item, index, activeMenuIndex, setActiveM
   const [selectedReaction, setSelectedReaction] = useState(null);
   const [showCommentBox, setShowCommentBox] = useState(false);
 
+  const { confirmDelete } = useContext(AuthContext);
+
 
   const handleCommentSubmit = () => {
     if (comment.trim()) {
@@ -31,39 +34,7 @@ export default function PostComponent({ item, index, activeMenuIndex, setActiveM
     }
   };
 
-  const handleDeletePost = async () => {
-    Alert.alert('Excluir postagem', 'Tem certeza que deseja excluir esta postagem?', [
-      { text: 'Cancelar', style: 'cancel' },
-      {
-        text: 'Excluir',
-        style: 'destructive',
-        onPress: async () => {
-          try {
-            const path = item.image?.split('/anama/')[1];
-            if (!path) throw new Error('Caminho da imagem inválido');
 
-            const { error: storageError } = await supabase.storage
-              .from('anama')
-              .remove([path]);
-            if (storageError) throw storageError;
-
-            const { error: dbError } = await supabase
-              .from('anama_posts')
-              .delete()
-              .eq('image_url', item.image);
-            if (dbError) throw dbError;
-
-            Alert.alert('Postagem excluída com sucesso');
-            fetchUserImages();
-
-          } catch (err) {
-            console.error('Erro ao excluir postagem:', err.message);
-            Alert.alert('Erro', 'Não foi possível excluir a postagem.');
-          }
-        },
-      },
-    ]);
-  };
   // console.log(item);
   
 
@@ -79,7 +50,7 @@ export default function PostComponent({ item, index, activeMenuIndex, setActiveM
           <TouchableOpacity onPress={() => Alert.alert('Post ocultado')}>
             <Text style={styles.optionText}>Ocultar</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={handleDeletePost}>
+          <TouchableOpacity onPress={confirmDelete(item.image)}>
             <Text style={styles.optionText}>Excluir</Text>
           </TouchableOpacity>
         </View>

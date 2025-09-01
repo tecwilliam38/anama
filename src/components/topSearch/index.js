@@ -17,7 +17,7 @@ import { AuthContext } from '../../context/auth';
 
 export default function TopSearch({ user, id_user }) {
     const { topSearch, userImage } = HomeStyles;
-    const { profileImage } = useContext(AuthContext);
+    const { profileImage, fetchUserImages, triggerImageRefresh } = useContext(AuthContext);
 
     const [imageUri, setImageUri] = useState(null); // URI da imagem selecionada
     const [userProfile, setUserProfile] = useState(null); // URL da imagem de perfil
@@ -119,36 +119,14 @@ export default function TopSearch({ user, id_user }) {
             setImageUri(null);
             setPost_body("");
             fetchUserImages();
+            triggerImageRefresh();
         } catch (err) {
             console.error('Erro ao enviar imagem:', err.message);
             alert('Erro ao enviar imagem.');
         }
     };
 
-    const fetchUserImages = useCallback(async () => {
-        try {
-            const { data, error } = await supabase
-                .from('anama_posts')
-                .select('image_url, post_body')
-                .eq('id_user', user.id_user)
-                .order('created_at', { ascending: false });
-
-            if (error) throw error;
-
-            if (Array.isArray(data)) {
-                setUserImages(data.map(item => ({
-                    image: item.image_url,
-                    body_text: item.post_body
-                })));
-            } else {
-                setUserImages([]); // ou trate como preferir
-                console.warn('Nenhum dado retornado do Supabase.');
-            }
-        } catch (err) {
-            console.error('Erro ao buscar imagens:', err.message || err);
-            setUserImages([]); // garante que o estado não fique indefinido
-        }
-    }, [user.id_user]);
+    
 
     return (
         <View style={topSearch}>
