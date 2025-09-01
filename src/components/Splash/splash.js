@@ -19,6 +19,7 @@ import { ActivityIndicator } from 'react-native-paper';
 export default function SplashScreenPage() {
   return (
     <React.Fragment key={"spinner"}>
+      <StatusBar hidden />
       <ImageBackground source={require('../../assets/splash.png')} style={styles.content}>
         <SafeAreaView style={styles.splashContainer}>
           <ActivityIndicator color="rgba(255, 255, 255, 0.7)" style={styles.loadingActive} size={50} />

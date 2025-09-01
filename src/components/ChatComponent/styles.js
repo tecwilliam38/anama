@@ -72,8 +72,8 @@ export const styles = StyleSheet.create({
     elevation: 5,
   },
   friendImageProfile: {
-    width: 50,
-    height: 50,
+    width: 40,
+    height: 40,
     margin: 5,
     borderRadius: 50
   },

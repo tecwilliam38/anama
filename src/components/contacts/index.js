@@ -6,6 +6,7 @@ import { ContactStyles } from './styles'; // ✅ manter
 import { Image } from 'react-native-elements'; // ✅ manter
 import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native'; // ✅ manter
 import { supabase } from '../../api/supabaseClient'; // ✅ manter
+import Feather from '@expo/vector-icons/Feather';
 
 export default function ContatosComponents({ userId, token }) {
   const [friends, setFriends] = useState([]);
@@ -107,7 +108,7 @@ export default function ContatosComponents({ userId, token }) {
   const openChatWithFriend = (friend_id) => {
     navigation.navigate('MyChat', { receiver_id: friend_id });
   };
- 
+
   // Carrega dados ao montar o componente
   useEffect(() => {
     fetchFriendsWithMessages();
@@ -139,25 +140,13 @@ export default function ContatosComponents({ userId, token }) {
             source={
               item.profile_image
                 ? { uri: `${item.profile_image}?t=${Date.now()}` }
-                : require("../../assets/clock.png")
+                : require("../../assets/user.png")
             }
             style={ContactStyles.userImage}
           />
 
           <View style={ContactStyles.friendCenter}>
-            <View style={ContactStyles.friendDatastyle}>
-              <Text
-                numberOfLines={1}
-                ellipsizeMode="tail"
-                style={ContactStyles.friendName}
-              >
-                {item.user_name || ''}
-              </Text>
-              <Text style={ContactStyles.friendBottomText}>
-                {item.last_message?.mensagens || '...'}
-              </Text>
-            </View>
-
+            {/* hora da última mensageme icons */}
             <View style={ContactStyles.friendIcons}>
               <Text style={ContactStyles.friendBottomText}>
                 {item.last_message?.enviadas
@@ -181,6 +170,19 @@ export default function ContatosComponents({ userId, token }) {
                   {item.friend_id || ''}
                 </Text>
               </View>
+            </View>
+            {/* Nome do usuário e última mensagem */}
+            <View style={ContactStyles.friendDatastyle}>
+              <Text
+                numberOfLines={1}
+                ellipsizeMode="tail"
+                style={ContactStyles.friendName}
+              >
+                {item.user_name || ''}
+              </Text>
+              <Text style={ContactStyles.friendBottomText}>
+                {item.last_message?.mensagens || '...'}
+              </Text>
             </View>
           </View>
         </View>

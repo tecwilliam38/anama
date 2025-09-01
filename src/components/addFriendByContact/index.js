@@ -63,7 +63,7 @@ export default function AddFriendByContact({ userId, onFriendAdded }) {
       setContact('');
       setModalVisible(false); // Fecha modal
       if (onFriendAdded) onFriendAdded(); // Atualiza lista no componente pai
-      
+
     } catch (err) {
       console.log('Erro ao adicionar amigo:', err);
       Alert.alert('Erro', 'Não foi possível adicionar o amigo.');
@@ -77,7 +77,8 @@ export default function AddFriendByContact({ userId, onFriendAdded }) {
         onPress={() => setModalVisible(true)}
         style={styles.openButton}
       >
-        <AntDesign name="adduser" size={28} color="white" />
+        <AntDesign name="adduser" size={32} color="white" />
+        <Text style={{ color: "#fff" }}> Adicionar Contato</Text>
       </TouchableOpacity>
 
       {/* Modal de adicionar amigo */}
@@ -136,17 +137,17 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     width: '100%',
-    alignItems: 'center',
-    marginVertical: 10,
+    justifyContent: 'center',
+    height: 100,
   },
   openButton: {
     backgroundColor: '#4CAF50',
     padding: 12,
-    borderRadius: 50,
+    borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
-    width: 100,
-    height: 60,
+    width: 'auto',
+    height: 80,
   },
   overlay: {
     flex: 1,

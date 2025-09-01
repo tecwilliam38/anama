@@ -7,14 +7,14 @@ import AddFriendByContact from '../../components/addFriendByContact/index.js';
 import ContatosComponents from '../../components/contacts/index.js';
 
 export default function ContactsScreen() {
-    const { user, signOut } = useContext(AuthContext);
+    const { user } = useContext(AuthContext);
 
 
     const { container } = HomeStyles;
     return (
         <View style={[container, { flex: 1, justifyContent: 'space-between' }]}>
             <ContatosComponents userId={user.id_user} token={user.token} />
-            <View style={{ paddingBottom: 30, alignItems: "center", backgroundColor: "#fff" }}>
+            <View style={{ width: '100%', height: 100, backgroundColor: "#fff" }}>
                 <AddFriendByContact userId={user.id_user} />
             </View>
         </View>
