@@ -131,6 +131,8 @@ export const AuthProvider = ({ children }) => {
         setProfileImage,
         triggerImageRefresh,
         refreshImages,
+        signOut,
+        signIn
       }}>
       {children}
     </AuthContext.Provider>

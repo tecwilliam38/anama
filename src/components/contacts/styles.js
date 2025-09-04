@@ -16,15 +16,16 @@ export const ContactStyles = StyleSheet.create({
     contactBody: {
         flexDirection: "row-reverse",
         alignItems: "center",
-        width: '100%',        
+        width: '100%',
+        fyContent: "center",
         height: 'auto',
         backgroundColor: "#fff",        
     },
     friendCenter: {
-        flexDirection: "row",       
-        alignItems: "center",       
+        flexDirection: "row",
+        alignItems: "center",
         justifyContent: "space-around",
-        width: '90%',        
+        width: '85%',
     },
     userImage: {
         marginHorizontal: 10,
@@ -87,12 +88,12 @@ export const ContactStyles = StyleSheet.create({
     },
     friendBottomIcons: {
         flexDirection: 'row',
-        justifyContent: "space-between",                
+        justifyContent: "space-between",
         width: "50%",
     },
     friendBottomText: {
         textAlign: "center",
-        fontSize: 16,
+        fontSize: 12,
         color: "#333",
     },
 })

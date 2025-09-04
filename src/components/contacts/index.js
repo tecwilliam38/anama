@@ -156,7 +156,7 @@ export default function ContatosComponents({ userId, token }) {
                     minute: '2-digit',
                     timeZone: 'America/Sao_Paulo'
                   })
-                  : 'Sem hora'}
+                  : '...'}
               </Text>
 
               <View style={ContactStyles.friendBottomIcons}>
@@ -165,10 +165,10 @@ export default function ContatosComponents({ userId, token }) {
                   ellipsizeMode="tail"
                   style={ContactStyles.friendTime}
                 >
-                  {<Ionicons name="person-outline" size={14} color="black" /> || item.id_user}
+                  {<Ionicons name="person-outline" size={18} color="black" /> || item.id_user}
                 </Text>
                 <Text style={ContactStyles.friendTime}>
-                  {<Ionicons name="notifications-sharp" size={14} color="green" /> || item.friend_id}
+                  {<Ionicons name="notifications-sharp" size={18} color="green" /> || item.friend_id}
                 </Text>
               </View>
             </View>
