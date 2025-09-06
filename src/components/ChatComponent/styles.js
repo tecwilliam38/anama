@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 
 
 export const styles = StyleSheet.create({
-  container: { flex: 1, padding: 10 },
+  container: { flex: 1, padding: 1 },
   chatList: { flex: 1, marginBottom: 80 },
   inputArea: {
     flexDirection: 'col',
@@ -60,41 +60,41 @@ export const styles = StyleSheet.create({
   buttonStyle: {
     width: "100%",
     alignItems: 'center',
-    justifyContent: "space-between",
+    justifyContent: "space-around",
     flexDirection: "row",        // centraliza horizontalmente o LinearGradient
     paddingHorizontal: 20,
-    paddingVertical:15,    
+    paddingTop:20,
+    paddingBottom:10,
     borderRadius: 8,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    elevation: 5,
+    elevation: 5,    
   },
   friendImageProfile: {
-    width: 40,
-    height: 40,
-    margin: 5,
+    width: 50,
+    height: 50,
+    borderWidth: 1,
+    borderColor: '#ccc',
     borderRadius: 50
   },
   headerText: {
     marginHorizontal: 8,
     padding: 10,
+    width: '70%',
     color: '#fff',
     fontSize: 22,
-    fontWeight: 'bold',
+    fontWeight: 'bold',    
   },
   buttonText: {
     height: 60,
-    // width: '30%',
     // marginLeft: 10,
     alignItems: "center",
     justifyContent: "center",
   },
   buttonTextgoback: {
-    top:10,
-    marginHorizontal: 10,    
-    
+     marginRight: 10,        
   }
 });
 

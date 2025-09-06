@@ -17,6 +17,7 @@ import { Icon } from 'react-native-elements';
 export default function AddFriendByContact({ userId, onFriendAdded }) {
   const [contact, setContact] = useState('');
   const { user } = useContext(AuthContext);
+  const [friends, setFriends] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
 
   // Animações para entrada do modal
@@ -61,6 +62,7 @@ export default function AddFriendByContact({ userId, onFriendAdded }) {
         }
       );
       setContact('');
+      // fetchFriendsWithMessages();
       setModalVisible(false); // Fecha modal
       if (onFriendAdded) onFriendAdded(); // Atualiza lista no componente pai
 

@@ -23,6 +23,7 @@ export default function ContatosComponents({ userId, token }) {
   useFocusEffect(
     useCallback(() => {
       fetchMessages();
+      fetchFriendsWithMessages();
     }, [receiver_id])
   );
 
@@ -57,6 +58,8 @@ export default function ContatosComponents({ userId, token }) {
 
             const mensagens = Array.isArray(msgRes.data) ? msgRes.data : [];
             const ultima = mensagens.length > 0 ? mensagens[mensagens.length - 1] : null;
+            // const hasUnread = ultima && !ultima.visualizada && ultima.receiver_id === userId;
+
 
             // Busca imagem de perfil
             const { data: profileData, error: profileError } = await supabase
@@ -70,7 +73,8 @@ export default function ContatosComponents({ userId, token }) {
             return {
               ...friend,
               last_message: ultima,
-              profile_image: profileData?.profile_image || null
+              profile_image: profileData?.profile_image || null,
+              // hasUnread
             };
           } catch (err) {
             console.error(`Erro ao buscar dados de ${friend.friend_id}:`, err.message || err);
@@ -110,10 +114,6 @@ export default function ContatosComponents({ userId, token }) {
     navigation.navigate('MyChat', { receiver_id: friend_id });
   };
 
-  // Carrega dados ao montar o componente
-  useEffect(() => {
-    fetchFriendsWithMessages();
-  }, []);
 
   if (loading) {
     return <ActivityIndicator size="large" color="#4CAF50" style={{ marginTop: 20 }} />;
@@ -168,7 +168,11 @@ export default function ContatosComponents({ userId, token }) {
                   {<Ionicons name="person-outline" size={18} color="black" /> || item.id_user}
                 </Text>
                 <Text style={ContactStyles.friendTime}>
-                  {<Ionicons name="notifications-sharp" size={18} color="green" /> || item.friend_id}
+                  {<Ionicons name="notifications-sharp"
+                    size={18}
+                    color="green"
+                    // color={item.hasUnread ? 'green' : 'gray'}
+                  /> || item.friend_id}
                 </Text>
               </View>
             </View>

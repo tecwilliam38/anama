@@ -14,7 +14,7 @@ import {
     Alert,
     ToastAndroid,
 } from 'react-native';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { styles } from './styles';
 import { supabase } from '../../api/supabaseClient';
 import { ChatStyles } from '../../screens/Chat/styles';
@@ -101,7 +101,7 @@ export default function ChatComponent({ userId, token }) {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            setChatMessages(response.data);
+            setChatMessages(response.data);          
         } catch (error) {
             console.error('Erro ao buscar conversa:', error.response?.data || error.message);
         }
@@ -128,6 +128,8 @@ export default function ChatComponent({ userId, token }) {
         }
     }
 
+    const flatListRef = useRef(null);
+   
     // Lida com envio e atualiza lista
     const handleSend = async () => {
         if (!message.trim()) return;
@@ -135,6 +137,16 @@ export default function ChatComponent({ userId, token }) {
             await sendMessage(receiver_id);
             setMessage('');
             fetchMessages();
+            // Scroll para a última mensagem
+            // Scroll para o final usando offset alto
+            setTimeout(() => {
+                if (flatListRef.current) {
+                    flatListRef.current.scrollToOffset({
+                        offset: 9999,
+                        animated: true
+                    });
+                }
+            }, 300);
         } catch (err) {
             Alert.alert('Erro', 'Não foi possível enviar a mensagem.');
         }
@@ -183,14 +195,16 @@ export default function ChatComponent({ userId, token }) {
                         style={styles.friendImageProfile}
                         resizeMode='cover'
                     />
+                    <Text style={styles.headerText}
+                        numberOfLines={1} ellipsizeMode="tail">
+                        {/* {friendData?.user_name || user?.user_email || 'Conversa teste'} */}
+                        {friendData?.user_email || 'Conversa teste'}
+                    </Text>
                     <TouchableOpacity style={{ flexDirection: "row" }} onPress={() => navigation.goBack()}>
-                        <Text style={styles.headerText}>
-                            {friendData?.user_name || user?.user_email || 'Conversa teste'}
-                        </Text>
                         <MaterialCommunityIcons
                             style={styles.buttonTextgoback}
                             name={"send"}
-                            size={34}
+                            size={38}
                             color="white"
                         />
                     </TouchableOpacity>
@@ -203,12 +217,14 @@ export default function ChatComponent({ userId, token }) {
                     keyExtractor={(item, index) => item.id?.toString() || String(index)}
                     style={chatList}
                     contentContainerStyle={{ paddingBottom: 100 }}
+                    ref={flatListRef}
+                    initialNumToRender={chatMessages.length}
                 />
 
                 {/* Área de input */}
                 <View style={inputArea}>
                     <TextInput
-                        style={input}
+                        style={input}                        
                         value={message}
                         onChangeText={setMessage}
                         placeholder="Mensagem"
