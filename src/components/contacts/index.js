@@ -1,5 +1,5 @@
 import { View, Text, FlatList, TouchableOpacity } from 'react-native'; // ✅ manter
-import React, { useCallback, useEffect, useState } from 'react'; // ✅ manter
+import React, { useCallback, useEffect, useRef, useState } from 'react'; // ✅ manter
 import api from '../../api'; // ✅ manter
 import { ActivityIndicator } from 'react-native-paper'; // ✅ manter
 import { ContactStyles } from './styles'; // ✅ manter
@@ -19,11 +19,18 @@ export default function ContatosComponents({ userId, token }) {
   const route = useRoute();
   const receiver_id = route.params?.receiver_id || 2;
 
+  const hasFetchedRef = useRef(false);
+
+  useEffect(() => {
+    if (userId && token && !hasFetchedRef.current) {
+      hasFetchedRef.current = true;
+      fetchFriendsWithMessages();
+    }
+  }, [userId, token]);
   // Atualiza mensagens ao focar na tela
   useFocusEffect(
     useCallback(() => {
       fetchMessages();
-      fetchFriendsWithMessages();
     }, [receiver_id])
   );
 
@@ -34,7 +41,6 @@ export default function ContatosComponents({ userId, token }) {
       setLoading(false);
       return;
     }
-
     try {
       const res = await api.get(`/messages/friends/${userId}`, {
         headers: { Authorization: `Bearer ${token}` }
@@ -171,7 +177,7 @@ export default function ContatosComponents({ userId, token }) {
                   {<Ionicons name="notifications-sharp"
                     size={18}
                     color="green"
-                    // color={item.hasUnread ? 'green' : 'gray'}
+                  // color={item.hasUnread ? 'green' : 'gray'}
                   /> || item.friend_id}
                 </Text>
               </View>

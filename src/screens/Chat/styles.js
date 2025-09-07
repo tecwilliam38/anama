@@ -24,11 +24,11 @@ export const ChatStyles = StyleSheet.create({
         flex: 2,
         color: "#fff",
     },
-    scrollStyle: {       
+    scrollStyle: {
         marginBottom: 100,
         width: "100%",
-        paddingHorizontal:10,
-        paddingBottom:30,
+        paddingHorizontal: 10,
+        paddingBottom: 30,
     },
     buttonStyle: {
         borderRadius: 50,
@@ -52,19 +52,26 @@ export const ChatStyles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: "space-between",
         marginTop: 10,
-        paddingBottom:20,
+        paddingBottom: 20,
         paddingHorizontal: 5,
         backgroundColor: "#fff",
         width: windowWidth,
         height: 90,
-    },
-    input: {
-        flex: 1,
         borderColor: '#ccc',
         borderWidth: 1,
         borderRadius: 25,
-        height: 60,
-        padding: 12,
+        backgroundColor: '#f0f0f0',
+    },
+    input: {
+        flex: 1,
+        fontSize: 18,
+        color: '#000',
+        paddingHorizontal: 10,
+        paddingVertical: 8,
+        backgroundColor: '#f5f5f5',
+        borderRadius: 8,
+
+
     },
     messageBubble: {
         padding: 10,

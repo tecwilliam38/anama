@@ -12,7 +12,9 @@ import {
     KeyboardAvoidingView,
     Platform,
     Alert,
+    Modal,
     ToastAndroid,
+    SafeAreaView,
 } from 'react-native';
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { styles } from './styles';
@@ -23,6 +25,10 @@ import { AuthContext } from '../../context/auth';
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from 'expo-linear-gradient';
 import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
+// import EmojiSelector, { categories } from 'react-native-emoji-selector';
+import { EmojiKeyboard } from 'rn-emoji-keyboard';
+
+
 
 export default function ChatComponent({ userId, token }) {
     const route = useRoute();
@@ -34,6 +40,9 @@ export default function ChatComponent({ userId, token }) {
     const [chatMessages, setChatMessages] = useState([]);
     const { user } = useContext(AuthContext);
     const [friendData, setFriendData] = useState(null);
+
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+    const [selectedEmoji, setSelectedEmoji] = useState(null);
 
     // Atualiza mensagens ao focar na tela
     useFocusEffect(
@@ -73,6 +82,9 @@ export default function ChatComponent({ userId, token }) {
         };
     }, [userId, receiver_id]);
 
+    const hasFetchedRef = useRef(false);
+
+
     // Busca dados do amigo no Supabase
     useEffect(() => {
         const fetchFriendInfo = async () => {
@@ -89,8 +101,11 @@ export default function ChatComponent({ userId, token }) {
                 console.error('Erro ao buscar telefone do amigo:', err.message);
             }
         };
-
-        if (receiver_id) fetchFriendInfo();
+        if (receiver_id && !hasFetchedRef.current) {
+            hasFetchedRef.current = true;
+            fetchFriendInfo();
+        }
+        // if (receiver_id) fetchFriendInfo();
     }, [receiver_id]);
 
     // Busca mensagens da conversa
@@ -101,7 +116,7 @@ export default function ChatComponent({ userId, token }) {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            setChatMessages(response.data);          
+            setChatMessages(response.data);
         } catch (error) {
             console.error('Erro ao buscar conversa:', error.response?.data || error.message);
         }
@@ -129,7 +144,7 @@ export default function ChatComponent({ userId, token }) {
     }
 
     const flatListRef = useRef(null);
-   
+
     // Lida com envio e atualiza lista
     const handleSend = async () => {
         if (!message.trim()) return;
@@ -152,8 +167,15 @@ export default function ChatComponent({ userId, token }) {
         }
     };
 
+    const handleEmojiSelect = (emojiObject) => {
+        setMessage(emojiObject.emoji);
+        setShowEmojiPicker(false);
+        // Aqui você pode enviar o emoji como reação, salvar no banco, etc.
+        console.log('Emoji selecionado:', emojiObject.emoji);
+    };
     // Renderiza cada mensagem
-    const renderItem = ({ item }) => {
+    const MessageItem = ({ item }) => {
+
         const timestamp = item.enviadas;
         const horaFormatada = new Date(timestamp).toLocaleTimeString('pt-BR', {
             hour: '2-digit',
@@ -162,7 +184,6 @@ export default function ChatComponent({ userId, token }) {
         });
 
         const isMinhaMensagem = item.userid === user?.id_user;
-
         return (
             <View
                 style={[
@@ -177,76 +198,103 @@ export default function ChatComponent({ userId, token }) {
     };
 
     return (
-        <KeyboardAvoidingView
-            style={{ flex: 1 }}
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
-        >
-            <View style={container}>
-                {/* Cabeçalho com nome e imagem do amigo */}
-                <LinearGradient
-                    colors={["rgba(21, 56, 130, 1)", "rgba(31,143,78, 1)", "rgba(237, 247, 124, 1)"]}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 1 }}
-                    style={styles.buttonStyle}
-                >
-                    <Image
-                        source={{ uri: friendData?.profile_image }}
-                        style={styles.friendImageProfile}
-                        resizeMode='cover'
-                    />
-                    <Text style={styles.headerText}
-                        numberOfLines={1} ellipsizeMode="tail">
-                        {/* {friendData?.user_name || user?.user_email || 'Conversa teste'} */}
-                        {friendData?.user_email || 'Conversa teste'}
-                    </Text>
-                    <TouchableOpacity style={{ flexDirection: "row" }} onPress={() => navigation.goBack()}>
-                        <MaterialCommunityIcons
-                            style={styles.buttonTextgoback}
-                            name={"send"}
-                            size={38}
-                            color="white"
-                        />
-                    </TouchableOpacity>
-                </LinearGradient>
-
-                {/* Lista de mensagens */}
-                <FlatList
-                    data={chatMessages}
-                    renderItem={renderItem}
-                    keyExtractor={(item, index) => item.id?.toString() || String(index)}
-                    style={chatList}
-                    contentContainerStyle={{ paddingBottom: 100 }}
-                    ref={flatListRef}
-                    initialNumToRender={chatMessages.length}
-                />
-
-                {/* Área de input */}
-                <View style={inputArea}>
-                    <TextInput
-                        style={input}                        
-                        value={message}
-                        onChangeText={setMessage}
-                        placeholder="Mensagem"
-                        placeholderTextColor="#000"
-                    />
+        <>
+            <KeyboardAvoidingView
+                style={{ flex: 1 }}
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
+            >
+                <View style={container}>
+                    {/* Cabeçalho com nome e imagem do amigo */}
                     <LinearGradient
-                        colors={["rgba(27, 47, 90, 1)", "rgba(66, 101, 170, 1)", "rgba(51, 201, 113, 1)", "rgba(237, 247, 124, 1)"]}
+                        colors={["rgba(21, 56, 130, 1)", "rgba(31,143,78, 1)", "rgba(237, 247, 124, 1)"]}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 1 }}
-                        style={buttonStyle}
+                        style={styles.buttonStyle}
                     >
-                        <TouchableOpacity onPress={handleSend}>
+                        <Image
+                            source={{ uri: friendData?.profile_image }}
+                            style={styles.friendImageProfile}
+                            resizeMode='cover'
+                        />
+                        <Text style={styles.headerText}
+                            numberOfLines={1} ellipsizeMode="tail">
+                            {/* {friendData?.user_name || user?.user_email || 'Conversa teste'} */}
+                            {friendData?.user_email || 'Conversa teste'}
+                        </Text>
+                        <TouchableOpacity style={{ flexDirection: "row" }} onPress={() => navigation.goBack()}>
                             <MaterialCommunityIcons
-                                style={buttonText}
-                                name={message.trim() ? "send" : "microphone"}
-                                size={24}
+                                style={styles.buttonTextgoback}
+                                name={"send"}
+                                size={38}
                                 color="white"
                             />
                         </TouchableOpacity>
                     </LinearGradient>
+
+                    {/* Lista de mensagens */}
+                    <FlatList
+                        data={chatMessages}
+                        renderItem={({ item }) => <MessageItem item={item} />}
+                        // renderItem={MessageItem}
+                        keyExtractor={(item, index) => item.id?.toString() || String(index)}
+                        style={chatList}
+                        contentContainerStyle={{ paddingBottom: 100 }}
+                        ref={flatListRef}
+                        initialNumToRender={chatMessages.length}
+                    />
+
+                    {/* Área de input */}
+                    <View style={inputArea}>
+                        <TouchableOpacity onPress={() => setShowEmojiPicker(true)}
+                            style={{ justifyContent: "center", paddingHorizontal: 5 }}>
+                            <MaterialCommunityIcons name="emoticon-outline" size={35} color="#000" />
+                        </TouchableOpacity>
+                        <TextInput
+                            style={input}
+                            value={message}
+                            onChangeText={setMessage}
+                            placeholder="Mensagem"
+                            placeholderTextColor="#000"
+                            multiline={true} // importante para emojis grandes
+                            maxLength={500}  // opcional
+
+
+                        />
+                        <LinearGradient
+                            colors={["rgba(27, 47, 90, 1)", "rgba(66, 101, 170, 1)", "rgba(51, 201, 113, 1)", "rgba(237, 247, 124, 1)"]}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 1 }}
+                            style={buttonStyle}
+                        >
+                            <TouchableOpacity onPress={handleSend}>
+                                <MaterialCommunityIcons
+                                    style={buttonText}
+                                    name={message.trim() ? "send" : "microphone"}
+                                    size={24}
+                                    color="white"
+                                />
+                            </TouchableOpacity>
+                        </LinearGradient>
+                    </View>
+
+
                 </View>
-            </View>
-        </KeyboardAvoidingView>
+            </KeyboardAvoidingView>
+            <Modal visible={showEmojiPicker} animationType="slide">
+                <View style={{ flex: 1, backgroundColor: '#fff' }}>
+                    <TouchableOpacity onPress={() => setShowEmojiPicker(false)}>
+                        <Text style={{ textAlign: 'center', margin: 10 }}>Fechar</Text>
+                    </TouchableOpacity>
+                    <EmojiKeyboard
+                        onEmojiSelected={handleEmojiSelect}
+                        open={showEmojiPicker}
+                        onClose={() => setShowEmojiPicker(false)}
+                        style={{ flex: 1, borderWidth: 1, borderColor: '#ccc', width: '100%', fontSize: 20 }}
+                    />
+                </View>
+            </Modal>
+        </>
+
     );
 }

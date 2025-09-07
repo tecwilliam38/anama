@@ -9,6 +9,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'col',
     alignItems: 'center',
     marginTop: 10,
+    backgroundColor: '#f0f0f0',
   },
   input: {
     flex: 1,
