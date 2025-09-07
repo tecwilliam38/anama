@@ -277,8 +277,6 @@ export default function ChatComponent({ userId, token }) {
                             </TouchableOpacity>
                         </LinearGradient>
                     </View>
-
-
                 </View>
             </KeyboardAvoidingView>
             <Modal visible={showEmojiPicker} animationType="slide">
