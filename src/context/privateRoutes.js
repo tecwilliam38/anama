@@ -18,6 +18,10 @@ import Home from "../screens/Home/index.js";
 import ChatScreen from "../screens/Chat/index.js";
 import ProfileScreen from "../screens/Profile/index.js";
 import ContactsScreen from "../screens/Contacts/index.js";
+import { AuthContext } from "./auth.js";
+import { useContext } from "react";
+import HeaderChat from "../components/ChatComponent/header.js";
+import { useRoute } from "@react-navigation/native";
 
 // Cria os navegadores
 const TopTab = createMaterialTopTabNavigator(); // Abas superiores
@@ -26,6 +30,12 @@ const ZapStack = createBottomTabNavigator();    // Abas inferiores (não utiliza
 
 // Componente principal que define as rotas privadas
 export default function PrivateRoutes() {
+    // const { user } = useContext(AuthContext);
+    // console.log("usuário logado: ", user.profile_image);
+    // const route = useRoute();
+    // const receiver_id = route.params?.receiver_id;
+    // console.log("friend id:", receiver_id);
+
     return (
         <ChatStack.Navigator>
             {/* Tela principal que contém as abas superiores */}
@@ -38,7 +48,20 @@ export default function PrivateRoutes() {
             <ChatStack.Screen
                 name="MyChat"
                 component={ChatScreen}
-                options={{ headerShown: false }}
+                // options={({ navigation }) => ({
+                    // headerLeft: () => (
+                    //     <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginLeft: 10 }}>
+                    //         <Ionicons name="arrow-back" size={24} color="black" />
+                    //     </TouchableOpacity>
+                    // ),
+                    // headerTitle: () => (
+                    //     <HeaderChat
+                    //         name={route.params?.userName || 'Usuário'}
+                    //         photo={route.params?.userPhoto || 'https://via.placeholder.com/36'}
+                    //     />
+                    // ),
+                // })}
+            options={{ headerShown: false }}
             />
         </ChatStack.Navigator>
     );

@@ -10,7 +10,7 @@ import Feather from '@expo/vector-icons/Feather';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 export default function ContatosComponents({ userId, token }) {
-  const [friends, setFriends] = useState([]);
+   const [friends, setFriends] = useState([]);
   const [loading, setLoading] = useState(true);
   const [chatMessages, setChatMessages] = useState([]);
   const [friendImage, setFriendImage] = useState(null);
@@ -55,6 +55,7 @@ export default function ContatosComponents({ userId, token }) {
       }
 
       const enrichedFriends = await Promise.all(
+        console.log('Dados dos amigos:', friendsData),
         friendsData.map(async (friend) => {
           try {
             // Busca mensagens do amigo

@@ -12,7 +12,7 @@ const Routes = (props) => {
     return user ?
 
         <>
-            <PrivateRoutes />
+            <PrivateRoutes route={props.route} />
         </>
         : <PublicRoutes />;
 }

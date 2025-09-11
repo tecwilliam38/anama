@@ -14,9 +14,8 @@ export default function ContactsScreen() {
     return (
         <View style={[container, { flex: 1, justifyContent: 'space-between' }]}>
             <ContatosComponents userId={user.id_user} token={user.token} />
-            <View style={{ width: '100%', height: 100, backgroundColor: "#fff" }}>
-                <AddFriendByContact userId={user.id_user} />
-            </View>
+            <AddFriendByContact userId={user.id_user} />
+
         </View>
 
     )

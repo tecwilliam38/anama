@@ -11,7 +11,8 @@ import {
 } from 'react-native';
 import { AuthContext } from '../../context/auth';
 import api from '../../api';
-import { AntDesign } from '@expo/vector-icons';
+import AntDesign from '@expo/vector-icons/AntDesign';
+import Feather from '@expo/vector-icons/Feather';
 import { Icon } from 'react-native-elements';
 
 export default function AddFriendByContact({ userId, onFriendAdded }) {
@@ -48,7 +49,7 @@ export default function AddFriendByContact({ userId, onFriendAdded }) {
 
   // Função para adicionar amigo via contato
   const addFriend = async () => {
-    if (!contact.trim()) return; // Evita envio vazio
+    if (!contact.trim()) return;
 
     try {
       const res = await api.post(
@@ -61,16 +62,31 @@ export default function AddFriendByContact({ userId, onFriendAdded }) {
           headers: { Authorization: `Bearer ${user.token}` },
         }
       );
+      console.log('Resposta da API ao adicionar amigo:', res.data);
+      // const newFriendId = res.data?.friend_id;
+      const newFriendId = res.data?.friend_id || res.data?.id_user || res.data?.id;
+
       setContact('');
-      // fetchFriendsWithMessages();
-      setModalVisible(false); // Fecha modal
-      if (onFriendAdded) onFriendAdded(); // Atualiza lista no componente pai
+      setModalVisible(false);
+
+      if (onFriendAdded) onFriendAdded();
+
+      if (newFriendId) {
+        navigation.navigate('MyChat', {
+          receiver_id: newFriendId,
+          user_name: res.data?.user_name,
+          profile_image: res.data?.profile_image
+        });
+      } else {
+        Alert.alert('Erro', 'ID do amigo não retornado.');
+      }
 
     } catch (err) {
       console.log('Erro ao adicionar amigo:', err);
       Alert.alert('Erro', 'Não foi possível adicionar o amigo.');
     }
   };
+
 
   return (
     <View style={styles.container}>
@@ -79,8 +95,8 @@ export default function AddFriendByContact({ userId, onFriendAdded }) {
         onPress={() => setModalVisible(true)}
         style={styles.openButton}
       >
-        <AntDesign name="adduser" size={32} color="white" />
-        <Text style={{ color: "#fff" }}> Adicionar Contato</Text>
+        <Feather name="user-plus" size={32} color="white" />
+        {/* <Text style={{ color: "#fff" }}> Adicionar Contato</Text> */}
       </TouchableOpacity>
 
       {/* Modal de adicionar amigo */}
@@ -143,13 +159,19 @@ const styles = StyleSheet.create({
     height: 100,
   },
   openButton: {
-    backgroundColor: '#4CAF50',
-    padding: 12,
-    borderRadius: 30,
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    backgroundColor: '#0c7443ff',
+    borderRadius: 50,
+    padding: 16,
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    width: 'auto',
-    height: 80,
+    elevation: 5, // sombra no Android
+    shadowColor: '#000', // sombra no iOS
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
   },
   overlay: {
     flex: 1,
