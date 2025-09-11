@@ -29,12 +29,7 @@ const ChatStack = createNativeStackNavigator(); // Navegação em pilha
 const ZapStack = createBottomTabNavigator();    // Abas inferiores (não utilizado aqui)
 
 // Componente principal que define as rotas privadas
-export default function PrivateRoutes() {
-    // const { user } = useContext(AuthContext);
-    // console.log("usuário logado: ", user.profile_image);
-    // const route = useRoute();
-    // const receiver_id = route.params?.receiver_id;
-    // console.log("friend id:", receiver_id);
+export default function PrivateRoutes() {   
 
     return (
         <ChatStack.Navigator>
@@ -47,20 +42,7 @@ export default function PrivateRoutes() {
             {/* Tela de chat individual */}
             <ChatStack.Screen
                 name="MyChat"
-                component={ChatScreen}
-                // options={({ navigation }) => ({
-                    // headerLeft: () => (
-                    //     <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginLeft: 10 }}>
-                    //         <Ionicons name="arrow-back" size={24} color="black" />
-                    //     </TouchableOpacity>
-                    // ),
-                    // headerTitle: () => (
-                    //     <HeaderChat
-                    //         name={route.params?.userName || 'Usuário'}
-                    //         photo={route.params?.userPhoto || 'https://via.placeholder.com/36'}
-                    //     />
-                    // ),
-                // })}
+                component={ChatScreen}              
             options={{ headerShown: false }}
             />
         </ChatStack.Navigator>
