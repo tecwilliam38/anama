@@ -45,18 +45,22 @@ export default function ContatosComponents({ userId, token }) {
       const res = await api.get(`/messages/friends/${userId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
+      // console.log('Resposta da API de amigos:', res.data);
+
+
 
       const friendsData = Array.isArray(res.data) ? res.data : [];
 
       if (friendsData.length === 0) {
-        console.log('Nenhum amigo encontrado.');
+        // console.log('Nenhum amigo encontrado.');
         setFriends([]);
         return;
       }
 
       const enrichedFriends = await Promise.all(
-        console.log('Dados dos amigos:', friendsData),
+        // console.log('Dados dos amigos:', friendsData),
         friendsData.map(async (friend) => {
+          // console.log('Amigo encontrado:', friend);
           try {
             // Busca mensagens do amigo
             const msgRes = await api.get(`/messages/users/${friend.friend_id}`, {
@@ -201,6 +205,8 @@ export default function ContatosComponents({ userId, token }) {
       </TouchableOpacity>
     );
   };
+  // console.log(friends);
+  
 
   return (
     <View style={ContactStyles.container}>

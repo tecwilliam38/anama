@@ -14,8 +14,8 @@ import {
     Alert,
     Modal,
     ToastAndroid,
-    SafeAreaView,
 } from 'react-native';
+
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { styles } from './styles';
 import { supabase } from '../../api/supabaseClient';
@@ -69,7 +69,7 @@ export default function ChatComponent({ userId, token }) {
 
                     // Verifica se a mensagem é da conversa atual
                     if (novaMensagem.sender_id === receiver_id) {
-                        console.log('Nova mensagem recebida:', novaMensagem);
+                        // console.log('Nova mensagem recebida:', novaMensagem);
                         setChatMessages(prev => [...prev, novaMensagem]);
                         ToastAndroid.show('Nova mensagem recebida!', ToastAndroid.SHORT);
                     }
@@ -171,7 +171,7 @@ export default function ChatComponent({ userId, token }) {
         setMessage(emojiObject.emoji);
         setShowEmojiPicker(false);
         // Aqui você pode enviar o emoji como reação, salvar no banco, etc.
-        console.log('Emoji selecionado:', emojiObject.emoji);
+        // console.log('Emoji selecionado:', emojiObject.emoji);
     };
     // Renderiza cada mensagem
     const MessageItem = ({ item }) => {

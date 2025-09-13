@@ -12,6 +12,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { supabase } from '../../api/supabaseClient';
 import * as FileSystem from 'expo-file-system';
 import { AuthContext } from '../../context/auth';
+import api from '../../api';
 
 
 export default function PostComponent({ item, index, activeMenuIndex, setActiveMenuIndex, fetchUserImages }) {
@@ -24,7 +25,7 @@ export default function PostComponent({ item, index, activeMenuIndex, setActiveM
   const [selectedReaction, setSelectedReaction] = useState(null);
   const [showCommentBox, setShowCommentBox] = useState(false);
 
-  const { confirmDelete } = useContext(AuthContext);
+  const { confirmDelete, user } = useContext(AuthContext);
 
 
   const handleCommentSubmit = () => {
@@ -34,14 +35,40 @@ export default function PostComponent({ item, index, activeMenuIndex, setActiveM
     }
   };
 
+  const token = user.token;
+  
+  // console.log("aqui o token", token);
+  const saveInteraction = async ({ messageId, userId, emoji, comment, token }) => {
+    try {
+      // const response = await axios.post(
+      //   'https://sua-api.com/api/interactions',
+      const response = await api.post(
+        '/reactions',
+        { messageId, userId, emoji, comment },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao salvar interação:', error.response?.data || error.message);
+      throw error;
+    }
+  };
+
+
 
   // console.log(item);
-  
+
 
   return (
-    <View style={styles.itemBody}>      
+    <View style={styles.itemBody}>
       <TouchableOpacity style={styles.menuButton} onPress={() => setActiveMenuIndex(index)}>
-        <Icon name="ellipsis-v" size={28} color="#000" />        
+        <Icon name="ellipsis-v" size={28} color="#000" />
       </TouchableOpacity>
 
 

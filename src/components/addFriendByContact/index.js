@@ -62,7 +62,7 @@ export default function AddFriendByContact({ userId, onFriendAdded }) {
           headers: { Authorization: `Bearer ${user.token}` },
         }
       );
-      console.log('Resposta da API ao adicionar amigo:', res.data);
+      // console.log('Resposta da API ao adicionar amigo:', res.data);
       // const newFriendId = res.data?.friend_id;
       const newFriendId = res.data?.friend_id || res.data?.id_user || res.data?.id;
 

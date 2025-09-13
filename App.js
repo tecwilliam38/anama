@@ -1,8 +1,8 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
-// import { AuthProvider } from './src/context/auth';
-// import Routes from './src/routes';
 import { useCallback, useEffect, useState } from 'react';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+
 
 import * as SplashScreen from 'expo-splash-screen';
 import { StyleSheet, ImageBackground, View, Text } from 'react-native';
@@ -37,7 +37,7 @@ export default function App() {
     }
   }, [appIsReady]);
 
-   if (!appIsReady) {
+  if (!appIsReady) {
     // Enquanto carrega, exibe sua Splash personalizada
     return <SplashScreenPage />;
   }
@@ -46,11 +46,13 @@ export default function App() {
   return (
     <>
       <StatusBar hidden={true} />
-      <NavigationContainer  onLayout={onLayoutRootView}>
-        <AuthProvider>
-          <Routes/>
-        </AuthProvider>
-      </NavigationContainer>
+      <SafeAreaProvider>
+        <NavigationContainer onLayout={onLayoutRootView}>
+          <AuthProvider>
+            <Routes />
+          </AuthProvider>
+        </NavigationContainer>
+      </SafeAreaProvider>
     </>
   );
 }

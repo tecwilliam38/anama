@@ -1,7 +1,8 @@
 // SplashScreen.js
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
-import { StyleSheet, ImageBackground, Animated, View, SafeAreaView } from 'react-native';
+import { StyleSheet, ImageBackground, Animated, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 // import {
 //   BallIndicator,
