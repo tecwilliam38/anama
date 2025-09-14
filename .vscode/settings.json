@@ -1,4 +1,11 @@
 {
     "java.jdt.ls.androidSupport.enabled": "on",
-    "files.autoSave": "onWindowChange"
+    "files.autoSave": "onWindowChange",
+    "workbench.activityBar.location": "top",
+    "workbench.editor.autoLockGroups": {
+        "default": true
+    },
+    "workbench.settings.editor": "json",
+    "workbench.settings.openDefaultKeybindings": true,
+    "workbench.settings.openDefaultSettings": true
 }
