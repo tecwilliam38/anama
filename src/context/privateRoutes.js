@@ -18,10 +18,8 @@ import Home from "../screens/Home/index.js";
 import ChatScreen from "../screens/Chat/index.js";
 import ProfileScreen from "../screens/Profile/index.js";
 import ContactsScreen from "../screens/Contacts/index.js";
-import { AuthContext } from "./auth.js";
-import { useContext } from "react";
-import HeaderChat from "../components/ChatComponent/header.js";
-import { useRoute } from "@react-navigation/native";
+import Octicons from '@expo/vector-icons/Octicons';
+import TasksScreen from "../screens/Tasks/index.js";
 
 // Cria os navegadores
 const TopTab = createMaterialTopTabNavigator(); // Abas superiores
@@ -92,6 +90,21 @@ function TabsRoutes() {
                     tabBarIcon: ({ focused }) => (
                         <AntDesign
                             name="wechat"
+                            size={30}
+                            color={focused ? "#29a139ff" : "#06bcee"}
+                        />
+                    ),
+                }}
+            />
+            {/* Aba Tarefas */}
+            <TopTab.Screen
+                name="Tasks"
+                component={TasksScreen}
+                options={{
+                    tabBarShowLabel: false,
+                    unmountOnBlur: true,
+                    tabBarIcon: ({ focused }) => (
+                        <Octicons name="tasklist" 
                             size={30}
                             color={focused ? "#29a139ff" : "#06bcee"}
                         />

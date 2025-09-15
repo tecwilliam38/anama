@@ -45,18 +45,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
-  logo: {
-    width: 120,
-    height: 120,
-    marginBottom: 20,
-    resizeMode: 'contain'
-  },
-  title: {
-    fontSize: 24,
-    color: '#fff',
-    fontWeight: 'bold'
-  },
   loadingActive: {
-    top: 270,
+    top: 250,
   },
 });

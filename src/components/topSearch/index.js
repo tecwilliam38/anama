@@ -9,7 +9,8 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { HomeStyles } from '../../screens/Home/style';
 import { supabase } from '../../api/supabaseClient';
 
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
+
 import * as ImagePicker from 'expo-image-picker';
 import { decode } from 'base64-arraybuffer';
 
@@ -25,6 +26,8 @@ export default function TopSearch({ user, id_user }) {
 
 
     const [userImages, setUserImages] = useState([]);
+
+
 
     // Atualiza imagem de perfil quando 'profileImage' muda
     useEffect(() => {
@@ -66,67 +69,65 @@ export default function TopSearch({ user, id_user }) {
     };
 
     // Função para enviar imagem ao Supabase
-    const sendImage = async () => {
-        if (!imageUri) return;
+  const sendImage = async () => {
+    if (!imageUri) return;
 
-        const ext = getFileExtension(imageUri);
-        if (!allowedExtensions.includes(ext)) {
-            alert('Formato de imagem não suportado.');
-            return;
-        }
+    const ext = getFileExtension(imageUri);
+    if (!allowedExtensions.includes(ext)) {
+        alert('Formato de imagem não suportado.');
+        return;
+    }
 
-        try {
-            const fileInfo = await FileSystem.getInfoAsync(imageUri);
-            const base64Data = await FileSystem.readAsStringAsync(fileInfo.uri, {
-                encoding: FileSystem.EncodingType.Base64,
+    try {
+        const base64Data = await FileSystem.readAsStringAsync(imageUri, {
+            encoding:"base64",
+            // encoding: FileSystem.EncodingType.Base64,
+        });
+        const arrayBuffer = decode(base64Data);
+        const fileName = `${id_user}/${Date.now()}.${ext}`;
+
+        // Upload da imagem para o bucket 'anama'
+        const { error: uploadError } = await supabase.storage
+            .from('anama')
+            .upload(fileName, arrayBuffer, {
+                contentType: `image/${ext === 'jpg' ? 'jpeg' : ext}`,
+                upsert: false,
             });
 
-            const arrayBuffer = decode(base64Data);
-            const fileName = `${id_user}/${Date.now()}.${ext}`;
+        if (uploadError) throw uploadError;
 
-            // Upload da imagem para o bucket 'anama'
-            const { error: uploadError } = await supabase.storage
-                .from('anama')
-                .upload(fileName, arrayBuffer, {
-                    contentType: `image/${ext === 'jpg' ? 'jpeg' : ext}`,
-                    upsert: false,
-                });
+        // Obtém URL pública da imagem
+        const { data: publicUrlData, error: publicUrlError } = supabase.storage
+            .from('anama')
+            .getPublicUrl(fileName);
 
-            if (uploadError) throw uploadError;
+        if (publicUrlError) throw publicUrlError;
 
-            // Obtém URL pública da imagem
-            const { data: publicUrlData, error: publicUrlError } = supabase.storage
-                .from('anama')
-                .getPublicUrl(fileName);
+        const imageUrl = publicUrlData.publicUrl;
 
-            if (publicUrlError) throw publicUrlError;
+        // Insere registro no banco de dados
+        const { error: dbError } = await supabase
+            .from('anama_posts')
+            .insert({
+                image_url: imageUrl,
+                id_user,
+                created_at: new Date().toISOString(),
+                post_body,
+            });
 
-            const imageUrl = publicUrlData.publicUrl;
+        if (dbError) throw dbError;
 
-            // Insere registro no banco de dados
-            const { error: dbError } = await supabase
-                .from('anama_posts')
-                .insert({
-                    image_url: imageUrl,
-                    id_user,
-                    created_at: new Date().toISOString(),
-                    post_body,
-                });
+        // Limpa os campos após envio
+        setImageUri(null);
+        setPost_body("");
+        fetchUserImages();
+        triggerImageRefresh();
+    } catch (err) {
+        console.error('Erro ao enviar imagem:', err.message);
+        alert('Erro ao enviar imagem.');
+    }
+};
 
-            if (dbError) throw dbError;
-
-            // Limpa os campos após envio
-            setImageUri(null);
-            setPost_body("");
-            fetchUserImages();
-            triggerImageRefresh();
-        } catch (err) {
-            console.error('Erro ao enviar imagem:', err.message);
-            alert('Erro ao enviar imagem.');
-        }
-    };
-
-    
 
     return (
         <View style={topSearch}>
