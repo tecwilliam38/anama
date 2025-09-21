@@ -169,6 +169,12 @@ export const styles = {
     marginBottom: 12,
     color: '#333',
   },
+    label: {
+    fontSize: 16,
+    marginBottom: 4,
+    marginTop: 12,
+    color: '#555',
+  },
   input: {
     borderWidth: 1,
     borderColor: '#ccc',
@@ -178,6 +184,13 @@ export const styles = {
     marginBottom: 12,
     fontSize: 16,
     backgroundColor: '#f9f9f9',
+  },
+   picker: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    backgroundColor: '#f9f9f9',
+    marginBottom: 12,
   },
   buttonCard: {
     backgroundColor: '#4CAF50',
