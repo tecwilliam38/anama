@@ -20,6 +20,8 @@ import ProfileScreen from "../screens/Profile/index.js";
 import ContactsScreen from "../screens/Contacts/index.js";
 import Octicons from '@expo/vector-icons/Octicons';
 import TasksScreen from "../screens/Tasks/index.js";
+import AddTask from "../screens/Tasks/addTask.js";
+import AddClient from "../screens/Tasks/addClient.js";
 
 // Cria os navegadores
 const TopTab = createMaterialTopTabNavigator(); // Abas superiores
@@ -42,7 +44,17 @@ export default function PrivateRoutes() {
                 name="MyChat"
                 component={ChatScreen}              
             options={{ headerShown: false }}
-            />
+            />           
+            <ChatStack.Screen
+                name="AddTarefa"
+                component={AddTask}  
+                  options={{ title: 'Adicionar Tarefa' }}
+            />           
+            <ChatStack.Screen
+                name="AddClient"
+                component={AddClient}  
+                  options={{ title: 'Adicionar Cliente' }}
+            />           
         </ChatStack.Navigator>
     );
 }

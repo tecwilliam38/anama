@@ -19,7 +19,7 @@ export const styles = {
     },
     headerBg: {
         width: "100%",
-        height: 100,
+        height: 50,
     },
 
     imageHeader: {
@@ -31,7 +31,7 @@ export const styles = {
         flexDirection: "row",
         width: "100%",
     },
-    imageagenda:{
+    imageagenda: {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
@@ -40,14 +40,14 @@ export const styles = {
         flexDirection: "row",
         width: "100%",
     },
-    textAgenda:{
+    textAgenda: {
         fontSize: 30,
         color: "#fff",
         textAlign: "center",
         fontWeight: "bold",
     },
-    bgpagestyle:{
-        flex:1,
+    bgpagestyle: {
+        flex: 1,
         justifyContent: "center",
         alignItems: "center",
         width: "100%",
@@ -88,7 +88,7 @@ export const styles = {
         marginTop: 15,
     },
     container: {
-        flex: 1,        
+        flex: 1,
         width: "100%",
     },
     headerText: {
@@ -105,12 +105,91 @@ export const styles = {
         paddingBottom: 5,
         paddingLeft: 10,
     },
-    noappointments:{
-        color:"red",
-        fontSize:30,
-        fontWeight:"bold",
-        textAlign:"center",
-        justifyContent:"center",
-        alignItems:"center"
-    }
+    noappointments: {
+        color: "red",
+        fontSize: 30,
+        fontWeight: "bold",
+        textAlign: "center",
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    button: {        
+        width: "95%",
+        height: 60,        
+        borderRadius: 12,
+        justifyContent: "center",
+        marginHorizontal: 15,
+        marginVertical: 5,
+        borderWidth: 1,
+        borderColor: "#ccc",
+    },
+    buttonTouchable: {
+        borderRadius: 12,
+        flexDirection: "row",
+        alignItems: "center",
+        width: "100%",
+        height: 60,
+        paddingLeft:15,
+        justifyContent: "start",
+        
+    },
+    buttonText: {
+        color: "#333",
+        fontSize: 25,
+        fontWeight: "bold",
+        marginLeft: 10,
+    },
+    buttonTextClient: {
+        color: "#fff",
+        fontSize: 25,
+        fontWeight: "bold",
+        marginLeft: 10,
+        textShadowColor: '#000',
+        textShadowOffset: { width: 1, height: 1 },
+        textShadowRadius: 5,
+    },
+    tasksList: {
+        flex: 1,
+        padding: 10,
+    },
+  card: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 10,
+    margin: 16,
+    elevation: 4, // sombra no Android
+    shadowColor: '#000', // sombra no iOS
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 12,
+    color: '#333',
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    marginBottom: 12,
+    fontSize: 16,
+    backgroundColor: '#f9f9f9',
+  },
+  buttonCard: {
+    backgroundColor: '#4CAF50',
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  buttonTextCard: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+
 }
