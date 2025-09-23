@@ -205,8 +205,6 @@ export default function ContatosComponents({ userId, token }) {
       </TouchableOpacity>
     );
   };
-  // console.log(friends);
-  
 
   return (
     <View style={ContactStyles.container}>

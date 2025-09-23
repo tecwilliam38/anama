@@ -5,7 +5,8 @@ export const ContactStyles = StyleSheet.create({
         flex: 1,
         height: Dimensions.get('window').height - 20,
         width: "100%",
-        backgroundColor: "rgba(153, 153, 153, 0.5)",        
+        backgroundColor: "#fff",        
+        // backgroundColor: "rgba(153, 153, 153, 0.9)",        
         marginBottom: 10,
     },
     itemStyle: {

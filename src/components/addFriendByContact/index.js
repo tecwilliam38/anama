@@ -62,8 +62,6 @@ export default function AddFriendByContact({ userId, onFriendAdded }) {
           headers: { Authorization: `Bearer ${user.token}` },
         }
       );
-      // console.log('Resposta da API ao adicionar amigo:', res.data);
-      // const newFriendId = res.data?.friend_id;
       const newFriendId = res.data?.friend_id || res.data?.id_user || res.data?.id;
 
       setContact('');
@@ -95,8 +93,7 @@ export default function AddFriendByContact({ userId, onFriendAdded }) {
         onPress={() => setModalVisible(true)}
         style={styles.openButton}
       >
-        <Feather name="user-plus" size={32} color="white" />
-        {/* <Text style={{ color: "#fff" }}> Adicionar Contato</Text> */}
+        <Feather name="user-plus" size={42} color="white" />
       </TouchableOpacity>
 
       {/* Modal de adicionar amigo */}
@@ -160,7 +157,7 @@ const styles = StyleSheet.create({
   },
   openButton: {
     position: 'absolute',
-    bottom: 20,
+    bottom: 40,
     right: 20,
     backgroundColor: '#0c7443ff',
     borderRadius: 50,

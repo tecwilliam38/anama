@@ -15,7 +15,6 @@ export default function ContactsScreen() {
         <View style={[container, { flex: 1, justifyContent: 'space-between' }]}>
             <ContatosComponents userId={user.id_user} token={user.token} />
             <AddFriendByContact userId={user.id_user} />
-
         </View>
 
     )
