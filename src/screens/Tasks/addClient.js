@@ -61,7 +61,6 @@ export default function AddClient({ token }) {
     return (
         <View style={styles.card}>
             <Text style={styles.title}>Registro de Cliente</Text>
-
             <TextInput
                 style={styles.input}
                 placeholder="Nome do Cliente"
@@ -80,7 +79,7 @@ export default function AddClient({ token }) {
                 placeholder="Telefone de Contato"
                 keyboardType="phone-pad"
                 value={phoneContato}
-                onChangeText={setPhoneContato || "não registrado"}
+                onChangeText={setPhoneContato}
             />
 
             <Text style={styles.label}>Cidade</Text>
