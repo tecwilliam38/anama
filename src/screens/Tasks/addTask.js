@@ -62,7 +62,16 @@ export default function AddTask() {
                 {clients.map((client) => (
                     <Picker.Item key={client.id} label={client.setor} value={client.id} />
                 ))}
-            </Picker>            
+            </Picker>
+            <Picker
+                selectedValue={status}
+                onValueChange={(value) => setStatus(value)}
+                style={styles.picker}
+            >
+                <Picker.Item label="Selecione o Status" value="" />
+                <Picker.Item label="Aberto" value="aberto" />
+                <Picker.Item label="Encerrado" value="encerrado" />                
+            </Picker>
             <TextInput style={styles.input} placeholder="Valor do Chamado" keyboardType="numeric" />
             <TouchableOpacity style={styles.buttonCard}>
                 <Text style={styles.buttonTextCard}>Salvar</Text>
