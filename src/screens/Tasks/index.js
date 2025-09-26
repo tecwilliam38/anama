@@ -15,26 +15,28 @@ export default function TasksScreen() {
   return (
     <>
       <View style={styles.container}>
-        <TouchableOpacity style={styles.button}
-          onPress={() => navigation.navigate("AddClient")}
-        >
-          <Image
-            source={require('../../assets/buttonClient.png')}
-            style={styles.buttonTouchable}>
-            <MaterialIcons name="add-task" size={50} color="#fff" />
-            <Text style={styles.buttonTextClient}>Adicionar cliente</Text>
-          </Image>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button}
-          onPress={() => navigation.navigate("AddTarefa")}
-        >
-          <Image
-            source={require('../../assets/button.png')}
-            style={styles.buttonTouchable}>
-            <MaterialIcons name="add-task" size={50} color="#fff" />
-            <Text style={styles.buttonTextClient}>Nova Tarefa</Text>
-          </Image>
-        </TouchableOpacity>
+        <View style={styles.btns}>
+          <TouchableOpacity style={styles.button}
+            onPress={() => navigation.navigate("AddClient")}
+          >
+            <Image
+              source={require('../../assets/buttonClient.png')}
+              style={styles.buttonTouchable}>
+              <MaterialIcons name="add-task" size={25} color="#fff" />
+              <Text style={styles.buttonTextClient}>Adicionar cliente</Text>
+            </Image>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button}
+            onPress={() => navigation.navigate("AddTarefa")}
+          >
+            <Image
+              source={require('../../assets/button.png')}
+              style={styles.buttonTouchable}>
+              <MaterialIcons name="add-task" size={25} color="#fff" />
+              <Text style={styles.buttonTextClient}>Nova Tarefa</Text>
+            </Image>
+          </TouchableOpacity>
+        </View>
       </View>
     </>
   )

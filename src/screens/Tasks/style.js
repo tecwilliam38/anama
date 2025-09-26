@@ -113,13 +113,11 @@ export const styles = {
         justifyContent: "center",
         alignItems: "center"
     },
-    button: {        
-        width: "95%",
-        height: 60,        
+    button: {
+        width: "49.5%",
+        height: 60,
         borderRadius: 12,
         justifyContent: "center",
-        marginHorizontal: 15,
-        marginVertical: 5,
         borderWidth: 1,
         borderColor: "#ccc",
     },
@@ -129,9 +127,9 @@ export const styles = {
         alignItems: "center",
         width: "100%",
         height: 60,
-        paddingLeft:15,
-        justifyContent: "start",
-        
+        padding: 10,
+        justifyContent: "space-around",
+
     },
     buttonText: {
         color: "#333",
@@ -141,68 +139,96 @@ export const styles = {
     },
     buttonTextClient: {
         color: "#fff",
-        fontSize: 25,
+        fontSize: 18,
         fontWeight: "bold",
-        marginLeft: 10,
+        textAlign: "center",
+        // marginLeft: 5,
         textShadowColor: '#000',
-        textShadowOffset: { width: 1, height: 1 },
+        textShadowOffset: { width: 1, height: 2 },
         textShadowRadius: 5,
     },
     tasksList: {
         flex: 1,
         padding: 10,
     },
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 10,
-    margin: 16,
-    elevation: 4, // sombra no Android
-    shadowColor: '#000', // sombra no iOS
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 12,
-    color: '#333',
-  },
+    card: {
+        backgroundColor: '#fff',
+        borderRadius: 12,
+        padding: 10,
+        margin: 16,
+        elevation: 4, // sombra no Android
+        shadowColor: '#000', // sombra no iOS
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+    },
+    title: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 12,
+        color: '#333',
+    },
     label: {
-    fontSize: 16,
-    marginBottom: 4,
-    marginTop: 12,
-    color: '#555',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    paddingVertical: 10,
-    paddingHorizontal: 14,
-    marginBottom: 12,
-    fontSize: 16,
-    backgroundColor: '#f9f9f9',
-  },
-   picker: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    backgroundColor: '#f9f9f9',
-    marginBottom: 12,
-  },
-  buttonCard: {
-    backgroundColor: '#4CAF50',
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 8,
-  },
-  buttonTextCard: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
-  },
+        fontSize: 16,
+        marginBottom: 4,
+        marginTop: 12,
+        color: '#555',
+    },
+    input: {
+        flex: 1,
+        color: '#000',
+        // fontSize: 16,
+        // paddingVertical: 8,
+        // borderWidth: 1,
+        // borderColor: '#ccc',
+        width: '48%',
+        borderRadius: 8,
+        paddingVertical: 10,
+        paddingHorizontal: 14,
+        marginBottom: 12,
+        fontSize: 16,
+        backgroundColor: '#f9f9f9',
+    },
+    picker: {
+        borderWidth: 1,
+        borderColor: '#ccc',
+        width: '48%',
+        borderRadius: 8,
+        backgroundColor: '#f9f9f9',
+        marginBottom: 12,
+    },
+    buttonCard: {
+        backgroundColor: '#4CAF50',
+        paddingVertical: 12,
+        borderRadius: 8,
+        alignItems: 'center',
+        marginTop: 8,
+    },
+    buttonTextCard: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: '600',
+    },
+    btns: {
+        flexDirection: 'row',
+        width: '100%',
+        justifyContent: 'space-between',
+        paddingHorizontal: 6,
+        marginTop: 10,
+        // borderWidth: 1,
+    },
+    formRow: {
+        flexDirection: "row",
+    },
+    botao: {
+        margin: 10
+    },
+    chamado: {
+        width: '50%',
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 12,
+        marginVertical: 10,
 
+    }
 }

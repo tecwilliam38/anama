@@ -6,17 +6,18 @@ import { AuthContext } from '../../context/auth';
 import api from '../../api';
 import { useNavigation } from 'expo-router';
 import { Picker } from '@react-native-picker/picker';
+import { Calendar } from 'react-native-calendars';
 
 export default function AddTask() {
     const navigate = useNavigation();
     const { user } = useContext(AuthContext);
 
-
+    const [mostrarCalendario, setMostrarCalendario] = useState(false);
     const [clients, setClients] = useState([]);
     const [idClients, setIdClients] = useState("");
     const [tecnicos, setTecnicos] = useState([]);
     const [services, setServices] = useState([]);
-    const [status, setStatus] = useState("");
+    const [status, setStatus] = useState("Status");
 
     const [idUser, setIdUser] = useState("");
     const [idTecnico, setIdTecnico] = useState();
@@ -51,28 +52,68 @@ export default function AddTask() {
 
     return (
         <View style={styles.card}>
-            <TextInput style={styles.input} placeholder="Número do Chamado" keyboardType="numeric" />
-            <Text style={styles.label}>Clientes</Text>
-            <Picker
-                selectedValue={clients}
-                onValueChange={(value) => setClients(value)}
-                style={styles.picker}
+            <View style={styles.formRow}>
+                <TextInput style={styles.input} placeholder="Número do Chamado" keyboardType="numeric" />
+                {/* <Text style={styles.label}>Clientes</Text> */}
+                <Picker
+                    selectedValue={clients}
+                    onValueChange={(value) => setClients(value)}
+                    style={styles.picker}
+                >
+                    <Picker.Item label="Cliente" value="" />
+                    {clients.map((client) => (
+                        <Picker.Item key={client.id} label={client.setor} value={client.id} />
+                    ))}
+                </Picker>
+            </View>
+            <View style={styles.formRow}>
+                <View style={styles.chamado}>
+                    <Text style={styles.prefixo}>R$</Text>
+                    <TextInput style={styles.input} placeholder="Valor do Chamado" keyboardType="numeric" />
+                </View>
+                <Picker
+                    label="Status"
+                    selectedValue={status}
+                    onValueChange={(value) => setStatus(value)}
+                    style={styles.picker}
+                >
+                    <Picker.Item label="Aberto" value="aberto" />
+                    <Picker.Item label="Encerrado" value="encerrado" />
+                </Picker>
+            </View>
+            <TouchableOpacity
+                style={styles.botao}
+                onPress={() => setMostrarCalendario(!mostrarCalendario)}
             >
-                <Picker.Item label="Selecione o Cliente" value="" />
-                {clients.map((client) => (
-                    <Picker.Item key={client.id} label={client.setor} value={client.id} />
-                ))}
-            </Picker>
-            <Picker
-                selectedValue={status}
-                onValueChange={(value) => setStatus(value)}
-                style={styles.picker}
-            >
-                <Picker.Item label="Selecione o Status" value="" />
-                <Picker.Item label="Aberto" value="aberto" />
-                <Picker.Item label="Encerrado" value="encerrado" />                
-            </Picker>
-            <TextInput style={styles.input} placeholder="Valor do Chamado" keyboardType="numeric" />
+                <Text style={styles.textoBotao}>
+                    {bookingDate ? `Data escolhida: ${bookingDate}` : 'Escolha a data:'}
+                </Text>
+            </TouchableOpacity>
+            {mostrarCalendario && (
+                <Calendar
+                    theme={styles.theme}
+                    onDayPress={(day) => {
+                        setBookingDate(day.dateString);
+                        setMostrarCalendario(false); // fecha o calendário após seleção
+                    }}
+                    markedDates={{
+                        [bookingDate]: { selected: true }
+                    }}
+                    minDate={new Date().toISOString().split('T')[0]}
+                />
+            )}
+
+            {/* <TextInput style={styles.input} placeholder="Selecione a data" keyboardType="numeric" /> */}
+            {/* <Calendar theme={styles.theme}
+                onDayPress={(day) => {
+                    setBookingDate(day.dateString)
+                }}
+                markedDates={{
+                    [bookingDate]: { selected: true }
+                }}
+
+                minDate={new Date().toDateString()}
+            /> */}
             <TouchableOpacity style={styles.buttonCard}>
                 <Text style={styles.buttonTextCard}>Salvar</Text>
             </TouchableOpacity>
