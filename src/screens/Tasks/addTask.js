@@ -56,8 +56,8 @@ export default function AddTask() {
             );
 
             navigation.navigate("Main");
-            console.log('Dados enviados:', agendaData);
-            console.log('ID do agendamento:', response.data.id_appointment);
+            // console.log('Dados enviados:', agendaData);
+            // console.log('ID do agendamento:', response.data.id_appointment);
             return response.data.id_appointment;
         } catch (error) {
             console.error('Erro ao inserir agendamento:', error.response?.data || error.message);

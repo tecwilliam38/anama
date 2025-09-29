@@ -1,3 +1,4 @@
+import { shadow } from "react-native-paper";
 import { COLORS, FONT_SIZE } from "../../context/constants";
 
 
@@ -115,7 +116,7 @@ export const styles = {
     },
     button: {
         width: "49.5%",
-        height: 60,
+        height: 90,
         borderRadius: 12,
         justifyContent: "center",
         borderWidth: 1,
@@ -126,10 +127,17 @@ export const styles = {
         flexDirection: "row",
         alignItems: "center",
         width: "100%",
-        height: 60,
+        height: 90,
         padding: 10,
         justifyContent: "space-around",
 
+    },
+    iconStyle:{
+        shadowColor: '#fff',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.9,
+        shadowRadius: 4.65,
+        elevation: 6,
     },
     buttonText: {
         color: "#333",
@@ -213,8 +221,7 @@ export const styles = {
         flexDirection: 'row',
         width: '100%',
         justifyContent: 'space-between',
-        paddingHorizontal: 6,
-        marginTop: 10,
+        paddingHorizontal: 6,        
         // borderWidth: 1,
     },
     formRow: {
