@@ -6,7 +6,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Image } from 'react-native-elements';
 import { useNavigation } from 'expo-router';
 import api from '../../api';
-import { Feather, FontAwesome6 } from '@expo/vector-icons';
+import { Feather, FontAwesome6, MaterialCommunityIcons } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 export default function TasksScreen() {
@@ -97,7 +97,8 @@ export default function TasksScreen() {
               <View style={styles.formRow}>
                 <View style={styles.labelStyle}>
                   <View style={styles.labelTitle}>
-                    <FontAwesome5 name="map" size={24}
+                    <MaterialCommunityIcons name="home-city-outline"
+                      size={24}
                       color="#444" style={{ marginRight: 5, paddingLeft: 10 }} />
                     <Text style={styles.labelText}>Cidade:</Text>
                   </View>
@@ -127,7 +128,7 @@ export default function TasksScreen() {
                       color="#444" style={{ marginRight: 5, paddingLeft: 10 }} />
                     <Text style={styles.labelText}>Valor:</Text>
                   </View>
-                    <Text style={styles.labelClient}>R$ {item.price}</Text>
+                  <Text style={styles.labelClient}>R$ {item.price}</Text>
                 </View>
               </View>
 

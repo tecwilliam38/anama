@@ -43,8 +43,7 @@ export const styles = {
         color: "#fff",
         fontSize: 18,
         fontWeight: "bold",
-        textAlign: "center",
-        // marginLeft: 5,
+        textAlign: "center",       
         textShadowColor: '#000',
         textShadowOffset: { width: 1, height: 2 },
         textShadowRadius: 5,
@@ -58,7 +57,8 @@ export const styles = {
         shadowOffset: { width: 0, height: 3 },
         shadowOpacity: 0.6,
         shadowRadius: 4,
-        width: '95%',
+        width: '95%',        
+        paddingBottom: 10,
         alignSelf: 'center',
     },
     titleCard: {
@@ -78,13 +78,12 @@ export const styles = {
         textShadowColor: '#000',
         textShadowOffset: { width: 1, height: 2 },
         textShadowRadius: 5,
-    },
-    
+    },    
     formRow: {
         flexDirection: "row",
-        justifyContent: "space-around",
-        width: '100%',
-        height: 90,
+        justifyContent: "space-between",
+        width: '100%',      
+        marginVertical: 10,  
     },
     labelStyle:{        
         width: '50%',        
@@ -93,9 +92,7 @@ export const styles = {
     labelTitle:{
         flexDirection: 'row',
         width: '100%',
-        alignItems: 'center',
-        // borderColor: '#ccc',
-        // borderWidth: 1,
+        alignItems: 'center',      
     },
     labelText:{
         fontSize: 20,
@@ -105,64 +102,5 @@ export const styles = {
         paddingLeft: 14,
         fontSize: 16,
         color:"#000",
-    },
-    label: {
-        fontSize: 16,
-        marginBottom: 4,
-        marginTop: 12,
-        color: '#555',
-    },
-    buttonText: {
-        color: "#333",
-        fontSize: 25,
-        fontWeight: "bold",
-        marginLeft: 10,
-    },
-    input: {
-        flex: 1,
-        color: '#000',
-        // fontSize: 16,
-        // paddingVertical: 8,
-        // borderWidth: 1,
-        // borderColor: '#ccc',
-        width: '48%',
-        borderRadius: 8,
-        paddingVertical: 10,
-        paddingHorizontal: 14,
-        marginBottom: 12,
-        fontSize: 16,
-        backgroundColor: '#f9f9f9',
-    },
-    picker: {
-        borderWidth: 1,
-        borderColor: '#ccc',
-        width: '48%',
-        borderRadius: 8,
-        backgroundColor: '#f9f9f9',
-        marginBottom: 12,
-    },
-    buttonCard: {
-        backgroundColor: '#4CAF50',
-        paddingVertical: 12,
-        borderRadius: 8,
-        alignItems: 'center',
-        marginTop: 8,
-    },
-    buttonTextCard: {
-        color: '#fff',
-        fontSize: 16,
-        fontWeight: '600',
-    },
-
-    botao: {
-        margin: 10
-    },
-    chamado: {
-        width: '50%',
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingHorizontal: 12,
-        marginVertical: 10,
-
     }
 }
