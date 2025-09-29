@@ -9,7 +9,7 @@ import { Picker } from '@react-native-picker/picker';
 import { Calendar } from 'react-native-calendars';
 
 export default function AddTask() {
-    const navigate = useNavigation();
+    const navigation = useNavigation();
     const { user } = useContext(AuthContext);
 
     const [mostrarCalendario, setMostrarCalendario] = useState(false);
@@ -21,33 +21,30 @@ export default function AddTask() {
 
     const [idUser, setIdUser] = useState("");
     const [price, setPrice] = useState("");
-    
+
     const [idService, setIdService] = useState("");
-    const [bookingDate, setBookingDate] = useState("");    
+    const [bookingDate, setBookingDate] = useState("");
 
     useEffect(() => {
         LoadClients();
     }, []);
 
-    // console.log("Clientes:", clients.map(c => c.id_client));
-    // console.log("Primeiro cliente:", clients[0]);
-    // console.log("ID do primeiro cliente:", clients[0]?.id_client);
-
     const token = user.token;
+    // id_client: idClients,
 
-    const agendaData = {
-        id_service: idService,
-        id_client: idClients,
-        price,
-        status,
-        booking_datetime: bookingDate
-    };
+    const insertAgenda = async (token) => {
+        try {            
+            const agendaData = {
+                id_service: idService,
+                id_client:  idClients ,
+                price: parseFloat(price),
+                status,
+                booking_datetime: bookingDate + 'T00:00:00' // ou ajuste conforme necessário
+            };
 
 
-    const insertAgenda = async (token, agendaData) => {
-        try {
             const response = await api.post(
-                '/client/agendamentos/add', // substitua pelo IP e porta do seu backend
+                '/client/agendamentos/add',
                 agendaData,
                 {
                     headers: {
@@ -56,15 +53,19 @@ export default function AddTask() {
                     },
                 }
             );
-
+            navigation.navigate("Main");
+            // console.log('Dados enviados:', agendaData);
             console.log('ID do agendamento:', response.data.id_appointment);
             return response.data.id_appointment;
         } catch (error) {
             console.error('Erro ao inserir agendamento:', error.response?.data || error.message);
+            console.log('Dados enviados:', agendaData);
+
             return null;
         }
     };
 
+    
 
     async function LoadClients() {
         try {
@@ -103,7 +104,7 @@ export default function AddTask() {
                 >
                     <Picker.Item label="Cliente" value="" />
                     {clients.map((client) => (
-                        <Picker.Item key={client.id} label={client.setor} value={client.id} />
+                        <Picker.Item key={client.id_client} label={client.setor} value={client.id_client} />
                     ))}
                 </Picker>
             </View>
@@ -146,8 +147,8 @@ export default function AddTask() {
                     }}
                     minDate={new Date().toISOString().split('T')[0]}
                 />
-            )}         
-            <TouchableOpacity style={styles.buttonCard} onPress={() => insertAgenda(token, agendaData)}>
+            )}
+            <TouchableOpacity style={styles.buttonCard} onPress={() => insertAgenda(token)}>
                 <Text style={styles.buttonTextCard}>Salvar</Text>
             </TouchableOpacity>
         </View>
