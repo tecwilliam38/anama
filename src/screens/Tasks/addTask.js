@@ -33,15 +33,16 @@ export default function AddTask() {
     // id_client: idClients,
 
     const insertAgenda = async (token) => {
-        try {            
+        try {
+            const clientId = idClients ? parseInt(idClients) : null;
+
             const agendaData = {
                 id_service: idService,
-                id_client:  idClients ,
+                id_client: clientId, // Corrigido aqui
                 price: parseFloat(price),
                 status,
-                booking_datetime: bookingDate + 'T00:00:00' // ou ajuste conforme necessário
+                booking_datetime: bookingDate + 'T00:00:00'
             };
-
 
             const response = await api.post(
                 '/client/agendamentos/add',
@@ -53,19 +54,17 @@ export default function AddTask() {
                     },
                 }
             );
+
             navigation.navigate("Main");
-            // console.log('Dados enviados:', agendaData);
+            console.log('Dados enviados:', agendaData);
             console.log('ID do agendamento:', response.data.id_appointment);
             return response.data.id_appointment;
         } catch (error) {
             console.error('Erro ao inserir agendamento:', error.response?.data || error.message);
             console.log('Dados enviados:', agendaData);
-
             return null;
         }
     };
-
-    
 
     async function LoadClients() {
         try {
