@@ -21,10 +21,9 @@ export default function AddTask() {
 
     const [idUser, setIdUser] = useState("");
     const [price, setPrice] = useState("");
-    const [idTecnico, setIdTecnico] = useState();
+    
     const [idService, setIdService] = useState("");
-    const [bookingDate, setBookingDate] = useState("");
-    const [bookingHour, setBookingHour] = useState("");
+    const [bookingDate, setBookingDate] = useState("");    
 
     useEffect(() => {
         LoadClients();
@@ -41,7 +40,7 @@ export default function AddTask() {
         id_client: idClients,
         price,
         status,
-        booking_datetime: '2025-10-10T14:00:00'
+        booking_datetime: bookingDate
     };
 
 
@@ -147,20 +146,8 @@ export default function AddTask() {
                     }}
                     minDate={new Date().toISOString().split('T')[0]}
                 />
-            )}
-
-            {/* <TextInput style={styles.input} placeholder="Selecione a data" keyboardType="numeric" /> */}
-            {/* <Calendar theme={styles.theme}
-                onDayPress={(day) => {
-                    setBookingDate(day.dateString)
-                }}
-                markedDates={{
-                    [bookingDate]: { selected: true }
-                }}
-
-                minDate={new Date().toDateString()}
-            /> */}
-            <TouchableOpacity style={styles.buttonCard}>
+            )}         
+            <TouchableOpacity style={styles.buttonCard} onPress={() => insertAgenda(token, agendaData)}>
                 <Text style={styles.buttonTextCard}>Salvar</Text>
             </TouchableOpacity>
         </View>
