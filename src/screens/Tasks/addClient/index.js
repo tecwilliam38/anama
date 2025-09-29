@@ -1,14 +1,15 @@
 import { View, Text, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { useContext } from 'react';
-import { AuthContext } from '../../context/auth';
+import { AuthContext } from '../../../context/auth';
 import { styles } from './style';
 import { TextInput } from 'react-native-paper';
-import Municipios from '../../context/Municipios';
+import Municipios from '../../../context/Municipios';
 import { Picker } from '@react-native-picker/picker';
 import { useState } from 'react';
-import api from '../../api';
+import api from '../../../api';
 import { useNavigation } from '@react-navigation/native';
+import { Image } from 'react-native-elements';
 
 
 export default function AddClient({ token }) {
@@ -36,7 +37,7 @@ export default function AddClient({ token }) {
             }, {
                 headers: { Authorization: `Bearer ${user.token}` }
             })
-            if (response?.data) {           
+            if (response?.data) {
                 setTimeout(() => {
                     navigation.navigate("Main");
                     setClientName('');
@@ -60,7 +61,11 @@ export default function AddClient({ token }) {
 
     return (
         <View style={styles.card}>
-            <Text style={styles.title}>Registro de Cliente</Text>
+            <Image
+                source={require('../../../assets/buttonClient.png')}
+                style={styles.imageHeader}>
+                <Text style={styles.title}>Registro de Cliente</Text>
+            </Image>
             <TextInput
                 style={styles.input}
                 placeholder="Nome do Cliente"
@@ -96,13 +101,17 @@ export default function AddClient({ token }) {
             <Text style={styles.label}>Endereço</Text>
             <TextInput
                 style={styles.input}
-                placeholder="Endereço"
+                placeholder="Digite o endereço do cliente"
                 value={endereco}
                 onChangeText={setEndereco}
             />
-            <TouchableOpacity style={styles.buttonCard} onPress={ClientRegister}>
-                <Text style={styles.buttonTextCard}>Salvar</Text>
-            </TouchableOpacity>
+            <Image
+                source={require('../../../assets/buttonClient.png')}
+                style={styles.imageButton}>
+                <TouchableOpacity style={styles.buttonCard} onPress={ClientRegister}>
+                    <Text style={styles.buttonTextCard}>Salvar</Text>
+                </TouchableOpacity>
+            </Image>
         </View >
 
     )

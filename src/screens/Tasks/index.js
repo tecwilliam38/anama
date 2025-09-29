@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity } from 'react-native'
+import { View, Text, TouchableOpacity, FlatList } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { styles } from './style'
 import { AuthContext } from '../../context/auth';
@@ -20,7 +20,7 @@ export default function TasksScreen() {
 
   async function LoadServices() {
     try {
-      const response = await api.post('/client/agendamentos/list',{}, {
+      const response = await api.post('/client/agendamentos/list', {}, {
         headers: {
           Authorization: `Bearer ${user.token}`,
         },
@@ -31,6 +31,8 @@ export default function TasksScreen() {
       console.error("Erro ao carregar serviços:", error);
     }
   }
+
+  // console.log("Services", services);
 
   return (
     <>
@@ -57,6 +59,34 @@ export default function TasksScreen() {
             </Image>
           </TouchableOpacity>
         </View>
+        <FlatList
+          data={services}
+          keyExtractor={(item, index) => item.id ? item.id.toString() : index.toString()}
+          renderItem={({ item }) => (
+            <View style={styles.card}>
+              <Text style={styles.title}>📌 Chamado Nº: {item.id_service}</Text>
+              <View style={styles.formRow}>
+                <Text style={styles.text}>🏢 Cliente: {'\n'+item.cliente}</Text>
+                <Text style={styles.text}>🏢 Setor: {'\n'+item.filial}</Text>
+              </View>
+              <Text style={styles.text}>📍 Endereço: {item.endereco}</Text>
+              <View style={styles.formRow}>
+                <Text style={styles.text}>🏢 Cidade: {item.cidade}</Text>
+                <Text style={styles.text}>
+                  📅 Data: {new Date(item.booking_datetime).toLocaleDateString('pt-BR')}
+                </Text>
+              </View>
+              <Text style={styles.text}>💰 Valor: R$ {item.price}</Text>
+
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => handleVerDetalhes(item.id)}
+              >
+                <Text style={styles.buttonText}>Ver detalhes</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        />
       </View>
     </>
   )

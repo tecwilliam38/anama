@@ -2,11 +2,13 @@ import { View, Text, TouchableOpacity } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { styles } from './style'
 import { TextInput } from 'react-native-paper'
-import { AuthContext } from '../../context/auth';
-import api from '../../api';
 import { useNavigation } from 'expo-router';
 import { Picker } from '@react-native-picker/picker';
 import { Calendar } from 'react-native-calendars';
+import { AuthContext } from '../../../context/auth';
+import api from '../../../api';
+import { Image } from 'react-native-elements';
+import { FontAwesome } from '@expo/vector-icons';
 
 export default function AddTask() {
     const navigation = useNavigation();
@@ -89,13 +91,17 @@ export default function AddTask() {
 
     return (
         <View style={styles.card}>
+            <Image
+                source={require('../../../assets/button.png')}
+                style={styles.imageHeader}>
+                <Text style={styles.title}>Adicionar Tarefa</Text>
+            </Image>
             <View style={styles.formRow}>
                 <TextInput
                     value={idService}
                     onChangeText={setIdService}
                     style={styles.input}
                     placeholder="Número do Chamado" keyboardType="numeric" />
-                {/* <Text style={styles.label}>Clientes</Text> */}
                 <Picker
                     selectedValue={idClients}
                     onValueChange={(value) => setIdClients(value)}
@@ -108,8 +114,8 @@ export default function AddTask() {
                 </Picker>
             </View>
             <View style={styles.formRow}>
-                <View style={styles.chamado}>
-                    <Text style={styles.prefixo}>R$</Text>
+                <View style={styles.chamadoStyle}>
+                    <Text style={styles.precoFixo}>R$</Text>
                     <TextInput
                         value={price}
                         onChangeText={setPrice}
@@ -123,16 +129,18 @@ export default function AddTask() {
                     style={styles.picker}
                 >
                     <Picker.Item label="Aberto" value="aberto" />
+                    <Picker.Item label="Agendar" value="agendar" />
                     <Picker.Item label="Encerrado" value="encerrado" />
                 </Picker>
             </View>
             <TouchableOpacity
-                style={styles.botao}
+                style={styles.botaoCalendar}
                 onPress={() => setMostrarCalendario(!mostrarCalendario)}
             >
                 <Text style={styles.textoBotao}>
                     {bookingDate ? `Data escolhida: ${bookingDate}` : 'Escolha a data:'}
                 </Text>
+                <FontAwesome name="calendar" size={25} color="#000" />
             </TouchableOpacity>
             {mostrarCalendario && (
                 <Calendar
@@ -147,9 +155,13 @@ export default function AddTask() {
                     minDate={new Date().toISOString().split('T')[0]}
                 />
             )}
-            <TouchableOpacity style={styles.buttonCard} onPress={() => insertAgenda(token)}>
-                <Text style={styles.buttonTextCard}>Salvar</Text>
-            </TouchableOpacity>
+            <Image
+                source={require('../../../assets/buttonClient.png')}
+                style={styles.imageButton}>
+                <TouchableOpacity style={styles.buttonCard} onPress={() => insertAgenda(token)}>
+                    <Text style={styles.buttonTextCard}>Salvar</Text>
+                </TouchableOpacity>
+            </Image>
         </View>
     )
 }

@@ -166,8 +166,8 @@ export const styles = {
         margin: 16,
         elevation: 4, // sombra no Android
         shadowColor: '#000', // sombra no iOS
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2,
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.6,
         shadowRadius: 4,
     },
     title: {
@@ -226,6 +226,8 @@ export const styles = {
     },
     formRow: {
         flexDirection: "row",
+        justifyContent: "space-around",
+        width: '100%',
     },
     botao: {
         margin: 10

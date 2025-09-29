@@ -20,8 +20,8 @@ import ProfileScreen from "../screens/Profile/index.js";
 import ContactsScreen from "../screens/Contacts/index.js";
 import Octicons from '@expo/vector-icons/Octicons';
 import TasksScreen from "../screens/Tasks/index.js";
-import AddTask from "../screens/Tasks/addTask.js";
-import AddClient from "../screens/Tasks/addClient.js";
+import AddTask from "../screens/Tasks/addTask/index.js";
+import AddClient from "../screens/Tasks/addClient/index.js";
 
 // Cria os navegadores
 const TopTab = createMaterialTopTabNavigator(); // Abas superiores
