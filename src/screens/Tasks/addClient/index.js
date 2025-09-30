@@ -39,7 +39,7 @@ export default function AddClient({ token }) {
             })
             if (response?.data) {
                 setTimeout(() => {
-                    navigation.navigate("Main");
+                    navigation.navigate("Main", { screen: "Tasks" });
                     setClientName('');
                     setPhoneContato('');
                     setClientSector('');

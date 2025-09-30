@@ -57,7 +57,7 @@ export default function AddTask() {
                 }
             );
 
-            navigation.navigate("Main");
+            navigation.navigate("Main",{ screen: "Tasks" });
             // console.log('Dados enviados:', agendaData);
             // console.log('ID do agendamento:', response.data.id_appointment);
             return response.data.id_appointment;
