@@ -6,7 +6,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Image } from 'react-native-elements';
 import { useNavigation } from 'expo-router';
 import api from '../../api';
-import { Feather, FontAwesome6, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Feather, FontAwesome, FontAwesome6, MaterialCommunityIcons } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 export default function TasksScreen() {
@@ -68,13 +68,23 @@ export default function TasksScreen() {
               <Image
                 source={require('../../assets/buttonCard.png')}
                 style={styles.titleCard}>
-                <MaterialIcons name="task-alt" size={30} color="#fff" style={{
-                  textShadowColor: '#000',
-                  textShadowOffset: { width: 1, height: 2 },
-                  textShadowRadius: 5, marginRight: 15
-                }} />
-                <Text style={styles.title}>
-                  Chamado Nº: {item.id_service}</Text>
+                <View style={styles.cardRow}>
+                  <MaterialIcons name="task-alt" size={30} color="#fff" style={{
+                    textShadowColor: '#000',
+                    textShadowOffset: { width: 1, height: 2 },
+                    textShadowRadius: 5, marginRight: 15
+                  }} />
+                  <Text style={styles.title}>
+                    Chamado Nº: {item.id_service}</Text>
+                </View>
+                <View style={styles.cardPrice}>
+                  <View style={styles.labelCol}>
+                    <MaterialIcons name="attach-money" size={24}
+                      color="#444" style={{ marginRight: 5, paddingLeft: 10 }} />
+                    <Text style={styles.title}>Valor:</Text>
+                  </View>
+                  <Text style={styles.title}>R$ {item.price}</Text>
+                </View>
               </Image>
               <View style={styles.formRow}>
                 <View style={styles.labelStyle}>
@@ -122,15 +132,27 @@ export default function TasksScreen() {
                   </View>
                   <Text style={styles.labelClient}>{item.endereco}</Text>
                 </View>
-                <View style={styles.labelStyle}>
+                {/* <View style={styles.labelStyle}>
                   <View style={styles.labelTitle}>
                     <MaterialIcons name="attach-money" size={24}
                       color="#444" style={{ marginRight: 5, paddingLeft: 10 }} />
                     <Text style={styles.labelText}>Valor:</Text>
                   </View>
                   <Text style={styles.labelClient}>R$ {item.price}</Text>
-                </View>
+                </View> */}
               </View>
+              <Image
+                source={require('../../assets/buttonCard.png')}
+                style={styles.buttonImage}>
+                <TouchableOpacity style={styles.buttonBottom}>
+                  <FontAwesome name="edit" size={30} color="#fff" style={styles.iconBottom} />
+                  <Text style={styles.bottomTextEdit}>Editar Chamado</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.buttonBottom}>
+                  <FontAwesome name="trash" size={30} color="#c53131ff" style={styles.iconBottom} />
+                  <Text style={styles.bottomTextDelete}>Excluir Chamado</Text>
+                </TouchableOpacity>
+              </Image>
 
               {/* <TouchableOpacity
                 style={styles.button}

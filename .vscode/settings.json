@@ -1,7 +1,7 @@
 {
     "java.jdt.ls.androidSupport.enabled": "on",
     "files.autoSave": "onWindowChange",
-    "workbench.activityBar.location": "top",
+    "workbench.activityBar.location": "default",
     "workbench.editor.autoLockGroups": {
         "default": true
     },
