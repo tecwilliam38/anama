@@ -9,9 +9,14 @@ import { AuthContext } from '../../../context/auth';
 import api from '../../../api';
 import { Image } from 'react-native-elements';
 import { FontAwesome } from '@expo/vector-icons';
+import { useRoute } from '@react-navigation/native';
 
 export default function AddTask() {
     const navigation = useNavigation();
+    const route = useRoute();
+    const { taskId } = route.params || {};
+
+
     const { user } = useContext(AuthContext);
 
     const [mostrarCalendario, setMostrarCalendario] = useState(false);
@@ -29,12 +34,64 @@ export default function AddTask() {
 
     useEffect(() => {
         LoadClients();
+        if (taskId) {
+            LoadTaskData(taskId);
+        }
     }, []);
 
+
+    async function LoadTaskData(id_appointment) {
+        try {
+            const response = await api.get(`/agendamentos/listar/${id_appointment}`, {
+                headers: { Authorization: `Bearer ${user.token}` }
+            });
+
+            const task = response.data;
+            setIdService(task.id_service?.toString() || "");
+            setIdClients(task.id_client?.toString() || "");
+            setPrice(task.price?.toString() || "");
+            setStatus(task.status || "aberto");
+            setBookingDate(task.booking_datetime?.split("T")[0] || "");
+
+        } catch (error) {
+            console.error("Erro ao carregar tarefa:", error.response?.data || error.message);
+            alert("Erro ao carregar dados da tarefa");
+        }
+    }
+
     const token = user.token;
+
+    // console.log("fora da cfunção", taskId);
     // id_client: idClients,
 
-    const insertAgenda = async (token) => {
+    const EditAgenda = async () => {
+        // console.log(taskId);
+
+        try {
+            const clientId = idClients ? parseInt(idClients) : null;
+            const id = taskId ? parseInt(taskId) : null;
+            console.log("dentro da função", id);
+
+
+            const agendaData = {
+                id_service: idService,
+                id_client: clientId, // Corrigido aqui
+                price: parseFloat(price),
+                status,
+                booking_datetime: bookingDate + 'T00:00:00'
+            };
+            const response = await api.put("/agendamentos/" + id, agendaData, {
+                headers: { Authorization: `Bearer ${user.token}` }
+            })
+            navigation.navigate("Main", { screen: "Tasks" });
+        } catch (error) {
+            console.error('Erro ao Editar agendamento:', error.response?.data || error.message);
+            console.log('Dados enviados:', agendaData);
+            return null;
+        }
+    }
+
+    const insertAgenda = async () => {
         try {
             const clientId = idClients ? parseInt(idClients) : null;
 
@@ -46,27 +103,35 @@ export default function AddTask() {
                 booking_datetime: bookingDate + 'T00:00:00'
             };
 
-            const response = await api.post(
-                '/client/agendamentos/add',
-                agendaData,
-                {
+            const response =
+                await api.post('/client/agendamentos/add', agendaData, {
                     headers: {
-                        Authorization: `Bearer ${token}`,
+                        Authorization: `Bearer ${user.token}`,
                         'Content-Type': 'application/json',
                     },
-                }
-            );
-
-            navigation.navigate("Main",{ screen: "Tasks" });
-            // console.log('Dados enviados:', agendaData);
-            // console.log('ID do agendamento:', response.data.id_appointment);
-            return response.data.id_appointment;
+                });
+            navigation.navigate("Main", { screen: "Tasks" });
         } catch (error) {
             console.error('Erro ao inserir agendamento:', error.response?.data || error.message);
             console.log('Dados enviados:', agendaData);
             return null;
         }
     };
+
+    // console.log('Dados enviados:', agendaData);
+    // console.log('ID do agendamento:', response.data.id_appointment);
+    // return response.data.id_appointment;
+
+    // const response = await api.post(
+    //     '/client/agendamentos/add',
+    //     agendaData,
+    //     {
+    //         headers: {
+    //             Authorization: `Bearer ${token}`,
+    //             'Content-Type': 'application/json',
+    //         },
+    //     }
+    // );
 
     async function LoadClients() {
         try {
@@ -91,11 +156,20 @@ export default function AddTask() {
 
     return (
         <View style={styles.card}>
+            {taskId
+            ?
+            <Image
+                source={require('../../../assets/button.png')}
+                style={styles.imageHeader}>
+                <Text style={styles.title}>Editar Chamado</Text>
+            </Image>
+            :
             <Image
                 source={require('../../../assets/button.png')}
                 style={styles.imageHeader}>
                 <Text style={styles.title}>Adicionar Tarefa</Text>
             </Image>
+            }
             <View style={styles.formRow}>
                 <TextInput
                     value={idService}
@@ -155,13 +229,24 @@ export default function AddTask() {
                     minDate={new Date().toISOString().split('T')[0]}
                 />
             )}
-            <Image
-                source={require('../../../assets/buttonClient.png')}
-                style={styles.imageButton}>
-                <TouchableOpacity style={styles.buttonCard} onPress={() => insertAgenda(token)}>
-                    <Text style={styles.buttonTextCard}>Salvar</Text>
-                </TouchableOpacity>
-            </Image>
+            {
+                taskId ?
+                    <Image
+                        source={require('../../../assets/buttonClient.png')}
+                        style={styles.imageButton}>
+                        <TouchableOpacity style={styles.buttonCard} onPress={() => EditAgenda(user.token)}>
+                            <Text style={styles.buttonTextCard}>Editar</Text>
+                        </TouchableOpacity>
+                    </Image>
+                    :
+                    <Image
+                        source={require('../../../assets/buttonClient.png')}
+                        style={styles.imageButton}>
+                        <TouchableOpacity style={styles.buttonCard} onPress={() => insertAgenda(token)}>
+                            <Text style={styles.buttonTextCard}>Salvar</Text>
+                        </TouchableOpacity>
+                    </Image>
+            }
         </View>
     )
 }

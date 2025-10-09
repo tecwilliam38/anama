@@ -79,8 +79,8 @@ export const styles = {
     },
     cardPrice: {
         flexDirection: 'row',
-        width:"100%",
-        alignItems:"center",
+        width: "100%",
+        alignItems: "center",
     },
     title: {
         fontSize: 22,
@@ -110,7 +110,7 @@ export const styles = {
         flexDirection: 'row',
         width: '100%',
         alignItems: 'center',
-        
+
     },
     labelTitle: {
         flexDirection: 'row',
@@ -130,6 +130,27 @@ export const styles = {
         fontSize: 16,
         color: "#000",
     },
+    bottonContainer: {
+        flexDirection: 'row',        
+        justifyContent: 'space-between',
+        paddingHorizontal: 10,
+        marginTop: 20,   
+        height:70,     
+        borderBottomRadius:12,
+    },
+    iconBottom: {
+        marginRight: 8,
+    },
+    bottomTextEdit: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    bottomTextDelete: {
+        color: '#c53131ff',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
     buttonImage: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -140,14 +161,18 @@ export const styles = {
         justifyContent: 'center',
     },
     buttonBottom: {
+        marginHorizontal: 5,
+        marginVertical:10,
+        paddingVertical: 12,      
+        flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        marginHorizontal: 'auto',
+        // marginHorizontal: 'auto',
         width: '45%',
         height: 50,
         borderRadius: 12,
-        backgroundColor: "rgba(255,255,255,0.4)",
+        backgroundColor: "rgba(50, 184, 117, 0.4)",
         // borderColor: "#000",        
         // borderWidth: 1,
     },
@@ -158,9 +183,11 @@ export const styles = {
         textShadowOffset: { width: 1, height: 2 },
         textShadowRadius: 5,
         paddingRight: 20,
+        fontWeight:"bold",
     },
     bottomTextDelete: {
         fontSize: 18,
+        fontWeight:"bold",
         color: "#c53131ff",
         textShadowColor: '#b47171ff',
         textShadowOffset: { width: 1, height: 2 },
@@ -168,7 +195,7 @@ export const styles = {
     },
     iconBottom: {
         paddingLeft: 20,
-        textShadowColor: '#000',
+        textShadowColor: '#ccc',
         textShadowOffset: { width: 1, height: 2 },
         textShadowRadius: 5,
         marginRight: 15

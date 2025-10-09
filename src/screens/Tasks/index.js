@@ -35,6 +35,19 @@ export default function TasksScreen() {
 
   // console.log("Services", services);
 
+  async function EditTask(id_appointment) {
+    navigation.navigate("AddTarefa",{taskId:id_appointment});
+      // console.log("Edit task", id_appointment);  
+   
+    LoadServices()
+  }
+
+  async function DeleteTask() {
+    navigation.navigate("Main", { screen: "Tasks" });
+    console.log("delete task");
+    LoadServices()
+  }
+
   return (
     <>
       <View style={styles.container}>
@@ -132,25 +145,27 @@ export default function TasksScreen() {
                   </View>
                   <Text style={styles.labelClient}>{item.endereco}</Text>
                 </View>
-                {/* <View style={styles.labelStyle}>
+                <View style={styles.labelStyle}>
                   <View style={styles.labelTitle}>
-                    <MaterialIcons name="attach-money" size={24}
+                    <MaterialIcons name="task" size={24}
                       color="#444" style={{ marginRight: 5, paddingLeft: 10 }} />
-                    <Text style={styles.labelText}>Valor:</Text>
+                    <Text style={styles.labelText}>Status:</Text>
                   </View>
-                  <Text style={styles.labelClient}>R$ {item.price}</Text>
-                </View> */}
+                  <Text style={styles.labelClient}>{item.status}</Text>
+                </View>
               </View>
               <Image
                 source={require('../../assets/buttonCard.png')}
-                style={styles.buttonImage}>
-                <TouchableOpacity style={styles.buttonBottom}>
+                style={styles.bottonContainer}>
+                <TouchableOpacity style={styles.buttonBottom}
+                    onPress={() => EditTask(item.id_appointment)}>
                   <FontAwesome name="edit" size={30} color="#fff" style={styles.iconBottom} />
-                  <Text style={styles.bottomTextEdit}>Editar Chamado</Text>
+                  <Text style={styles.bottomTextEdit}>Editar</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.buttonBottom}>
+                <TouchableOpacity style={styles.buttonBottom}
+                  onPress={DeleteTask}>
                   <FontAwesome name="trash" size={30} color="#c53131ff" style={styles.iconBottom} />
-                  <Text style={styles.bottomTextDelete}>Excluir Chamado</Text>
+                  <Text style={styles.bottomTextDelete}>Excluir</Text>
                 </TouchableOpacity>
               </Image>
 
