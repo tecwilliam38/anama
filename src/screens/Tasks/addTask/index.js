@@ -65,14 +65,10 @@ export default function AddTask() {
     // id_client: idClients,
 
     const EditAgenda = async () => {
-        // console.log(taskId);
-
         try {
             const clientId = idClients ? parseInt(idClients) : null;
             const id = taskId ? parseInt(taskId) : null;
-            console.log("dentro da função", id);
-
-
+          
             const agendaData = {
                 id_service: idService,
                 id_client: clientId, // Corrigido aqui
