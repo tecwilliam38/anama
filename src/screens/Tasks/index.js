@@ -116,7 +116,7 @@ export default function TasksScreen() {
           <TouchableOpacity style={styles.button}
             onPress={() => navigation.navigate("AddTarefa")}
           >
-            <Image
+            <Image             
               source={require('../../assets/button.png')}
               style={styles.buttonTouchable}>
               <MaterialIcons name="add-task" size={35} color="#fff" style={styles.iconStyle} />

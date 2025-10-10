@@ -22,11 +22,7 @@ export default function AddTask() {
     const [mostrarCalendario, setMostrarCalendario] = useState(false);
     const [clients, setClients] = useState([]);
     const [idClients, setIdClients] = useState("");
-    const [tecnicos, setTecnicos] = useState([]);
-    const [services, setServices] = useState([]);
-    const [status, setStatus] = useState("Status");
-
-    const [idUser, setIdUser] = useState("");
+    const [status, setStatus] = useState("Status");    
     const [price, setPrice] = useState("");
 
     const [idService, setIdService] = useState("");
@@ -123,7 +119,7 @@ export default function AddTask() {
         } catch (error) {
             if (error.response?.data.error) {
                 if (error.response.status == 401)
-                    return navigate("/");
+                    return navigation.navigate("Main");
 
                 alert(error.response?.data.error);
             }
@@ -209,15 +205,15 @@ export default function AddTask() {
             )}
             {
                 taskId ?
-                    <Image
+                    <Image 
                         source={require('../../../assets/buttonClient.png')}
                         style={styles.imageButton}>
-                        <TouchableOpacity style={styles.buttonCard} onPress={() => EditAgenda(user.token)}>
+                        <TouchableOpacity style={styles.buttonCard} onPress={EditAgenda}>
                             <Text style={styles.buttonTextCard}>Editar</Text>
                         </TouchableOpacity>
-                    </Image>
+                    </Image >
                     :
-                    <Image
+                    <Image 
                         source={require('../../../assets/buttonClient.png')}
                         style={styles.imageButton}>
                         <TouchableOpacity style={styles.buttonCard} onPress={() => insertAgenda(token)}>
