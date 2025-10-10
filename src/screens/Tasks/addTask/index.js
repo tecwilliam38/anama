@@ -111,21 +111,6 @@ export default function AddTask() {
         }
     };
 
-    // console.log('Dados enviados:', agendaData);
-    // console.log('ID do agendamento:', response.data.id_appointment);
-    // return response.data.id_appointment;
-
-    // const response = await api.post(
-    //     '/client/agendamentos/add',
-    //     agendaData,
-    //     {
-    //         headers: {
-    //             Authorization: `Bearer ${token}`,
-    //             'Content-Type': 'application/json',
-    //         },
-    //     }
-    // );
-
     async function LoadClients() {
         try {
             const response = await api.get("/client/listar", {
