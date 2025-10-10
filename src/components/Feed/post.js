@@ -1,3 +1,4 @@
+// FullScreenImageViewer.js
 import React, { useContext, useState } from 'react';
 import {
   View,
@@ -7,9 +8,14 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
+  Modal,
+  Dimensions,
 } from 'react-native';
+import ImageViewing from 'react-native-image-viewing';
+
+
+
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { supabase } from '../../api/supabaseClient';
 import * as FileSystem from 'expo-file-system';
 import { AuthContext } from '../../context/auth';
 import api from '../../api';
@@ -28,6 +34,7 @@ export default function PostComponent({ item, index, activeMenuIndex, setActiveM
   const { confirmDelete, user } = useContext(AuthContext);
 
 
+
   const handleCommentSubmit = () => {
     if (comment.trim()) {
       setComments(prev => [...prev, comment]);
@@ -36,12 +43,9 @@ export default function PostComponent({ item, index, activeMenuIndex, setActiveM
   };
 
   const token = user.token;
-  
-  // console.log("aqui o token", token);
+
   const saveInteraction = async ({ messageId, userId, emoji, comment, token }) => {
     try {
-      // const response = await axios.post(
-      //   'https://sua-api.com/api/interactions',
       const response = await api.post(
         '/reactions',
         { messageId, userId, emoji, comment },
@@ -60,6 +64,16 @@ export default function PostComponent({ item, index, activeMenuIndex, setActiveM
     }
   };
 
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  const openImage = (uri) => {
+    setSelectedImage(uri);    
+  };
+
+  const closeImage = () => {
+    setSelectedImage(null);
+  };
+//  const [visible, setVisible] = useState(false);
 
 
   // console.log(item);
@@ -83,8 +97,18 @@ export default function PostComponent({ item, index, activeMenuIndex, setActiveM
         </View>
       )}
 
+      {/* <Image source={{ uri: item.uri }} style={styles.thumbnail} /> */}
       {item.body_text && <Text style={styles.bodyText}>{item.body_text}</Text>}
-      <Image source={{ uri: item.image }} style={styles.picture} />
+      <TouchableOpacity onPress={() => openImage(item.image)} style={styles.card}>      
+        <Image source={{ uri: item.image }} style={styles.picture} />
+      </TouchableOpacity>
+
+      <Modal visible={!!selectedImage} transparent={true}>
+        <TouchableOpacity style={styles.modalContainer} onPress={closeImage}>
+          <Image source={{ uri: selectedImage }} style={styles.fullImage} resizeMode="contain" />
+        </TouchableOpacity>
+      </Modal>
+
 
       <View style={styles.interactionRow}>
         <View style={styles.iconGroup}>
@@ -148,6 +172,7 @@ export default function PostComponent({ item, index, activeMenuIndex, setActiveM
     </View>
   );
 }
+const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   itemBody: {
@@ -246,5 +271,23 @@ const styles = StyleSheet.create({
     fontSize: 14,
     paddingVertical: 6,
     color: '#333',
+  },
+  card: {
+    marginHorizontal: 10,
+  },
+  caption: {
+    marginTop: 5,
+    fontSize: 14,
+    color: '#000',
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: 'black',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  fullImage: {
+    width: width,
+    height: height,
   },
 });

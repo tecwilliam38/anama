@@ -61,9 +61,6 @@ export default function AddTask() {
 
     const token = user.token;
 
-    // console.log("fora da cfunção", taskId);
-    // id_client: idClients,
-
     const EditAgenda = async () => {
         try {
             const clientId = idClients ? parseInt(idClients) : null;
