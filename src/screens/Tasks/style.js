@@ -116,8 +116,13 @@ export const styles = {
     formRow: {
         flexDirection: "row",
         justifyContent: "space-between",
-        width: '100%',
+        width: '90%',
+        alignItems:"center",
+        alignSelf:'center',
         marginVertical: 10,
+        borderColor:"#000",
+        borderBottomWidth:1,
+        paddingBottom:10,
     },
     labelStyle: {
         width: '50%',
