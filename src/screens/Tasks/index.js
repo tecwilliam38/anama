@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, FlatList } from 'react-native'
+import { View, Text, TouchableOpacity, FlatList, Modal } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { styles } from './style'
 import { AuthContext } from '../../context/auth';
@@ -14,6 +14,8 @@ export default function TasksScreen() {
   const navigation = useNavigation();
 
   const [services, setServices] = useState([]);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   useEffect(() => {
     LoadServices();
@@ -36,17 +38,66 @@ export default function TasksScreen() {
   // console.log("Services", services);
 
   async function EditTask(id_appointment) {
-    navigation.navigate("AddTarefa",{taskId:id_appointment});
-      // console.log("Edit task", id_appointment);  
-   
+    navigation.navigate("AddTarefa", { taskId: id_appointment });
+    // console.log("Edit task", id_appointment);  
+
     LoadServices()
   }
 
-  async function DeleteTask() {
-    navigation.navigate("Main", { screen: "Tasks" });
-    console.log("delete task");
-    LoadServices()
+  async function DeleteAppointmentid(id_appointment) {
+    try {
+      const response = await api.delete(`/agendamentos/${id_appointment}`, {
+        headers: {
+          Authorization: `Bearer ${user.token}`
+        }
+      });
+
+
+      if (response?.data) {
+        navigation.navigate("Main", { screen: "Tasks" });
+      }
+
+    } catch (error) {
+      if (error.response?.data.error) {
+        if (error.response.status == 401)
+          return navigate("/");
+
+        alert(error.response?.data.error);
+      }
+      else
+        alert("Erro ao excluir reserva");
+    }
   }
+  const DeleteAppointment = async (id) => {
+    try {
+      await api.delete(`/agendamentos/${id}`, {
+        headers: { Authorization: `Bearer ${user.token}` }
+      });
+      // Navegar ou atualizar após exclusão     
+      LoadServices()
+    } catch (error) {
+      alert("Erro ao excluir agendamento");
+      console.error(error);
+    }
+  };
+
+
+
+
+  const openConfirmModal = (item) => {
+    setSelectedItem(item);
+    setShowConfirm(true);
+  };
+
+
+  const handleConfirm = () => {
+    if (selectedItem) {
+      DeleteAppointment(selectedItem.id_appointment);
+      setShowConfirm(false);
+    }
+
+  };
+
 
   return (
     <>
@@ -58,7 +109,7 @@ export default function TasksScreen() {
             <Image
               source={require('../../assets/buttonClient.png')}
               style={styles.buttonTouchable}>
-              <MaterialIcons name="add-task" size={35} color="#000" style={styles.iconStyle} />
+              <Feather name="user-plus" size={35} color="#fff" style={styles.iconStyle} />
               <Text style={styles.buttonTextClient}>Adicionar cliente</Text>
             </Image>
           </TouchableOpacity>
@@ -85,17 +136,13 @@ export default function TasksScreen() {
                   <MaterialIcons name="task-alt" size={30} color="#fff" style={{
                     textShadowColor: '#000',
                     textShadowOffset: { width: 1, height: 2 },
-                    textShadowRadius: 5, marginRight: 15
+                    textShadowRadius: 5
                   }} />
                   <Text style={styles.title}>
                     Chamado Nº: {item.id_service}</Text>
                 </View>
                 <View style={styles.cardPrice}>
-                  <View style={styles.labelCol}>
-                    <MaterialIcons name="attach-money" size={24}
-                      color="#444" style={{ marginRight: 5, paddingLeft: 10 }} />
-                    <Text style={styles.title}>Valor:</Text>
-                  </View>
+                  <Text style={styles.title}>Valor:</Text>
                   <Text style={styles.title}>R$ {item.price}</Text>
                 </View>
               </Image>
@@ -155,19 +202,41 @@ export default function TasksScreen() {
                 </View>
               </View>
               <Image
-                source={require('../../assets/buttonCard.png')}
+                source={require('../../assets/bottonBorder.png')}
                 style={styles.bottonContainer}>
                 <TouchableOpacity style={styles.buttonBottom}
-                    onPress={() => EditTask(item.id_appointment)}>
+                  onPress={() => EditTask(item.id_appointment)}>
                   <FontAwesome name="edit" size={30} color="#fff" style={styles.iconBottom} />
                   <Text style={styles.bottomTextEdit}>Editar</Text>
                 </TouchableOpacity>
+                {/* <TouchableOpacity style={styles.buttonBottom} onPress={() => setShowConfirm(true)}> */}
+
                 <TouchableOpacity style={styles.buttonBottom}
-                  onPress={DeleteTask}>
+                  onPress={() => openConfirmModal(item)}>
+                  {/* onPress={() => ClickDelete(item.id_appointment)}> */}
                   <FontAwesome name="trash" size={30} color="#c53131ff" style={styles.iconBottom} />
                   <Text style={styles.bottomTextDelete}>Excluir</Text>
                 </TouchableOpacity>
               </Image>
+              {/* Modal de confirmação */}
+              <Modal transparent={true} visible={showConfirm} animationType="fade">
+                <View style={styles.modalOverlay}>
+                  <View style={styles.modalContent}>
+                    <Text style={styles.modalTitle}>Exclusão</Text>
+                    <Text style={styles.modalMessage}>Confirma exclusão desse agendamento?</Text>
+
+                    <View style={styles.buttonContainer}>
+                      <TouchableOpacity onPress={handleConfirm} style={styles.buttonYes}>
+                        <Text style={styles.buttonText}>Sim</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={() => setShowConfirm(false)} style={styles.buttonNo}>
+                        <Text style={styles.buttonText}>Não</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
+              </Modal>
+
 
               {/* <TouchableOpacity
                 style={styles.button}
