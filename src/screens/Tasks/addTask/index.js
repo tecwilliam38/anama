@@ -86,12 +86,13 @@ export default function AddTask() {
 
             const agendaData = {
                 id_service: idService,
-                id_client: clientId, // Corrigido aqui
+                id_client: idClients, // Corrigido aqui
                 price: parseFloat(price),
                 status,
                 booking_datetime: bookingDate + 'T00:00:00'
             };
             
+            // id_client: clientId, // Corrigido aqui
             // booking_datetime: new Date(bookingDate).toISOString()
             const response =
                 await api.post('/client/agendamentos/add', agendaData, {
