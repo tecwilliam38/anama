@@ -82,7 +82,7 @@ export default function AddTask() {
 
     const insertAgenda = async () => {
         try {
-            const clientId = idClients ? parseInt(idClients) : null;
+            // const clientId = idClients ? parseInt(idClients) : null;
 
             const agendaData = {
                 id_service: idService,
@@ -90,8 +90,8 @@ export default function AddTask() {
                 price: parseFloat(price),
                 status,
                 booking_datetime: bookingDate + 'T00:00:00'
-            };
-
+            };            
+           
             const response =
                 await api.post('/client/agendamentos/add', agendaData, {
                     headers: {
@@ -216,7 +216,8 @@ export default function AddTask() {
                     <Image 
                         source={require('../../../assets/buttonClient.png')}
                         style={styles.imageButton}>
-                        <TouchableOpacity style={styles.buttonCard} onPress={() => insertAgenda(token)}>
+                        {/* <TouchableOpacity style={styles.buttonCard} onPress={() => insertAgenda(token)}> */}
+                        <TouchableOpacity style={styles.buttonCard} onPress={insertAgenda}>
                             <Text style={styles.buttonTextCard}>Salvar</Text>
                         </TouchableOpacity>
                     </Image>
