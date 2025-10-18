@@ -82,7 +82,7 @@ export default function AddTask() {
 
     const insertAgenda = async () => {
         try {
-            // const clientId = idClients ? parseInt(idClients) : null;
+            const clientId = idClients ? parseInt(idClients) : null;
 
             const agendaData = {
                 id_service: idService,
@@ -90,8 +90,9 @@ export default function AddTask() {
                 price: parseFloat(price),
                 status,
                 booking_datetime: bookingDate + 'T00:00:00'
-            };            
-           
+            };
+            
+            // booking_datetime: new Date(bookingDate).toISOString()
             const response =
                 await api.post('/client/agendamentos/add', agendaData, {
                     headers: {
