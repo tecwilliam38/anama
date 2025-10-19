@@ -70,7 +70,7 @@ export default function AddFriendByContact({ userId, onFriendAdded }) {
       if (onFriendAdded) onFriendAdded();
 
       if (newFriendId) {
-        navigation.navigate('MyChat', {
+        navigation.replace('MyChat', {
           receiver_id: newFriendId,
           user_name: res.data?.user_name,
           profile_image: res.data?.profile_image

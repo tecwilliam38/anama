@@ -1,15 +1,15 @@
 import { View, Text, TouchableOpacity, FlatList, Modal } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
-import { styles } from './style'
-import { AuthContext } from '../../context/auth';
+import { styles } from '../style'
+import { AuthContext } from '../../../context/auth';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Image } from 'react-native-elements';
 import { useNavigation } from 'expo-router';
-import api from '../../api';
+import api from '../../../api';
 import { Feather, FontAwesome, FontAwesome6, MaterialCommunityIcons } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-export default function TasksScreen() {
+export default function AllTasksScreen() {
   const { user } = useContext(AuthContext);
   const navigation = useNavigation();
 
@@ -29,14 +29,14 @@ export default function TasksScreen() {
       },
     });
 
-    const today = new Date().toISOString().split('T')[0]; // '2025-10-19'
+    // const today = new Date().toISOString().split('T')[0]; // '2025-10-19'
 
-    const chamadosDoDia = response.data.filter((chamado) => {
-      const dataChamado = new Date(chamado.booking_datetime).toISOString().split('T')[0];
-      return dataChamado === today;
-    });
+    // const chamadosDoDia = response.data.filter((chamado) => {
+    //   const dataChamado = new Date(chamado.booking_datetime).toISOString().split('T')[0];
+    //   return dataChamado === today;
+    // });
 // console.log("Chamados do dia:", chamadosDoDia);
-    setServices(chamadosDoDia);
+    setServices(response.data);
   } catch (error) {
     console.error("Erro ao carregar serviços:", error);
   }
@@ -75,12 +75,12 @@ export default function TasksScreen() {
   return (
     <>
       <View style={styles.container}>
-        <View style={styles.btns}>
+        {/* <View style={styles.btns}>
           <TouchableOpacity style={styles.button}
             onPress={() => navigation.navigate("AddClient")}
           >
             <Image
-              source={require('../../assets/buttonClient.png')}
+              source={require('../../../assets/buttonClient.png')}
               style={styles.buttonTouchable}>
               <Feather name="user-plus" size={35} color="#fff" style={styles.iconStyle} />
               <Text style={styles.buttonTextClient}>Adicionar cliente</Text>
@@ -90,20 +90,20 @@ export default function TasksScreen() {
             onPress={() => navigation.navigate("AddTarefa")}
           >
             <Image
-              source={require('../../assets/button.png')}
+              source={require('../../../assets/button.png')}
               style={styles.buttonTouchable}>
               <MaterialIcons name="add-task" size={35} color="#fff" style={styles.iconStyle} />
               <Text style={styles.buttonTextClient}>Nova Tarefa</Text>
             </Image>
           </TouchableOpacity>
-        </View>
+        </View> */}
         <FlatList
           data={services}
           keyExtractor={(item, index) => item.id ? item.id.toString() : index.toString()}
           renderItem={({ item }) => (
             <View style={styles.card}>
               <Image
-                source={require('../../assets/buttonCard.png')}
+                source={require('../../../assets/buttonCard.png')}
                 style={styles.titleCard}>
                 <View style={styles.cardRow}>
                   <MaterialIcons name="task-alt" size={30} color="#fff" style={{
@@ -175,7 +175,7 @@ export default function TasksScreen() {
                 </View>
               </View>
               <Image
-                source={require('../../assets/bottonBorder.png')}
+                source={require('../../../assets/bottonBorder.png')}
                 style={styles.bottonContainer}>
                 <TouchableOpacity style={styles.buttonBottom}
                   onPress={() => EditTask(item.id_appointment)}>
@@ -209,14 +209,6 @@ export default function TasksScreen() {
                   </View>
                 </View>
               </Modal>
-
-
-              {/* <TouchableOpacity
-                style={styles.button}
-                onPress={() => handleVerDetalhes(item.id)}
-              >
-                <Text style={styles.buttonText}>Ver detalhes</Text>
-              </TouchableOpacity> */}
             </View>
           )}
         />

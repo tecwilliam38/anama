@@ -7,7 +7,11 @@ import { styles } from '../../screens/Profile/styles';
 import { Image } from 'react-native-elements';
 import Icon from "react-native-vector-icons/MaterialCommunityIcons"
 import * as ImagePicker from 'expo-image-picker';
-import * as FileSystem from 'expo-file-system';
+// import * as FileSystem from 'expo-file-system';
+// Depois (versão legada)
+import * as FileSystem from 'expo-file-system/legacy';
+
+
 import { decode } from 'base64-arraybuffer';
 
 import { FontAwesome5, MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
@@ -137,7 +141,7 @@ export default function ProfileComponent({ user, id_user }) {
     };
     return (
 
-        <View style={styles.card}>
+        <View style={[styles.card, {marginTop:60}]}>
             {loading ? (
                 <ActivityIndicator size="large" color="#007AFF" />
             ) : userData ? (
@@ -153,7 +157,7 @@ export default function ProfileComponent({ user, id_user }) {
                             <Image
                                 source={{ uri: `${userData.profile}?t=${Date.now()}` }}
                                 style={stylesinline.profileImage}
-                                resizeMode="cover"
+                                resizeMode="resize"
                             />
                         }
 
@@ -218,20 +222,23 @@ export default function ProfileComponent({ user, id_user }) {
 const stylesinline = StyleSheet.create({
     imageContainer: {
         position: 'relative', // necessário para posicionar filhos com absolute
-        width: 120,
-        height: 120,
+        width: "100%",
+        top:-70,        
         borderRadius: 60,
         overflow: 'hidden',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
     },
     profileImage: {
-        width: '100%',
-        height: '100%',
+        marginBottom: 15,        
+        width: 120,
+        height: 120,
         borderRadius: 60,
     },
     cameraIcon: {
         position: 'absolute',
         bottom: 1,
-        right: 9,
+        alignItems: 'center',        
         backgroundColor: 'rgba(255,255,255,0.7)',
         padding: 6,
         borderRadius: 20,
@@ -239,8 +246,8 @@ const stylesinline = StyleSheet.create({
     },
     uploadIcon: {
         position: 'absolute',
-        bottom: 1,
-        right: 9,
+        bottom: 1,        
+        alignItems: 'center',
         backgroundColor: 'rgba(255,255,255,0.7)',
         padding: 6,
         borderRadius: 20,
