@@ -82,9 +82,6 @@ export default function AddTask() {
 
     const insertAgenda = async () => {
         try {
-            // const clientId = idClients ? parseInt(idClients) : null;
-            const clientId = parseInt(idClients);
-
             const agendaData = {
                 id_service: idService,
                 id_client: idClients, // Corrigido aqui
@@ -92,10 +89,6 @@ export default function AddTask() {
                 status,
                 booking_datetime: bookingDate + 'T00:00:00'
             };
-            // console.log(clientId);
-            
-            // id_client: clientId, // Corrigido aqui
-            // booking_datetime: new Date(bookingDate).toISOString()
             const response =
                 await api.post('/client/agendamentos/add', agendaData, {
                     headers: {
@@ -118,8 +111,7 @@ export default function AddTask() {
             });
             if (response.data) {
                 setClients(response.data);
-                // console.log(response.data);
-                
+                // console.log(response.data);               
             }
 
         } catch (error) {

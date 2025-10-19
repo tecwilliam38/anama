@@ -22,20 +22,25 @@ export default function TasksScreen() {
   }, []);
 
   async function LoadServices() {
-    try {
-      const response = await api.post('/client/agendamentos/list', {}, {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      });
-      // console.log("Serviços", response.data);
-      setServices(response.data);
-    } catch (error) {
-      console.error("Erro ao carregar serviços:", error);
-    }
-  }
+  try {
+    const response = await api.post('/client/agendamentos/list', {}, {
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+      },
+    });
 
-  // console.log("Services", services);
+    const today = new Date().toISOString().split('T')[0]; // '2025-10-19'
+
+    const chamadosDoDia = response.data.filter((chamado) => {
+      const dataChamado = new Date(chamado.booking_datetime).toISOString().split('T')[0];
+      return dataChamado === today;
+    });
+console.log("Chamados do dia:", chamadosDoDia);
+    setServices(chamadosDoDia);
+  } catch (error) {
+    console.error("Erro ao carregar serviços:", error);
+  }
+}
 
   async function EditTask(id_appointment) {
     navigation.navigate("AddTarefa", { taskId: id_appointment });
@@ -43,30 +48,6 @@ export default function TasksScreen() {
     LoadServices()
   }
 
-  async function DeleteAppointmentid(id_appointment) {
-    try {
-      const response = await api.delete(`/agendamentos/${id_appointment}`, {
-        headers: {
-          Authorization: `Bearer ${user.token}`
-        }
-      });
-
-
-      if (response?.data) {
-        navigation.replace("Main", { screen: "Tasks" });
-      }
-
-    } catch (error) {
-      if (error.response?.data.error) {
-        if (error.response.status == 401)
-          return navigate("/");
-
-        alert(error.response?.data.error);
-      }
-      else
-        alert("Erro ao excluir reserva");
-    }
-  }
   const DeleteAppointment = async (id) => {
     try {
       await api.delete(`/agendamentos/${id}`, {
@@ -80,23 +61,16 @@ export default function TasksScreen() {
     }
   };
 
-
-
-
   const openConfirmModal = (item) => {
     setSelectedItem(item);
     setShowConfirm(true);
   };
-
-
   const handleConfirm = () => {
     if (selectedItem) {
       DeleteAppointment(selectedItem.id_appointment);
       setShowConfirm(false);
     }
-
   };
-
 
   return (
     <>
@@ -115,7 +89,7 @@ export default function TasksScreen() {
           <TouchableOpacity style={styles.button}
             onPress={() => navigation.navigate("AddTarefa")}
           >
-            <Image             
+            <Image
               source={require('../../assets/button.png')}
               style={styles.buttonTouchable}>
               <MaterialIcons name="add-task" size={35} color="#fff" style={styles.iconStyle} />
