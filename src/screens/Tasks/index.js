@@ -40,7 +40,6 @@ export default function TasksScreen() {
   async function EditTask(id_appointment) {
     navigation.navigate("AddTarefa", { taskId: id_appointment });
     // console.log("Edit task", id_appointment);  
-
     LoadServices()
   }
 
@@ -54,7 +53,7 @@ export default function TasksScreen() {
 
 
       if (response?.data) {
-        navigation.navigate("Main", { screen: "Tasks" });
+        navigation.replace("Main", { screen: "Tasks" });
       }
 
     } catch (error) {
