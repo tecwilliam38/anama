@@ -231,9 +231,9 @@ const stylesinline = StyleSheet.create({
     },
     profileImage: {
         marginBottom: 15,        
-        width: 120,
-        height: 120,
-        borderRadius: 60,
+        width: 140,
+        height: 140,
+        borderRadius: 70,
     },
     cameraIcon: {
         position: 'absolute',
