@@ -67,7 +67,7 @@ export default function AddTask() {
                 id_client: clientId, // Corrigido aqui
                 price: parseFloat(price),
                 status,
-                booking_datetime: bookingDate + 'T00:00:00'
+                booking_datetime: bookingDate + 'T12:00:00'
             };
             const response = await api.put("/agendamentos/" + id, agendaData, {
                 headers: { Authorization: `Bearer ${user.token}` }

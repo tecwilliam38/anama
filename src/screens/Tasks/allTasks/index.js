@@ -28,14 +28,6 @@ export default function AllTasksScreen() {
         Authorization: `Bearer ${user.token}`,
       },
     });
-
-    // const today = new Date().toISOString().split('T')[0]; // '2025-10-19'
-
-    // const chamadosDoDia = response.data.filter((chamado) => {
-    //   const dataChamado = new Date(chamado.booking_datetime).toISOString().split('T')[0];
-    //   return dataChamado === today;
-    // });
-// console.log("Chamados do dia:", chamadosDoDia);
     setServices(response.data);
   } catch (error) {
     console.error("Erro ao carregar serviços:", error);
@@ -74,29 +66,7 @@ export default function AllTasksScreen() {
 
   return (
     <>
-      <View style={styles.container}>
-        {/* <View style={styles.btns}>
-          <TouchableOpacity style={styles.button}
-            onPress={() => navigation.navigate("AddClient")}
-          >
-            <Image
-              source={require('../../../assets/buttonClient.png')}
-              style={styles.buttonTouchable}>
-              <Feather name="user-plus" size={35} color="#fff" style={styles.iconStyle} />
-              <Text style={styles.buttonTextClient}>Adicionar cliente</Text>
-            </Image>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button}
-            onPress={() => navigation.navigate("AddTarefa")}
-          >
-            <Image
-              source={require('../../../assets/button.png')}
-              style={styles.buttonTouchable}>
-              <MaterialIcons name="add-task" size={35} color="#fff" style={styles.iconStyle} />
-              <Text style={styles.buttonTextClient}>Nova Tarefa</Text>
-            </Image>
-          </TouchableOpacity>
-        </View> */}
+      <View style={styles.container}>        
         <FlatList
           data={services}
           keyExtractor={(item, index) => item.id ? item.id.toString() : index.toString()}
