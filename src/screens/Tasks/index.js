@@ -22,25 +22,36 @@ export default function TasksScreen() {
   }, []);
 
   async function LoadServices() {
-  try {
-    const response = await api.post('/client/agendamentos/list', {}, {
-      headers: {
-        Authorization: `Bearer ${user.token}`,
-      },
-    });
+    try {
+      const response = await api.post('/client/agendamentos/list', {}, {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
+      const today = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'America/Sao_Paulo',
+      }).format(new Date()); // '2025-10-20'
 
-    const today = new Date().toISOString().split('T')[0]; // '2025-10-19'
+      
+      const chamadosDoDia = response.data.filter((chamado) => {
+        const dataChamado = new Date(chamado.booking_datetime).toLocaleDateString('en-CA');
+        return dataChamado === today;
+      });
+      // const today = new Date().toLocaleDateString('en-CA'); // '2025-10-20'
 
-    const chamadosDoDia = response.data.filter((chamado) => {
-      const dataChamado = new Date(chamado.booking_datetime).toISOString().split('T')[0];
-      return dataChamado === today;
-    });
-// console.log("Chamados do dia:", chamadosDoDia);
-    setServices(chamadosDoDia);
-  } catch (error) {
-    console.error("Erro ao carregar serviços:", error);
+
+      // const today = new Date().toISOString().split('T')[0]; // '2025-10-19'
+
+      // const chamadosDoDia = response.data.filter((chamado) => {
+      //   const dataChamado = new Date(chamado.booking_datetime).toISOString().split('T')[0];
+      //   return dataChamado === today;
+      // });
+      // console.log("Chamados do dia:", chamadosDoDia);
+      setServices(chamadosDoDia);
+    } catch (error) {
+      console.error("Erro ao carregar serviços:", error);
+    }
   }
-}
 
   async function EditTask(id_appointment) {
     navigation.navigate("AddTarefa", { taskId: id_appointment });
