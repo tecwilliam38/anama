@@ -31,22 +31,12 @@ export default function TasksScreen() {
       const today = new Intl.DateTimeFormat('en-CA', {
         timeZone: 'America/Sao_Paulo',
       }).format(new Date()); // '2025-10-20'
-
-      
+  
       const chamadosDoDia = response.data.filter((chamado) => {
         const dataChamado = new Date(chamado.booking_datetime).toLocaleDateString('en-CA');
         return dataChamado === today;
       });
-      // const today = new Date().toLocaleDateString('en-CA'); // '2025-10-20'
-
-
-      // const today = new Date().toISOString().split('T')[0]; // '2025-10-19'
-
-      // const chamadosDoDia = response.data.filter((chamado) => {
-      //   const dataChamado = new Date(chamado.booking_datetime).toISOString().split('T')[0];
-      //   return dataChamado === today;
-      // });
-      // console.log("Chamados do dia:", chamadosDoDia);
+    
       setServices(chamadosDoDia);
     } catch (error) {
       console.error("Erro ao carregar serviços:", error);
